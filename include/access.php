@@ -4,9 +4,9 @@
  *  untuk multiple selection di def di init.php
  */
 $serverpath = "localhost";
-$db_username = "root";
-$db_password = "root";
-$db_name = "sempoa_8";
+$db_username = "root_sempoa";
+$db_password = "s3rv3r";
+$db_name = "sandbox_sempoa";
 
 //$db_name = "c1nt466_sempoa_migrasi";
 $db_prefix = '';
@@ -14,15 +14,15 @@ $db_prefix = '';
 $DbSetting = array ("serverpath" => $serverpath, "db_username" => $db_username, "db_password" => $db_password,
                     "db_name"    => $db_name, "db_prefix" => $db_prefix);
 //Websetting
-$domain = "localhost:8888";
-$folder = '/sempoa_memcached/';
+$domain = "sandbox-sempoa.indomegabyte.com";
+$folder = '/';
 $title = 'Dashboard';
     $metakey = 'TBS';
 $metadescription = 'TBS';
 $lang = 'en';
 $currency = 'IDR';
 //path untuk save, filesystem path kalau untuk linux bisa dari depan /opt/lamp/...
-$photo_path = '/Users/efindiongso/Documents/htdocs/sempoa_memcached/uploads/'; //always use full path - elroy 19 12 2014
+$photo_path = '/var/www/vhosts/indomegabyte.com/sandbox-sempoa/uploads/'; //always use full path - elroy 19 12 2014
 //path utk url, tanpa http:// dan tanpa folder e.g /leapportal/
 $photo_url = 'uploads/';
 
