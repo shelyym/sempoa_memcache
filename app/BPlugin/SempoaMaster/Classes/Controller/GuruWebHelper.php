@@ -1289,7 +1289,7 @@ class GuruWebHelper extends WebService
                     </thead>
                     <tbody id="container_load_invoices_guru">
                     <?
-                    $arrStatus = Generic::getStatus();
+                    $arrStatus = Generic::getStatusTrainer();
                     foreach ($arrInvoices as $inv) {
 //                            pr($inv);
                         ?>
@@ -1361,7 +1361,7 @@ class GuruWebHelper extends WebService
         $jumlahTotal = $objInvoices->getJumlah("tr_guru_id='$id'");
         $jumlahHalamanTotal = ceil($jumlahTotal / $limit);
         $t = time();
-        $arrStatus = Generic::getStatus();
+        $arrStatus = Generic::getStatusTrainer();
         foreach ($arrInvoices as $inv) {
 //                            pr($inv);
             ?>

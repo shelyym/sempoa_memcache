@@ -10,11 +10,13 @@
  *
  * @author efindiongso
  */
-class BarangWebHelper extends WebService {
+class BarangWebHelper extends WebService
+{
 
 //put your code here
 
-    function accept_req() {
+    function accept_req()
+    {
         $obj = new POItemModel();
         $obj->printColumlistAsAttributes();
         $json['post'] = $_POST;
@@ -22,7 +24,7 @@ class BarangWebHelper extends WebService {
         pr($json);
 
         die();
-        $jml_bundle = (int) addslashes($_POST['jml']);
+        $jml_bundle = (int)addslashes($_POST['jml']);
 
         if (!is_int($jml_bundle) || $jml_bundle < 1) {
             $json['post'] = $_POST;
@@ -45,12 +47,13 @@ class BarangWebHelper extends WebService {
         $succ = $req->save();
     }
 
-    function add_cart() {
+    function add_cart()
+    {
 
         $qty = addslashes($_POST['qty']);
         $harga_barang = addslashes($_POST['harga_barang']);
-        $id_barang = (int) addslashes($_POST['id_barang']);
-        $stock = (int) addslashes($_POST['stock']);
+        $id_barang = (int)addslashes($_POST['id_barang']);
+        $stock = (int)addslashes($_POST['stock']);
         $pic = addslashes($_POST['pic']);
         $nama_barang = addslashes($_POST['nama_barang']);
         if ($pic == "") {
@@ -58,25 +61,25 @@ class BarangWebHelper extends WebService {
         }
         $cart = $_SESSION['cart'];
         if ($cart == null) {
-            $cart[$id_barang]['qty'] = (int) $qty;
-            $cart[$id_barang]['harga'] = (double) $harga_barang;
-            $cart[$id_barang]['total_harga'] = (double) $cart[$id_barang]['qty'] * $cart[$id_barang]['harga'];
-            $cart[$id_barang]['stock'] = (int) $stock;
+            $cart[$id_barang]['qty'] = (int)$qty;
+            $cart[$id_barang]['harga'] = (double)$harga_barang;
+            $cart[$id_barang]['total_harga'] = (double)$cart[$id_barang]['qty'] * $cart[$id_barang]['harga'];
+            $cart[$id_barang]['stock'] = (int)$stock;
             $cart[$id_barang]['pic'] = $pic;
             $cart[$id_barang]['nama_barang'] = $nama_barang;
         } else {
             if (array_key_exists($id_barang, $cart)) {
-                $cart[$id_barang]['qty'] = (int) ($cart[$id_barang]['qty'] + $qty);
-                $cart[$id_barang]['harga'] = (double) $harga_barang;
-                $cart[$id_barang]['total_harga'] = (double) ($cart[$id_barang]['qty'] * $cart[$id_barang]['harga']);
-                $cart[$id_barang]['stock'] = (int) $stock;
+                $cart[$id_barang]['qty'] = (int)($cart[$id_barang]['qty'] + $qty);
+                $cart[$id_barang]['harga'] = (double)$harga_barang;
+                $cart[$id_barang]['total_harga'] = (double)($cart[$id_barang]['qty'] * $cart[$id_barang]['harga']);
+                $cart[$id_barang]['stock'] = (int)$stock;
                 $cart[$id_barang]['pic'] = $pic;
                 $cart[$id_barang]['nama_barang'] = $nama_barang;
             } else {
-                $cart[$id_barang]['qty'] = (int) $qty;
-                $cart[$id_barang]['harga'] = (double) $harga_barang;
-                $cart[$id_barang]['total_harga'] = (double) $cart[$id_barang]['qty'] * $cart[$id_barang]['harga'];
-                $cart[$id_barang]['stock'] = (int) $stock;
+                $cart[$id_barang]['qty'] = (int)$qty;
+                $cart[$id_barang]['harga'] = (double)$harga_barang;
+                $cart[$id_barang]['total_harga'] = (double)$cart[$id_barang]['qty'] * $cart[$id_barang]['harga'];
+                $cart[$id_barang]['stock'] = (int)$stock;
                 $cart[$id_barang]['pic'] = $pic;
                 $cart[$id_barang]['nama_barang'] = $nama_barang;
             }
@@ -100,7 +103,8 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    function update_cart_qty() {
+    function update_cart_qty()
+    {
         $keys = explode(",", addslashes($_POST['keys']));
         $qtys = explode(",", addslashes($_POST['qtys']));
         if (count($keys) < 1) {
@@ -120,12 +124,13 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    function add_cart_modal() {
+    function add_cart_modal()
+    {
 
         $qty = addslashes($_POST['qty']);
         $harga_barang = addslashes($_POST['harga_barang']);
-        $id_barang = (int) addslashes($_POST['id_barang']);
-        $stock = (int) addslashes($_POST['stock']);
+        $id_barang = (int)addslashes($_POST['id_barang']);
+        $stock = (int)addslashes($_POST['stock']);
         $pic = addslashes($_POST['pic']);
         $nama_barang = addslashes($_POST['nama_barang']);
         if ($pic == "") {
@@ -134,17 +139,17 @@ class BarangWebHelper extends WebService {
         $cart = $_SESSION['cart'];
 
         if (array_key_exists($id_barang, $cart)) {
-            $cart[$id_barang]['qty'] = (int) ($qty);
-            $cart[$id_barang]['harga'] = (double) $harga_barang;
-            $cart[$id_barang]['total_harga'] = (double) ($cart[$id_barang]['qty'] * $cart[$id_barang]['harga']);
-            $cart[$id_barang]['stock'] = (int) $stock;
+            $cart[$id_barang]['qty'] = (int)($qty);
+            $cart[$id_barang]['harga'] = (double)$harga_barang;
+            $cart[$id_barang]['total_harga'] = (double)($cart[$id_barang]['qty'] * $cart[$id_barang]['harga']);
+            $cart[$id_barang]['stock'] = (int)$stock;
             $cart[$id_barang]['pic'] = $pic;
             $cart[$id_barang]['nama_barang'] = $nama_barang;
         } else {
-            $cart[$id_barang]['qty'] = (int) $qty;
-            $cart[$id_barang]['harga'] = (double) $harga_barang;
-            $cart[$id_barang]['total_harga'] = (double) $cart[$id_barang]['qty'] * $cart[$id_barang]['harga'];
-            $cart[$id_barang]['stock'] = (int) $stock;
+            $cart[$id_barang]['qty'] = (int)$qty;
+            $cart[$id_barang]['harga'] = (double)$harga_barang;
+            $cart[$id_barang]['total_harga'] = (double)$cart[$id_barang]['qty'] * $cart[$id_barang]['harga'];
+            $cart[$id_barang]['stock'] = (int)$stock;
             $cart[$id_barang]['pic'] = $pic;
             $cart[$id_barang]['nama_barang'] = $nama_barang;
         }
@@ -157,11 +162,12 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    function add_cart_tmp() {
+    function add_cart_tmp()
+    {
 
 //        $po_id = (int) addslashes($_GET['po_id']);
-        $id_barang = (int) addslashes($_GET['id_barang']);
-        $item_id = (int) addslashes($_GET['item_id']);
+        $id_barang = (int)addslashes($_GET['id_barang']);
+        $item_id = (int)addslashes($_GET['item_id']);
         $harga = addslashes($_GET['harga_barang']);
         $po_id = $_SESSION['po_id'];
 
@@ -230,11 +236,12 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    public function add_cart_semua() {
-        $item = (int) addslashes($_POST['item']);
-        $id_barang = (int) addslashes($_POST['id']);
-        $qty = (int) addslashes($_POST['qty']);
-        $total_harga = (double) addslashes($_POST['total_harga']);
+    public function add_cart_semua()
+    {
+        $item = (int)addslashes($_POST['item']);
+        $id_barang = (int)addslashes($_POST['id']);
+        $qty = (int)addslashes($_POST['qty']);
+        $total_harga = (double)addslashes($_POST['total_harga']);
 
         if (($item == "") || ($item == 0)) {
             $json['status_code'] = 0;
@@ -257,7 +264,8 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    public function checkout() {
+    public function checkout()
+    {
 
         $cart = $_SESSION['cart'];
 
@@ -278,18 +286,17 @@ class BarangWebHelper extends WebService {
                     $qtyorder = $barang['qty'];
 
                     // Jumlah stock lebih kecil dr yg di pesan
-                    if (($stock_hold + $qtyorder ) > $stock) {
+                    if (($stock_hold + $qtyorder) > $stock) {
                         $json['status_code'] = 0;
                         $json['status_message'] = "Stock barang " . Generic::getNamaBarangByIDBarang($key) . " tidak mencukupi! Barang yang tersedia " . ($stock - $stock_hold);
                         echo json_encode($json);
                         die();
-                    } elseif (($stock_hold + $qtyorder ) <= $stock) {
+                    } elseif (($stock_hold + $qtyorder) <= $stock) {
                         $arrStockModel[0]->jumlah_stock_hold = $stock_hold + $barang['qty'];
                         $arrStockModel[0]->save(1);
                     }
                 }
             }
-
 
 
             foreach ($cart as $key => $barang) {
@@ -318,7 +325,7 @@ class BarangWebHelper extends WebService {
                     $poItems->org_id = $kpo_id;
                     $itemPOID = $poItems->save();
                     if ($itemPOID != "") {
-                        
+
                     }
                 }
             }
@@ -333,7 +340,8 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    public function coba() {
+    public function coba()
+    {
 
 //        pr($_SESSION);
         $cart = $_SESSION['cart'];
@@ -373,7 +381,8 @@ class BarangWebHelper extends WebService {
 //        $arrStockBarangMyParent = $db->query($q, 2);
     }
 
-    function remove_session() {
+    function remove_session()
+    {
 
 
         unset($_SESSION['cart']);
@@ -393,21 +402,22 @@ class BarangWebHelper extends WebService {
 //        unset($_SESSION['cart']);
     }
 
-    function cart_modal() {
+    function cart_modal()
+    {
         $cart = $_SESSION['cart'];
         ?>
 
         <div class="modal-body-2" id="cart_body-dalam">
             <table class="table table-hover table-responsive" id="my-cart-table">
                 <tbody>
-                    <?
-//                    pr($cart);
-//                    echo "cart Modal";
+                <?
+                //                    pr($cart);
+                //                    echo "cart Modal";
+                ?>
+                <?
+                //                    pr($cart);
+                foreach ($cart as $key => $barang) {
                     ?>
-                    <?
-//                    pr($cart);
-                    foreach ($cart as $key => $barang) {
-                        ?>
                     <script>
                         var obj_item = {
                             harga: parseInt(<?= $barang['harga']; ?>),
@@ -421,14 +431,17 @@ class BarangWebHelper extends WebService {
                             <img width="100%" src="<?= $barang['pic']; ?>" onerror="imgError(this);">
                         </td>
                         <td id='nama_barang_<?= $key; ?>'><?= $barang['nama_barang']; ?></td>
-                        <td title="Unit Price" id='hargasatuan_<?= $key; ?>' style="text-align: right;"><?= idr($barang['harga']); ?></td>
+                        <td title="Unit Price" id='hargasatuan_<?= $key; ?>'
+                            style="text-align: right;"><?= idr($barang['harga']); ?></td>
                         <td title="Quantity">
-                            <input id= 'qty_<?= $key; ?>' type="number" min="1" style="text-align:right;width: 50px;" class="my-product-quantity"  value="<?= $barang['qty']; ?>">
+                            <input id='qty_<?= $key; ?>' type="number" min="1" style="text-align:right;width: 50px;"
+                                   class="my-product-quantity" value="<?= $barang['qty']; ?>">
                         </td>
-                        <td id = 'total_<?= $key; ?>' title="Total" class="my-product-total" style="text-align: right;"><?= idr($barang['total_harga']); ?>
+                        <td id='total_<?= $key; ?>' title="Total" class="my-product-total"
+                            style="text-align: right;"><?= idr($barang['total_harga']); ?>
                         </td>
                         <td title="Remove from Cart" class="text-center" style="width: 30px;">
-                            <a id ='remove_<?= $key; ?>'class="btn btn-xs btn-danger my-product-remove">X</a>
+                            <a id='remove_<?= $key; ?>' class="btn btn-xs btn-danger my-product-remove">X</a>
                         </td>
 
                     </tr>
@@ -453,43 +466,43 @@ class BarangWebHelper extends WebService {
                         });
 
                         $('#remove_<?= $key; ?>').click(function () {
-                            if (confirm("Anda yakin akan menghapus item " + '<?= $barang['nama_barang']; ?>')) {
+                                if (confirm("Anda yakin akan menghapus item " + '<?= $barang['nama_barang']; ?>')) {
 
-                                $.get("<?= _SPPATH; ?>BarangWebHelper/remove_cart?id=<?= $key; ?>", function (data) {
-                                                console.log(data);
-                                                if (data.status_code) {
-                                                    $('#tr_barang_<?= $key; ?>').hide();
-                                                    delete cart_item_by_id["<?= $key; ?>"];
-                                                    hitungUlangTotal();
+                                    $.get("<?= _SPPATH; ?>BarangWebHelper/remove_cart?id=<?= $key; ?>", function (data) {
+                                        console.log(data);
+                                        if (data.status_code) {
+                                            $('#tr_barang_<?= $key; ?>').hide();
+                                            delete cart_item_by_id["<?= $key; ?>"];
+                                            hitungUlangTotal();
 
-                                                    //                                                lwrefresh(selected_page);
-                                                } else {
-                                                    alert(data.status_message);
-                                                }
-                                            }, 'json');
-
+                                            //                                                lwrefresh(selected_page);
+                                        } else {
+                                            alert(data.status_message);
                                         }
+                                    }, 'json');
 
-                                    }
-                                    );
+                                }
+
+                            }
+                        );
                     </script>
                     <?
                 }
                 ?>
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td></td>
-                        <td><strong>Total</strong>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td style="text-align: right;"><strong id="my-cart-grand-total" >
+                <tr>
+                    <td></td>
+                    <td><strong>Total</strong>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right;"><strong id="my-cart-grand-total">
 
-                            </strong>
-                        </td>
-                        <td></td>
-                    </tr>
+                        </strong>
+                    </td>
+                    <td></td>
+                </tr>
                 </tfoot>
                 <script>
 
@@ -516,13 +529,14 @@ class BarangWebHelper extends WebService {
                     hitungUlangTotal();
                 </script>
             </table>
-        </div>    
+        </div>
         <?
     }
 
-    function remove_cart() {
+    function remove_cart()
+    {
 
-        $id = (int) addslashes($_GET['id']);
+        $id = (int)addslashes($_GET['id']);
         $json['id'] = $id;
         $cart = $_SESSION['cart'];
         foreach ($cart as $key => $subArr) {
@@ -541,9 +555,10 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    function setStatusPO() {
+    function setStatusPO()
+    {
 
-        $id_status = (int) addslashes($_GET['id_status']);
+        $id_status = (int)addslashes($_GET['id_status']);
         $json['id_status'] = $id_status;
         $po_id = addslashes($_GET['po_id']);
         $json['po_id'] = $po_id;
@@ -629,7 +644,6 @@ class BarangWebHelper extends WebService {
                         }
 
 
-
                         $arrJenisBarangHlp = Generic::getJenisBarangType();
                         $PO_Object = new POModel();
                         $PO_Object->getByID($po_id);
@@ -658,84 +672,37 @@ class BarangWebHelper extends WebService {
 //                                }
                             } elseif (AccessRight::getMyOrgType() == KEY::$IBO) {
                                 if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
-                                    Generic::createLaporanDebet($po_penerima, $po_pengirim,KEY::$DEBET_BARANG_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
-                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim,KEY::$KREDIT_BARANG_TC, $val->id_barang, $peminta, $val->qty, 0, "");
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BARANG_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BARANG_TC, $val->id_barang, $peminta, $val->qty, 0, "");
                                 } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
                                     Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BUKU_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
                                     Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BUKU_TC, $val->id_barang, $peminta, $val->qty, 0, "");
                                 } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
                                     Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_PERLENGKAPAN_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
-                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim,KEY::$KREDIT_PERLENGKAPAN_TC, $val->id_barang, $peminta, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_PERLENGKAPAN_TC, $val->id_barang, $peminta, $val->qty, 0, "");
                                 }
                             } elseif (AccessRight::getMyOrgType() == KEY::$KPO) {
                                 if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
-                                    Generic::createLaporanDebet($po_penerima, $po_penerima, KEY::$DEBET_BARANG_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
-                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim,  KEY::$KREDIT_BARANG_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BARANG_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BARANG_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+//                                    Generic::createLaporanDebet($po_penerima, $po_penerima, KEY::$DEBET_BARANG_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+//                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim,  KEY::$KREDIT_BARANG_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+
                                 } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
-                                    Generic::createLaporanDebet($po_penerima, $po_penerima,KEY::$DEBET_BUKU_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
-                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim, KEY::$KREDIT_BUKU_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BUKU_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BUKU_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+//                                    Generic::createLaporanDebet($po_penerima, $po_penerima,KEY::$DEBET_BUKU_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+//                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim, KEY::$KREDIT_BUKU_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+
                                 } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
-                                    Generic::createLaporanDebet($po_penerima, $po_penerima,KEY::$DEBET_PERLENGKAPAN_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
-                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim, KEY::$KREDIT_PERLENGKAPAN_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_PERLENGKAPAN_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_PERLENGKAPAN_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+//                                    Generic::createLaporanDebet($po_penerima, $po_penerima,KEY::$DEBET_BUKU_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+//                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim, KEY::$KREDIT_BUKU_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+
                                 }
                             }
                         }
-
-//                        die();
-//
-//
-//
-//
-//                        $brg = new BarangWebModel();
-//                        $arrJenisBarangHlp = Generic::getJenisBarangType();
-////                        pr($arrJenisBarangHlp);
-//                        foreach ($arrPOItems as $val) {
-////                            id_barang
-//                            $jenis_object = $arrJenisBarangHlp[$val->id_barang];
-////                            pr($jenis_object);
-//                            if (AccessRight::getMyOrgType() == KEY::$TC) {
-//                                if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_BARANG_IBO, KEY::$JENIS_BIAYA_BARANG, "Biaya Barang", 1, 0, "Utama");
-////                                    Generic::createLaporanKredit($myID, KEY::$DEBET_REGISTRASI_TC, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0);
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_BUKU_IBO, KEY::$JENIS_BIAYA_BUKU, "Biaya Buku", 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID,$myID, KEY::$KREDIT_BUKU_TC, KEY::$JENIS_BIAYA_BUKU, "Biaya Buku", 1, 0, "Utama");
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_PERLENGKAPAN_IBO, KEY::$JENIS_BIAYA_PERLENGKAPAN, "Biaya Perlengkapan", 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID, $myID,KEY::$KREDIT_PERLENGKAPAN_TC, KEY::$JENIS_BIAYA_PERLENGKAPAN, "Biaya Perlengkapan", 1, 0, "Utama");
-//                                }
-//                            } elseif (AccessRight::getMyOrgType() == KEY::$IBO) {
-//                                if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
-//                                    Generic::createLaporanDebet($myID,$myID, KEY::$DEBET_BARANG_IBO, KEY::$BIAYA_, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID,$myID, KEY::$KREDIT_BARANG_TC, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_BUKU_IBO, KEY::$BIAYA_, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID,$myID, KEY::$KREDIT_BUKU_TC, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_PERLENGKAPAN_IBO, KEY::$BIAYA_, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID, $myID,KEY::$KREDIT_PERLENGKAPAN_TC, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                }
-//                            } elseif (AccessRight::getMyOrgType() == KEY::$KPO) {
-//                                // Jika IBO beli Barang dari KPO
-//                                // 1. Pesan Buku
-//                                //      1. IBO, pengeluaran
-//                                //      2. KPO, Pendapatan
-//
-//                                if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_BARANG_KPO, KEY::$BIAYA_, "Barang: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID, $myID,KEY::$KREDIT_BARANG_IBO, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_BUKU_KPO, KEY::$BIAYA_, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID,$myID, KEY::$KREDIT_BUKU_IBO, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
-//                                    Generic::createLaporanDebet($myID, $myID,KEY::$DEBET_PERLENGKAPAN_KPO, KEY::$BIAYA_, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                    Generic::createLaporanKredit($myID, $myID,KEY::$KREDIT_PERLENGKAPAN_IBO, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), 1, 0, "Utama");
-//                                }
-//                            }
-////                            if()
-////                            $brg->getWhere("id_barang_hargaid_barang");
-//                        }
-
 
                         // update stock IBO
                     } elseif ($id_status == 99) {
@@ -774,7 +741,8 @@ class BarangWebHelper extends WebService {
         die();
     }
 
-    public static function form_pemesanan($parent_id) {
+    public static function form_pemesanan($parent_id)
+    {
         // buat form seperti ecom
         // buat PO
         $myOrgID = AccessRight::getMyOrgID();
@@ -796,8 +764,9 @@ class BarangWebHelper extends WebService {
         }
         $t = time();
         ?>
-        <button type="button" class="pull-right btn btn-danger" id="btn_cart_barang_total" <? if ($jumlah < 1) echo "style='display:none;'"; ?> >
-            <span class="glyphicon glyphicon-shopping-cart" ></span>
+        <button type="button" class="pull-right btn btn-danger"
+                id="btn_cart_barang_total" <? if ($jumlah < 1) echo "style='display:none;'"; ?> >
+            <span class="glyphicon glyphicon-shopping-cart"></span>
             <span class="badge badge-notify my-cart-badge" id='jumlah_cart_barang_total'><?= $jumlah; ?></span>
         </button>
 
@@ -806,29 +775,34 @@ class BarangWebHelper extends WebService {
             .icon-shopping-cart:before {
                 content: "\f07a";
             }
+
             .prod-info-main {
                 border: 1px solid #f39c12;
                 margin-bottom: 20px;
                 margin-top: 10px;
                 background: #fff;
                 padding: 6px;
-                -webkit-box-shadow: 0 1px 4px 0 rgba(21,180,255,0.5);
-                box-shadow: 0 1px 1px 0 rgba(21,180,255,0.5);
+                -webkit-box-shadow: 0 1px 4px 0 rgba(21, 180, 255, 0.5);
+                box-shadow: 0 1px 1px 0 rgba(21, 180, 255, 0.5);
             }
+
             * {
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
                 box-sizing: border-box;
             }
+
             /*user agent stylesheet*/
             div {
                 display: block;
             }
+
             .price-container {
                 font-size: 24px;
                 margin: 0;
                 font-weight: 300;
             }
+
             .product-deatil {
                 /*border-bottom: 1px solid #dfe5e9;*/
                 padding-bottom: 17px;
@@ -837,16 +811,20 @@ class BarangWebHelper extends WebService {
                 position: relative;
                 background: #fff;
             }
+
             .product-deatil .name a {
                 margin-left: 0;
             }
+
             a {
                 color: #337ab7;
                 text-decoration: none;
             }
+
             a {
                 background-color: transparent;
             }
+
             .product-block .product-deatil p.price-container span, .prod-info-main .product-deatil p.price-container span, .shipping table tbody tr td p.price-container span, .shopping-items table tbody tr td p.price-container span {
                 color: #21c2f8;
                 font-family: Lato, sans-serif;
@@ -877,6 +855,7 @@ class BarangWebHelper extends WebService {
                 text-align: center
 
             }
+
             .prod-wrap .product-image span.tag3 {
 
                 position: absolute;
@@ -900,13 +879,12 @@ class BarangWebHelper extends WebService {
                 text-align: center
 
             }
+
             .prod-wrap .product-image span.sale {
 
                 background-color: #57889c;
 
             }
-
-
 
             .prod-wrap .product-image span.hot {
 
@@ -914,36 +892,37 @@ class BarangWebHelper extends WebService {
 
             }
 
-
-
             .prod-wrap .product-image span.special {
 
                 background-color: #3B6764;
 
             }
+
             .product-deatil .name a {
                 margin-left: 0;
             }
-            .product-image-roy{
+
+            .product-image-roy {
                 width: 100%;
                 height: 173px;
                 overflow: hidden;
             }
-            .product-image-roy img{
-                
+
+            .product-image-roy img {
+
                 max-width: 100%;
                 max-height: 100%;
                 margin: auto;
-                
+
             }
 
-            .prod-info-roy{
+            .prod-info-roy {
                 background-color: #fff;
                 padding: 10px;
                 margin: 10px;
             }
-            
-            
+
+
         </style>
         <?
         foreach ($arrStockBarangMyParent as $barang) {
@@ -953,129 +932,135 @@ class BarangWebHelper extends WebService {
                     <div class="pull-left" style="margin-right:20px;">
                         <div class="foto100">
                             <?
-                                    if ($barang->foto_barang == "") {
-                                        ?>
-                                    <img onload="OnImageLoad(event,100);" src="<?= _BPATH ."images/noimage.jpg"; ?>" onerror="imgError(this);"  >
-                                        <?
-                                    } else {
-                                        ?>
-                                        <img onload="OnImageLoad(event,100);" src="<?= _BPATH . _PHOTOURL . $barang->foto_barang; ?>"  onerror="imgError(this);" >
-                                        <?
-                                    }
-                                    ?>
+                            if ($barang->foto_barang == "") {
+                                ?>
+                                <img onload="OnImageLoad(event,100);" src="<?= _BPATH . "images/noimage.jpg"; ?>"
+                                     onerror="imgError(this);">
+                                <?
+                            } else {
+                                ?>
+                                <img onload="OnImageLoad(event,100);"
+                                     src="<?= _BPATH . _PHOTOURL . $barang->foto_barang; ?>" onerror="imgError(this);">
+                                <?
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="pull-left">
                         <div class="product-deatil-roy">
-                                <div class="product-deatil-roy-name" style="font-size:18px;"><?= $barang->nama_barang; ?></div>
-                                    
-                                
-            <!--                                    <b><span>Stock: <? 
-             //Generic::number($barang->jumlah_stock - $barang->jumlah_stock_hold);
-                                        ?></span></b>-->
-                                
+                            <div class="product-deatil-roy-name"
+                                 style="font-size:18px;"><?= $barang->nama_barang; ?></div>
 
-                                <div class="price-container-roy">
 
-                                    <div style="margin-bottom:20px;"><b>IDR <?
-                                            if (AccessRight::getMyOrgType() != KEY::$TC) {
+                            <!--                                    <b><span>Stock: <?
+                            //Generic::number($barang->jumlah_stock - $barang->jumlah_stock_hold);
+                            ?></span></b>-->
+
+
+                            <div class="price-container-roy">
+
+                                <div style="margin-bottom:20px;"><b>IDR <?
+                                        if (AccessRight::getMyOrgType() != KEY::$TC) {
 //                                                echo idr(Generic::getHargaBarang($barang->id_barang_harga, $parent_id));
-                                                echo idr(Generic::getHargaBarang($barang->id_barang_harga, AccessRight::getMyOrgID()));
-                                            } else {
-                                                $group_id = Generic::getMyGroupID($myOrgID);
-                                                echo idr(Generic::getHargaBarangByGroup($barang->id_barang_harga, AccessRight::getMyOrgID()));
-//                                        pr($group_id);
-                                            }
-                                            ?></b></div>
-                                </div>
-                                        <div class="tag1-roy">
-                                            <?
-                                        if (Generic::number($barang->jumlah_stock - $barang->jumlah_stock_hold) <= 0) {
-                                            
+                                            echo idr(Generic::getHargaBarang($barang->id_barang_harga, AccessRight::getMyOrgID()));
                                         } else {
-                                            ?>
-                                            <button class="btn btn-warning" style="background-color:#888888; border-color: #888888;" id="add_cart_<?= $barang->id_barang_harga . "_" . $t; ?>" >Add to cart &nbsp; <i class="glyphicon glyphicon-shopping-cart"></i></button>
-
-                                            <?
+                                            $group_id = Generic::getMyGroupID($myOrgID);
+                                            echo idr(Generic::getHargaBarangByGroup($barang->id_barang_harga, AccessRight::getMyOrgID()));
+//                                        pr($group_id);
                                         }
-                                        ?>
-                                        </div>
+                                        ?></b></div>
                             </div>
+                            <div class="tag1-roy">
+                                <?
+                                if (Generic::number($barang->jumlah_stock - $barang->jumlah_stock_hold) <= 0) {
+
+                                } else {
+                                    ?>
+                                    <button class="btn btn-warning"
+                                            style="background-color:#888888; border-color: #888888;"
+                                            id="add_cart_<?= $barang->id_barang_harga . "_" . $t; ?>">Add to cart &nbsp;
+                                        <i class="glyphicon glyphicon-shopping-cart"></i></button>
+
+                                    <?
+                                }
+                                ?>
+                            </div>
+                        </div>
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                
+
                 <!-- end product -->
             </div>
             <script>
                 // Add to chart, lalu masukin ke session
                 var cartObj = {};
                 var check = false;
-            <?
-            if (AccessRight::getMyOrgType() != KEY::$TC) {
+                <?
+                if (AccessRight::getMyOrgType() != KEY::$TC) {
                 ?>
-                    $('#add_cart_<?= $barang->id_barang_harga . "_" . $t; ?>').click(function () {
-                        cartObj.id_barang = parseInt('<?= $barang->id_barang_harga; ?>');
-                        cartObj.nama_barang = ('<?= $barang->nama_barang; ?>');
-                        cartObj.qty = 1;
+                $('#add_cart_<?= $barang->id_barang_harga . "_" . $t; ?>').click(function () {
+                    cartObj.id_barang = parseInt('<?= $barang->id_barang_harga; ?>');
+                    cartObj.nama_barang = ('<?= $barang->nama_barang; ?>');
+                    cartObj.qty = 1;
 //                        cartObj.harga_barang = parseInt('<?//= Generic::getHargaBarang($barang->id_barang_harga, $parent_id); ?>//');
-                        cartObj.harga_barang = parseInt('<?= Generic::getHargaBarang($barang->id_barang_harga, AccessRight::getMyOrgID()); ?>');
-                        cartObj.stock = '<?= Generic::number($barang->jumlah_stock); ?>';
-                        if ('<?= $barang->foto_barang; ?>' == "") {
-                            cartObj.pic = '<?= _BPATH . _PHOTOURL . "noimage.jpg"; ?>';
-                        } else {
-                            cartObj.pic = '<?= _BPATH . _PHOTOURL . "$barang->foto_barang"; ?>';
-                        }
-                        // Add ke session
-                        $.post("<?= _SPPATH; ?>BarangWebHelper/add_cart", cartObj, function (data) {
-                            if (data.status_code) {
-                                $('#jumlah_cart_barang_total').html(data.qty);
-                                //                            lwrefresh(selected_page);
-                                if (data.qty > 0) {
-                                    $('#btn_cart_barang_total').show();
-                                }
-
-                            } else {
-                                alert(data.status_message);
+                    cartObj.harga_barang = parseInt('<?= Generic::getHargaBarang($barang->id_barang_harga, AccessRight::getMyOrgID()); ?>');
+                    cartObj.stock = '<?= Generic::number($barang->jumlah_stock); ?>';
+                    if ('<?= $barang->foto_barang; ?>' == "") {
+                        cartObj.pic = '<?= _BPATH . _PHOTOURL . "noimage.jpg"; ?>';
+                    } else {
+                        cartObj.pic = '<?= _BPATH . _PHOTOURL . "$barang->foto_barang"; ?>';
+                    }
+                    // Add ke session
+                    $.post("<?= _SPPATH; ?>BarangWebHelper/add_cart", cartObj, function (data) {
+                        if (data.status_code) {
+                            $('#jumlah_cart_barang_total').html(data.qty);
+                            //                            lwrefresh(selected_page);
+                            if (data.qty > 0) {
+                                $('#btn_cart_barang_total').show();
                             }
-                        }, 'json');
-                    });
+
+                        } else {
+                            alert(data.status_message);
+                        }
+                    }, 'json');
+                });
 
                 <?
-            } else {
+                } else {
                 $group_id = Generic::getMyGroupID($myOrgID);
-//                echo idr(Generic::getHargaBarangByGroup($barang->id_barang_harga, AccessRight::getMyOrgID()));
-//                                        pr($group_id);
+                //                echo idr(Generic::getHargaBarangByGroup($barang->id_barang_harga, AccessRight::getMyOrgID()));
+                //                                        pr($group_id);
                 ?>
-                    $('#add_cart_<?= $barang->id_barang_harga . "_" . $t; ?>').click(function () {
-                        cartObj.id_barang = parseInt('<?= $barang->id_barang_harga; ?>');
-                        cartObj.nama_barang = ('<?= $barang->nama_barang; ?>');
-                        cartObj.qty = 1;
-                        cartObj.harga_barang = parseInt('<?= Generic::getHargaBarangByGroup($barang->id_barang_harga, AccessRight::getMyOrgID()); ?>');
-                        cartObj.stock = '<?= Generic::number($barang->jumlah_stock); ?>';
-                        if ('<?= $barang->foto_barang; ?>' == "") {
-                            cartObj.pic = '<?= _BPATH . _PHOTOURL . "noimage.jpg"; ?>';
-                        } else {
-                            cartObj.pic = '<?= _BPATH . _PHOTOURL . "$barang->foto_barang"; ?>';
-                        }
-                        // Add ke session
-                        $.post("<?= _SPPATH; ?>BarangWebHelper/add_cart", cartObj, function (data) {
-                            if (data.status_code) {
-                                $('#jumlah_cart_barang_total').html(data.qty);
-                                //                            lwrefresh(selected_page);
-                                if (data.qty > 0) {
-                                    $('#btn_cart_barang_total').show();
-                                }
-
-                            } else {
-                                alert(data.status_message);
+                $('#add_cart_<?= $barang->id_barang_harga . "_" . $t; ?>').click(function () {
+                    cartObj.id_barang = parseInt('<?= $barang->id_barang_harga; ?>');
+                    cartObj.nama_barang = ('<?= $barang->nama_barang; ?>');
+                    cartObj.qty = 1;
+                    cartObj.harga_barang = parseInt('<?= Generic::getHargaBarangByGroup($barang->id_barang_harga, AccessRight::getMyOrgID()); ?>');
+                    cartObj.stock = '<?= Generic::number($barang->jumlah_stock); ?>';
+                    if ('<?= $barang->foto_barang; ?>' == "") {
+                        cartObj.pic = '<?= _BPATH . _PHOTOURL . "noimage.jpg"; ?>';
+                    } else {
+                        cartObj.pic = '<?= _BPATH . _PHOTOURL . "$barang->foto_barang"; ?>';
+                    }
+                    // Add ke session
+                    $.post("<?= _SPPATH; ?>BarangWebHelper/add_cart", cartObj, function (data) {
+                        if (data.status_code) {
+                            $('#jumlah_cart_barang_total').html(data.qty);
+                            //                            lwrefresh(selected_page);
+                            if (data.qty > 0) {
+                                $('#btn_cart_barang_total').show();
                             }
-                        }, 'json');
-                    });
+
+                        } else {
+                            alert(data.status_message);
+                        }
+                    }, 'json');
+                });
 
                 <?
-            }
-            ?>
+                }
+                ?>
 
             </script>
             <?
@@ -1094,7 +1079,8 @@ class BarangWebHelper extends WebService {
         <?
     }
 
-    public static function lihat_pesanan_tmp() {
+    public static function lihat_pesanan_tmp()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $objPO = new POModel();
         $objPOItems = new POItemModel();
@@ -1111,7 +1097,7 @@ class BarangWebHelper extends WebService {
         $jumlahHalamanTotal = ceil($jumlahTotal / $limit);
         $t = time();
         ?>
-        <section class="content-header" >
+        <section class="content-header">
             <h1>
                 Pemesanan Barang
             </h1>
@@ -1131,103 +1117,104 @@ class BarangWebHelper extends WebService {
                     border-left: 4px solid transparent;
                 }
             </style>
-            <div class="table-responsive" >
+            <div class="table-responsive">
                 <table class="table table-bordered table-striped" style="background-color: #FFFFFF;">
-                    <thead class ='heading'>
-                        <tr>
-                            <th><b>No PO</b></th>
-                            <th><b>Tanggal</b></th>
-                            <th><b>Pemesan</b></th>
-                            <th><b>Status</b></th>
-                            <th class="palingdalam" style="visibility:hidden;display: none"><b>Qty</b></th>
-                            <th class="palingdalam" style="visibility:hidden;display: none"><b>Barang</b></th>
-                            <th class="palingdalam"style="visibility:hidden;display: none" ><b>Harga</b></th>
-                            <th class="palingdalam" style="visibility:hidden;display: none"><b>Total Harga</b></th>
-                            <th><b>Grand Total</b></th>
+                    <thead class='heading'>
+                    <tr>
+                        <th><b>No PO</b></th>
+                        <th><b>Tanggal</b></th>
+                        <th><b>Pemesan</b></th>
+                        <th><b>Status</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Qty</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Barang</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Harga</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Total Harga</b></th>
+                        <th><b>Grand Total</b></th>
 
-                        <tr>
+                    <tr>
                     </thead>
                     <tbody id='body'>
-                        <?
-                        foreach ($arrPO as $po) {
+                    <?
+                    foreach ($arrPO as $po) {
 //                            pr($po->po_status);
-                            $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
-                            if ($po->po_status == KEY::$STATUS_NEW)
-                                $warna = KEY::$WARNA_BIRU;
-                            elseif ($po->po_status == KEY::$STATUS_PAID)
-                                $warna = KEY::$WARNA_HIJAU;
-                            elseif ($po->po_status == KEY::$STATUS_CANCEL)
-                                $warna = KEY::$WARNA_MERAH;
-                            $arrname = $acc->getWhere("admin_org_id = '$po->po_pengirim'");
-                            //hitung total hrg manually roy 14 sep 2016
-                            $total_satu_po = 0;
-                            foreach ($arrPOItems as $items) {
-                                $total_satu_po += $items->harga * $items->qty;
-                            }
-                            ?>
-                            <tr class='<?= $po->po_id ?> atas_<?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
+                        $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
+                        if ($po->po_status == KEY::$STATUS_NEW)
+                            $warna = KEY::$WARNA_BIRU;
+                        elseif ($po->po_status == KEY::$STATUS_PAID)
+                            $warna = KEY::$WARNA_HIJAU;
+                        elseif ($po->po_status == KEY::$STATUS_CANCEL)
+                            $warna = KEY::$WARNA_MERAH;
+                        $arrname = $acc->getWhere("admin_org_id = '$po->po_pengirim'");
+                        //hitung total hrg manually roy 14 sep 2016
+                        $total_satu_po = 0;
+                        foreach ($arrPOItems as $items) {
+                            $total_satu_po += $items->harga * $items->qty;
+                        }
+                        ?>
+                        <tr class='<?= $po->po_id ?> atas_<?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
 
-                                <td id='open_<?= $po->po_id ?>' onclick="bukaPO('<?= $po->po_id ?>', '<?= $po->po_status; ?>');">
-                                    <?= $po->po_id ?>
+                            <td id='open_<?= $po->po_id ?>'
+                                onclick="bukaPO('<?= $po->po_id ?>', '<?= $po->po_status; ?>');">
+                                <?= $po->po_id ?>
 
-                                    <span class="caret" style="cursor: pointer;"></span>
-                                </td>
-                                <td><?= $po->po_tanggal ?></td>
-                                <td><?= $arrname[0]->admin_nama_depan; ?></td>
-                                <td id='status_po_<?= $po->po_id; ?>'><?
-                                    if ($po->po_status == 0) {
-                                        echo "New";
-                                    } elseif ($po->po_status == 1) {
-                                        echo "Paid";
-                                    } elseif ($po->po_status == 99) {
-                                        echo "Cancel";
-                                    }
-                                    ?></td>
+                                <span class="caret" style="cursor: pointer;"></span>
+                            </td>
+                            <td><?= $po->po_tanggal ?></td>
+                            <td><?= $arrname[0]->admin_nama_depan; ?></td>
+                            <td id='status_po_<?= $po->po_id; ?>'><?
+                                if ($po->po_status == 0) {
+                                    echo "New";
+                                } elseif ($po->po_status == 1) {
+                                    echo "Paid";
+                                } elseif ($po->po_status == 99) {
+                                    echo "Cancel";
+                                }
+                                ?></td>
 
-                                <td class='<?= $po->po_id; ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                                <td class='<?= $po->po_id ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                                <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
-                                <td class='<?= $po->po_id ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                                <td><?= "IDR " . idr($total_satu_po); ?></td>
+                            <td class='<?= $po->po_id; ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td><?= "IDR " . idr($total_satu_po); ?></td>
 
-                            </tr>
-                            <?
-                            foreach ($arrPOItems as $items) {
-                                ?>
-                                <tr class='<?= $po->po_id ?>'   style="visibility:hidden;display: none">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td id='status_po_<?= $po->po_id; ?>'>
-                                    </td>
-                                    <td class='<?= $po->po_id ?>' ><?= $items->qty ?></td>
-                                    <td class='<?= $po->po_id ?> ' ><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
+                        </tr>
+                    <?
+                    foreach ($arrPOItems as $items) {
+                    ?>
+                        <tr class='<?= $po->po_id ?>' style="visibility:hidden;display: none">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id='status_po_<?= $po->po_id; ?>'>
+                            </td>
+                            <td class='<?= $po->po_id ?>'><?= $items->qty ?></td>
+                            <td class='<?= $po->po_id ?> '><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
 
-                                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga); ?></td>
-                                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga * $items->qty) ?></td>
-                                    <td class='<?= $po->po_id ?>' ></td>
-                                </tr>
-                                <?
-                            }
-                            ?>
+                            <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga); ?></td>
+                            <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga * $items->qty) ?></td>
+                            <td class='<?= $po->po_id ?>'></td>
+                        </tr>
+                    <?
+                    }
+                    ?>
 
                         <script>
                             $("#status_po_<?= $po->po_id; ?>").dblclick(function () {
                                 var current = $("#status_po_<?= $po->po_id; ?>").html();
                                 if (current == 'New') {
                                     var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                            "<option value='0'>New</option>" +
-                                            "<option value='1'>Paid</option>" +
-                                            "<option value='99'>Cancel</option>" +
-                                            "</select>";
+                                        "<option value='0'>New</option>" +
+                                        "<option value='1'>Paid</option>" +
+                                        "<option value='99'>Cancel</option>" +
+                                        "</select>";
                                 } else if (current == 'Paid') {
                                     var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                            "<option value='1' selected>Paid</option>" +
-                                            "</select>";
+                                        "<option value='1' selected>Paid</option>" +
+                                        "</select>";
                                 } else if (current == 'Cancel') {
                                     var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                            "<option value='99' selected>Cancel</option>" +
-                                            "</select>";
+                                        "<option value='99' selected>Cancel</option>" +
+                                        "</select>";
                                 }
                                 $("#status_po_<?= $po->po_id; ?>").html(html);
                                 $('#select_status_<?= $po->po_id; ?>').change(function () {
@@ -1331,7 +1318,8 @@ class BarangWebHelper extends WebService {
         <?
     }
 
-    function lihat_pesanan_load() {
+    function lihat_pesanan_load()
+    {
 
         $myOrgID = AccessRight::getMyOrgID();
         $objPO = new POModel();
@@ -1369,7 +1357,7 @@ class BarangWebHelper extends WebService {
                 <td id='open_<?= $po->po_id ?>' onclick="bukaPO('<?= $po->po_id ?>', '<?= $po->po_status; ?>');">
                     <?= $po->po_id ?>
                     <?
-//                        pr($arrPOItems);
+                    //                        pr($arrPOItems);
                     ?>
                     <span class="caret" style="cursor: pointer;"></span>
                 </td>
@@ -1385,28 +1373,28 @@ class BarangWebHelper extends WebService {
                     }
                     ?></td>
 
-                <td class='<?= $po->po_id; ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                <td class='<?= $po->po_id ?> palingdalam'  style="visibility:hidden;display: none"></td>
+                <td class='<?= $po->po_id; ?> palingdalam' style="visibility:hidden;display: none"></td>
                 <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
-                <td class='<?= $po->po_id ?> palingdalam'  style="visibility:hidden;display: none"></td>
+                <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
                 <td><?= "IDR " . idr($total_satu_po); ?></td>
 
             </tr>
             <?
             foreach ($arrPOItems as $items) {
                 ?>
-                <tr class='<?= $po->po_id ?>'   style="visibility:hidden;display: none">
+                <tr class='<?= $po->po_id ?>' style="visibility:hidden;display: none">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td id='status_po_<?= $po->po_id; ?>'>
                     </td>
-                    <td class='<?= $po->po_id ?>' ><?= $items->qty ?></td>
-                    <td class='<?= $po->po_id ?> ' ><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
+                    <td class='<?= $po->po_id ?>'><?= $items->qty ?></td>
+                    <td class='<?= $po->po_id ?> '><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
 
-                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga); ?></td>
-                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga * $items->qty) ?></td>
-                    <td class='<?= $po->po_id ?>' ></td>
+                    <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga); ?></td>
+                    <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga * $items->qty) ?></td>
+                    <td class='<?= $po->po_id ?>'></td>
                 </tr>
                 <?
             }
@@ -1418,18 +1406,18 @@ class BarangWebHelper extends WebService {
                     var current = $("#status_po_<?= $po->po_id; ?>").html();
                     if (current == 'New') {
                         var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                "<option value='0'>New</option>" +
-                                "<option value='1'>Paid</option>" +
-                                "<option value='99'>Cancel</option>" +
-                                "</select>";
+                            "<option value='0'>New</option>" +
+                            "<option value='1'>Paid</option>" +
+                            "<option value='99'>Cancel</option>" +
+                            "</select>";
                     } else if (current == 'Paid') {
                         var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                "<option value='1' selected>Paid</option>" +
-                                "</select>";
+                            "<option value='1' selected>Paid</option>" +
+                            "</select>";
                     } else if (current == 'Cancel') {
                         var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                "<option value='99' selected>Cancel</option>" +
-                                "</select>";
+                            "<option value='99' selected>Cancel</option>" +
+                            "</select>";
                     }
 
                     $("#status_po_<?= $po->po_id; ?>").html(html);
@@ -1515,7 +1503,8 @@ class BarangWebHelper extends WebService {
         }
     }
 
-    public static function lihat_pesanan_TC() {
+    public static function lihat_pesanan_TC()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $objPO = new POModel();
         $objPOItems = new POItemModel();
@@ -1537,86 +1526,88 @@ class BarangWebHelper extends WebService {
 
             <table class="table table-bordered table-striped">
                 <thead>
-                    <tr>
-                        <th><b>No. PO</b></th>
-                        <th><b>Tanggal</b></th>
-                        <th><b>Pengirim PO</b></th>
-                        <th><b>Penerima PO</b></th>
-                        <th><b>Status</b></th>
-                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Barang</b></th>
-                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Qty</b></th>
-                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Harga</b></th>
-                        <th><b>Total Harga</b></th>
+                <tr>
+                    <th><b>No. PO</b></th>
+                    <th><b>Tanggal</b></th>
+                    <th><b>Pengirim PO</b></th>
+                    <th><b>Penerima PO</b></th>
+                    <th><b>Status</b></th>
+                    <th class="palingdalam" style="visibility:hidden;display: none"><b>Barang</b></th>
+                    <th class="palingdalam" style="visibility:hidden;display: none"><b>Qty</b></th>
+                    <th class="palingdalam" style="visibility:hidden;display: none"><b>Harga</b></th>
+                    <th><b>Total Harga</b></th>
 
-                    <tr>
+                <tr>
                 </thead>
                 <tbody id="body_barang_tc_<?= $t; ?>">
-                    <?
-                    foreach ($arrPO as $po) {
-                        $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
+                <?
+                foreach ($arrPO as $po) {
+                    $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
 //                    pr($arrPOItems);
-                        if ($po->po_status == KEY::$STATUS_NEW)
-                            $warna = KEY::$WARNA_BIRU;
-                        elseif ($po->po_status == KEY::$STATUS_PAID)
-                            $warna = KEY::$WARNA_HIJAU;
-                        elseif ($po->po_status == KEY::$STATUS_CANCEL)
-                            $warna = KEY::$WARNA_MERAH;
-                        $acc = new Account();
-                        $arrname = $acc->getWhere("admin_org_id = '$po->po_pengirim'");
-                        //hitung total hrg manually roy 14 sep 2016
-                        $total_satu_po = 0;
+                    if ($po->po_status == KEY::$STATUS_NEW)
+                        $warna = KEY::$WARNA_BIRU;
+                    elseif ($po->po_status == KEY::$STATUS_PAID)
+                        $warna = KEY::$WARNA_HIJAU;
+                    elseif ($po->po_status == KEY::$STATUS_CANCEL)
+                        $warna = KEY::$WARNA_MERAH;
+                    $acc = new Account();
+                    $arrname = $acc->getWhere("admin_org_id = '$po->po_pengirim'");
+                    //hitung total hrg manually roy 14 sep 2016
+                    $total_satu_po = 0;
 
-                        foreach ($arrPOItems as $items) {
-                            $total_satu_po += $items->harga * $items->qty;
-                        }
-                        ?>
-                        <tr class='<?= $po->po_id ?> atas_<?= $t; ?><?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
+                    foreach ($arrPOItems as $items) {
+                        $total_satu_po += $items->harga * $items->qty;
+                    }
+                    ?>
+                    <tr class='<?= $po->po_id ?> atas_<?= $t; ?><?= $po->po_id ?>'
+                        style="background-color: <?= $warna; ?>;">
 
-                            <td id='open_<?= $t; ?><?= $po->po_id ?>' onclick="bukaPO2('<?= $po->po_id ?>', '<?= $po->po_status; ?>');">
-                                <?= $po->po_id ?>
+                        <td id='open_<?= $t; ?><?= $po->po_id ?>'
+                            onclick="bukaPO2('<?= $po->po_id ?>', '<?= $po->po_status; ?>');">
+                            <?= $po->po_id ?>
 
-                                <span class="caret" style="cursor: pointer;"></span>
-                            </td>
-                            <td><?= $po->po_tanggal ?></td>
-                            <td><?= $acc->getMyName(); ?></td>
-                            <td><?= Generic::getTCNamebyID($po->po_penerima); ?></td>
+                            <span class="caret" style="cursor: pointer;"></span>
+                        </td>
+                        <td><?= $po->po_tanggal ?></td>
+                        <td><?= $acc->getMyName(); ?></td>
+                        <td><?= Generic::getTCNamebyID($po->po_penerima); ?></td>
 
 
-                            <td id='status_po_<?= $po->po_id; ?>'><?
-                                if ($po->po_status == 0) {
-                                    echo "New";
-                                } elseif ($po->po_status == 1) {
-                                    echo "Paid";
-                                } elseif ($po->po_status == 99) {
-                                    echo "Cancel";
-                                }
-                                ?></td>
+                        <td id='status_po_<?= $po->po_id; ?>'><?
+                            if ($po->po_status == 0) {
+                                echo "New";
+                            } elseif ($po->po_status == 1) {
+                                echo "Paid";
+                            } elseif ($po->po_status == 99) {
+                                echo "Cancel";
+                            }
+                            ?></td>
 
-                            <td class='<?= $po->po_id; ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                            <td class='<?= $po->po_id ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
-                            <td><?= "IDR " . idr($total_satu_po); ?></td>
+                        <td class='<?= $po->po_id; ?> palingdalam' style="visibility:hidden;display: none"></td>
+                        <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                        <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                        <td><?= "IDR " . idr($total_satu_po); ?></td>
 
-                        </tr>
-                        <?
-                        foreach ($arrPOItems as $items) {
-                            ?>
-                            <tr class='<?= $po->po_id ?>'   style="visibility:hidden;display: none">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class='<?= $po->po_id ?>' ><?= $items->qty ?></td>
-                                <td class='<?= $po->po_id ?> ' ><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
+                    </tr>
+                <?
+                foreach ($arrPOItems as $items) {
+                ?>
+                    <tr class='<?= $po->po_id ?>' style="visibility:hidden;display: none">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class='<?= $po->po_id ?>'><?= $items->qty ?></td>
+                        <td class='<?= $po->po_id ?> '><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
 
-                                <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga); ?></td>
-                                <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga * $items->qty) ?></td>
+                        <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga); ?></td>
+                        <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga * $items->qty) ?></td>
 
-                            </tr>
-                            <?
-                        }
-                        ?>
+                    </tr>
+                <?
+                }
+                ?>
                     <script>
                         var openPO_id = 0;
                         var listOpenPOID = [];
@@ -1663,8 +1654,8 @@ class BarangWebHelper extends WebService {
                                 $(".palingdalam").css("visibility", "display");
                                 $(".palingdalam").css("display", "none");
                             }
-                            
-                             
+
+
                         }
                     </script>
                     <?
@@ -1674,14 +1665,14 @@ class BarangWebHelper extends WebService {
                 ?>
                 </tbody>
             </table>
-<!--            <div class="text-center">
+            <!--            <div class="text-center">
                 <button class="btn btn-default" id="loadmore_barang_tc_<?= $t; ?>">Load more</button>
             </div>-->
             <script>
                 var page_barang_tc = <?= $page; ?>;
                 var total_page_barang_tc = <?= $jumlahHalamanTotal; ?>;
                 $('#loadmore_barang_tc_<?= $t; ?>').click(function () {
-                   
+
                     if (page_barang_tc < total_page_barang_tc) {
                         page_barang_tc++;
                         $.get("<?= _SPPATH; ?>BarangWebHelper/read_barang_tc_load?page=" + page_barang_tc, function (data) {
@@ -1699,7 +1690,8 @@ class BarangWebHelper extends WebService {
         <?
     }
 
-    function read_barang_tc_load() {
+    function read_barang_tc_load()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $objPO = new POModel();
         $objPOItems = new POItemModel();
@@ -1713,7 +1705,7 @@ class BarangWebHelper extends WebService {
         $jumlahTotal = $objPO->getJumlah("po_pengirim='$myOrgID'");
         $jumlahHalamanTotal = ceil($jumlahTotal / $limit);
         $t = time();
-        
+
         foreach ($arrPO as $po) {
             $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
 //                    pr($arrPOItems);
@@ -1734,7 +1726,8 @@ class BarangWebHelper extends WebService {
             ?>
             <tr class='<?= $po->po_id ?> atas_<?= $t; ?><?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
 
-                <td id='open_<?= $t; ?><?= $po->po_id ?>' onclick="bukaPO2('<?= $po->po_id ?>', '<?= $po->po_status; ?>');">
+                <td id='open_<?= $t; ?><?= $po->po_id ?>'
+                    onclick="bukaPO2('<?= $po->po_id ?>', '<?= $po->po_status; ?>');">
                     <?= $po->po_id ?>
 
                     <span class="caret" style="cursor: pointer;"></span>
@@ -1754,8 +1747,8 @@ class BarangWebHelper extends WebService {
                     }
                     ?></td>
 
-                <td class='<?= $po->po_id; ?> palingdalam_<?= $t; ?>'  style="visibility:hidden;display: none"></td>
-                <td class='<?= $po->po_id ?> palingdalam_<?= $t; ?>'  style="visibility:hidden;display: none"></td>
+                <td class='<?= $po->po_id; ?> palingdalam_<?= $t; ?>' style="visibility:hidden;display: none"></td>
+                <td class='<?= $po->po_id ?> palingdalam_<?= $t; ?>' style="visibility:hidden;display: none"></td>
                 <td class='<?= $po->po_id ?> palingdalam_<?= $t; ?>' style="visibility:hidden;display: none"></td>
                 <td><?= "IDR " . idr($total_satu_po); ?></td>
 
@@ -1763,17 +1756,17 @@ class BarangWebHelper extends WebService {
             <?
             foreach ($arrPOItems as $items) {
                 ?>
-                <tr class='<?= $po->po_id ?>'   style="visibility:hidden;display: none">
+                <tr class='<?= $po->po_id ?>' style="visibility:hidden;display: none">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class='<?= $po->po_id ?>' ><?= $items->qty ?></td>
-                    <td class='<?= $po->po_id ?> ' ><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
+                    <td class='<?= $po->po_id ?>'><?= $items->qty ?></td>
+                    <td class='<?= $po->po_id ?> '><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
 
-                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga); ?></td>
-                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga * $items->qty) ?></td>
+                    <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga); ?></td>
+                    <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga * $items->qty) ?></td>
 
                 </tr>
                 <?
@@ -1828,7 +1821,8 @@ class BarangWebHelper extends WebService {
         }
     }
 
-    function read_buku_load() {
+    function read_buku_load()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $kpo_id = Generic::getMyParentID($myOrgID);
         $objPO = new POModel();
@@ -1859,14 +1853,14 @@ class BarangWebHelper extends WebService {
                 <td><?= $val->po_tanggal; ?></td>
                 <td><?= $acc->getMyName(); ?></td>
                 <td><?= $val->po_penerima; ?></td>
-                <td id = '<?= $val->po_id; ?>'><?
-            if ($val->po_status == KEY::$STATUS_NEW)
-                echo KEY::$NEW;
-            elseif ($val->po_status == KEY::$STATUS_PAID)
-                echo KEY::$Paid;
-            elseif ($val->po_status == KEY::$STATUS_CANCEL)
-                echo KEY::$Cancel;
-            ?></td>
+                <td id='<?= $val->po_id; ?>'><?
+                    if ($val->po_status == KEY::$STATUS_NEW)
+                        echo KEY::$NEW;
+                    elseif ($val->po_status == KEY::$STATUS_PAID)
+                        echo KEY::$Paid;
+                    elseif ($val->po_status == KEY::$STATUS_CANCEL)
+                        echo KEY::$Cancel;
+                    ?></td>
                 <td><?= Generic::getNamaBarangByIDKPOID($val->id_barang, $kpo_id); ?></td>
                 <td><?= $val->qty; ?></td>
                 <td><?= idr($val->harga); ?></td>
@@ -1876,7 +1870,8 @@ class BarangWebHelper extends WebService {
         }
     }
 
-    public static function lihat_pesanan() {
+    public static function lihat_pesanan()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $objPO = new POModel();
         $objPOItems = new POItemModel();
@@ -1893,7 +1888,7 @@ class BarangWebHelper extends WebService {
         $jumlahHalamanTotal = ceil($jumlahTotal / $limit);
         $t = time();
         ?>
-        <section class="content-header" >
+        <section class="content-header">
             <h1>
                 Pemesanan Barang dan Buku TC ke <?= Generic::getTCNamebyID($myOrgID); ?>
             </h1>
@@ -1913,103 +1908,104 @@ class BarangWebHelper extends WebService {
                     border-left: 4px solid transparent;
                 }
             </style>
-            <div class="table-responsive" >
+            <div class="table-responsive">
                 <table class="table table-bordered table-striped" style="background-color: #FFFFFF;">
-                    <thead class ='heading'>
-                        <tr>
-                            <th><b>No PO</b></th>
-                            <th><b>Tanggal</b></th>
-                            <th><b>TC/ Pemesan</b></th>
-                            <th><b>Status</b></th>
-                            <th class="palingdalam" style="visibility:hidden;display: none"><b>Qty</b></th>
-                            <th class="palingdalam" style="visibility:hidden;display: none"><b>Barang</b></th>
-                            <th class="palingdalam"style="visibility:hidden;display: none" ><b>Harga</b></th>
-                            <th class="palingdalam" style="visibility:hidden;display: none"><b>Total Harga</b></th>
-                            <th><b>Grand Total</b></th>
+                    <thead class='heading'>
+                    <tr>
+                        <th><b>No PO</b></th>
+                        <th><b>Tanggal</b></th>
+                        <th><b>TC/ Pemesan</b></th>
+                        <th><b>Status</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Qty</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Barang</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Harga</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>Total Harga</b></th>
+                        <th><b>Grand Total</b></th>
 
-                        <tr>
+                    <tr>
                     </thead>
                     <tbody id='body'>
-                        <?
-                        foreach ($arrPO as $po) {
+                    <?
+                    foreach ($arrPO as $po) {
 //                            pr($po->po_status);
-                            $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
-                            if ($po->po_status == KEY::$STATUS_NEW)
-                                $warna = KEY::$WARNA_BIRU;
-                            elseif ($po->po_status == KEY::$STATUS_PAID)
-                                $warna = KEY::$WARNA_HIJAU;
-                            elseif ($po->po_status == KEY::$STATUS_CANCEL)
-                                $warna = KEY::$WARNA_MERAH;
-                            $arrname = $acc->getWhere("admin_org_id = '$po->po_pengirim'");
-                            //hitung total hrg manually roy 14 sep 2016
-                            $total_satu_po = 0;
-                            foreach ($arrPOItems as $items) {
-                                $total_satu_po += $items->harga * $items->qty;
-                            }
-                            ?>
-                            <tr class='<?= $po->po_id ?> atas_<?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
+                        $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
+                        if ($po->po_status == KEY::$STATUS_NEW)
+                            $warna = KEY::$WARNA_BIRU;
+                        elseif ($po->po_status == KEY::$STATUS_PAID)
+                            $warna = KEY::$WARNA_HIJAU;
+                        elseif ($po->po_status == KEY::$STATUS_CANCEL)
+                            $warna = KEY::$WARNA_MERAH;
+                        $arrname = $acc->getWhere("admin_org_id = '$po->po_pengirim'");
+                        //hitung total hrg manually roy 14 sep 2016
+                        $total_satu_po = 0;
+                        foreach ($arrPOItems as $items) {
+                            $total_satu_po += $items->harga * $items->qty;
+                        }
+                        ?>
+                        <tr class='<?= $po->po_id ?> atas_<?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
 
-                                <td id='open_<?= $po->po_id ?>' onclick="bukaPO(<?= $po->po_id ?>, '<?= $po->po_status; ?>');">
-                                    <?= $po->po_id ?>
+                            <td id='open_<?= $po->po_id ?>'
+                                onclick="bukaPO(<?= $po->po_id ?>, '<?= $po->po_status; ?>');">
+                                <?= $po->po_id ?>
 
-                                    <span class="caret" style="cursor: pointer;"></span>
-                                </td>
-                                <td><?= $po->po_tanggal ?></td>
-                                <td><?= Generic::getTCNamebyID($po->po_pengirim) . "/ ".$arrname[0]->admin_nama_depan; ?></td>
-                                <td id='status_po_<?= $po->po_id; ?>'><?
-                                    if ($po->po_status == 0) {
-                                        echo "New";
-                                    } elseif ($po->po_status == 1) {
-                                        echo "Paid";
-                                    } elseif ($po->po_status == 99) {
-                                        echo "Cancel";
-                                    }
-                                    ?></td>
+                                <span class="caret" style="cursor: pointer;"></span>
+                            </td>
+                            <td><?= $po->po_tanggal ?></td>
+                            <td><?= Generic::getTCNamebyID($po->po_pengirim) . "/ " . $arrname[0]->admin_nama_depan; ?></td>
+                            <td id='status_po_<?= $po->po_id; ?>'><?
+                                if ($po->po_status == 0) {
+                                    echo "New";
+                                } elseif ($po->po_status == 1) {
+                                    echo "Paid";
+                                } elseif ($po->po_status == 99) {
+                                    echo "Cancel";
+                                }
+                                ?></td>
 
-                                <td class='<?= $po->po_id; ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                                <td class='<?= $po->po_id ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                                <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
-                                <td class='<?= $po->po_id ?> palingdalam'  style="visibility:hidden;display: none"></td>
-                                <td><?= "IDR " . idr($total_satu_po); ?></td>
+                            <td class='<?= $po->po_id; ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+                            <td><?= "IDR " . idr($total_satu_po); ?></td>
 
-                            </tr>
-                            <?
-                            foreach ($arrPOItems as $items) {
-                                ?>
-                                <tr class='<?= $po->po_id ?>'   style="visibility:hidden;display: none">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td id='status_po_<?= $po->po_id; ?>'>
-                                    </td>
-                                    <td class='<?= $po->po_id ?>' ><?= $items->qty ?></td>
-                                    <td class='<?= $po->po_id ?> ' ><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
+                        </tr>
+                    <?
+                    foreach ($arrPOItems as $items) {
+                    ?>
+                        <tr class='<?= $po->po_id ?>' style="visibility:hidden;display: none">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id='status_po_<?= $po->po_id; ?>'>
+                            </td>
+                            <td class='<?= $po->po_id ?>'><?= $items->qty ?></td>
+                            <td class='<?= $po->po_id ?> '><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
 
-                                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga); ?></td>
-                                    <td class='<?= $po->po_id ?>' ><?= "IDR " . idr($items->harga * $items->qty) ?></td>
-                                    <td class='<?= $po->po_id ?>' ></td>
-                                </tr>
-                                <?
-                            }
-                            ?>
+                            <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga); ?></td>
+                            <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga * $items->qty) ?></td>
+                            <td class='<?= $po->po_id ?>'></td>
+                        </tr>
+                    <?
+                    }
+                    ?>
 
                         <script>
                             $("#status_po_<?= $po->po_id; ?>").dblclick(function () {
                                 var current = $("#status_po_<?= $po->po_id; ?>").html();
                                 if (current == 'New') {
                                     var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                            "<option value='0'>New</option>" +
-                                            "<option value='1'>Paid</option>" +
-                                            "<option value='99'>Cancel</option>" +
-                                            "</select>";
+                                        "<option value='0'>New</option>" +
+                                        "<option value='1'>Paid</option>" +
+                                        "<option value='99'>Cancel</option>" +
+                                        "</select>";
                                 } else if (current == 'Paid') {
                                     var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                            "<option value='1' selected>Paid</option>" +
-                                            "</select>";
+                                        "<option value='1' selected>Paid</option>" +
+                                        "</select>";
                                 } else if (current == 'Cancel') {
                                     var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                            "<option value='99' selected>Cancel</option>" +
-                                            "</select>";
+                                        "<option value='99' selected>Cancel</option>" +
+                                        "</select>";
                                 }
                                 $("#status_po_<?= $po->po_id; ?>").html(html);
                                 $('#select_status_<?= $po->po_id; ?>').change(function () {
@@ -2117,7 +2113,8 @@ class BarangWebHelper extends WebService {
         <?
     }
 
-    public static function lihat_pesanan_TC_tmp() {
+    public static function lihat_pesanan_TC_tmp()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $objPO = new POModel();
         $objPOItem = new POItemModel();
@@ -2136,55 +2133,55 @@ class BarangWebHelper extends WebService {
         ?>
         <table class="table table-bordered table-striped">
             <thead>
-                <tr>
-                    <th><b>No.</b></th>
-                    <th><b>Tanggal</b></th>
-                    <th><b>Pengirim PO</b></th>
-                    <th><b>Penerima PO</b></th>
-                    <th><b>Status</b></th>
-                    <th><b>Barang</b></th>
-                    <th><b>Qty</b></th>
-                    <th><b>Harga</b></th>
-                    <th><b>Total Harga</b></th>
+            <tr>
+                <th><b>No.</b></th>
+                <th><b>Tanggal</b></th>
+                <th><b>Pengirim PO</b></th>
+                <th><b>Penerima PO</b></th>
+                <th><b>Status</b></th>
+                <th><b>Barang</b></th>
+                <th><b>Qty</b></th>
+                <th><b>Harga</b></th>
+                <th><b>Total Harga</b></th>
 
-                <tr>
+            <tr>
             </thead>
             <tbody id="body_barang_tc_<?= $t; ?>">
 
 
-                <?
-                $acc = new Account();
+            <?
+            $acc = new Account();
 
-                foreach ($arrPO as $key => $val) {
-                    if ($val->po_status == KEY::$STATUS_NEW)
-                        $warna = KEY::$WARNA_BIRU;
-                    elseif ($val->po_status == KEY::$STATUS_PAID)
-                        $warna = KEY::$WARNA_HIJAU;
-                    elseif ($val->po_status == KEY::$STATUS_CANCEL)
-                        $warna = KEY::$WARNA_MERAH;
-                    ?>
-                    <tr style="background-color: <?= $warna; ?>;">
-                        <td id = '<?= $val->po_id; ?>'><?= $val->po_id; ?></td>
-                        <td><?= $val->po_tanggal; ?></td>
-                        <td><?= $acc->getMyName(); ?></td>
-                        <td><?= $val->po_penerima; ?></td>
-                        <td id = '<?= $val->po_id; ?>'><?
-            if ($val->po_status == KEY::$STATUS_NEW)
-                echo KEY::$NEW;
-            elseif ($val->po_status == KEY::$STATUS_PAID)
-                echo KEY::$Paid;
-            elseif ($val->po_status == KEY::$STATUS_CANCEL)
-                echo KEY::$Cancel;
-                    ?></td>
-                        <td><?= Generic::getNamaBarangByIDBarang($val->id_barang);
-                ?></td>
-                        <td><?= $val->qty; ?></td>
-                        <td><?= idr($val->harga); ?></td>
-                        <td><?= idr($val->total_harga); ?></td>
-                    </tr>
-                    <?
-                }
+            foreach ($arrPO as $key => $val) {
+                if ($val->po_status == KEY::$STATUS_NEW)
+                    $warna = KEY::$WARNA_BIRU;
+                elseif ($val->po_status == KEY::$STATUS_PAID)
+                    $warna = KEY::$WARNA_HIJAU;
+                elseif ($val->po_status == KEY::$STATUS_CANCEL)
+                    $warna = KEY::$WARNA_MERAH;
                 ?>
+                <tr style="background-color: <?= $warna; ?>;">
+                    <td id='<?= $val->po_id; ?>'><?= $val->po_id; ?></td>
+                    <td><?= $val->po_tanggal; ?></td>
+                    <td><?= $acc->getMyName(); ?></td>
+                    <td><?= $val->po_penerima; ?></td>
+                    <td id='<?= $val->po_id; ?>'><?
+                        if ($val->po_status == KEY::$STATUS_NEW)
+                            echo KEY::$NEW;
+                        elseif ($val->po_status == KEY::$STATUS_PAID)
+                            echo KEY::$Paid;
+                        elseif ($val->po_status == KEY::$STATUS_CANCEL)
+                            echo KEY::$Cancel;
+                        ?></td>
+                    <td><?= Generic::getNamaBarangByIDBarang($val->id_barang);
+                        ?></td>
+                    <td><?= $val->qty; ?></td>
+                    <td><?= idr($val->harga); ?></td>
+                    <td><?= idr($val->total_harga); ?></td>
+                </tr>
+                <?
+            }
+            ?>
             </tbody>
         </table>
         <div class="text-center">
@@ -2211,7 +2208,8 @@ class BarangWebHelper extends WebService {
         <?
     }
 
-    function read_barang_tc_load_tmp() {
+    function read_barang_tc_load_tmp()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $objPO = new POModel();
         $objPOItem = new POItemModel();
@@ -2239,20 +2237,20 @@ class BarangWebHelper extends WebService {
                 $warna = KEY::$WARNA_MERAH;
             ?>
             <tr style="background-color: <?= $warna; ?>;">
-                <td id = '<?= $val->po_id; ?>'><?= $val->po_id; ?></td>
+                <td id='<?= $val->po_id; ?>'><?= $val->po_id; ?></td>
                 <td><?= $val->po_tanggal; ?></td>
                 <td><?= $acc->getMyName(); ?></td>
                 <td><?= $val->po_penerima; ?></td>
-                <td id = '<?= $val->po_id; ?>'><?
-            if ($val->po_status == KEY::$STATUS_NEW)
-                echo KEY::$NEW;
-            elseif ($val->po_status == KEY::$STATUS_PAID)
-                echo KEY::$Paid;
-            elseif ($val->po_status == KEY::$STATUS_CANCEL)
-                echo KEY::$Cancel;
-            ?></td>
+                <td id='<?= $val->po_id; ?>'><?
+                    if ($val->po_status == KEY::$STATUS_NEW)
+                        echo KEY::$NEW;
+                    elseif ($val->po_status == KEY::$STATUS_PAID)
+                        echo KEY::$Paid;
+                    elseif ($val->po_status == KEY::$STATUS_CANCEL)
+                        echo KEY::$Cancel;
+                    ?></td>
                 <td><?= Generic::getNamaBarangByIDBarang($val->id_barang);
-            ?></td>
+                    ?></td>
                 <td><?= $val->qty; ?></td>
                 <td><?= idr($val->harga); ?></td>
                 <td><?= idr($val->total_harga); ?></td>

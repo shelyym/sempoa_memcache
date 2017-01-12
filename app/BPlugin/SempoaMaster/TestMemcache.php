@@ -19,6 +19,8 @@ class TestMemcache extends WebService
 
     function getMemcacheKeys()
     {
+
+
         global $domain;
         global $folder;
         $memcache = new Memcache;
@@ -34,11 +36,14 @@ class TestMemcache extends WebService
                 foreach ($cdump AS $keys => $arrVal) {
                     if (!is_array($arrVal)) continue;
                     foreach ($arrVal AS $k => $v) {
-                        echo $k .'<br>';
+//                        echo $k .'<br>';
+                        pr($memcache->get($k));
                     }
                 }
             }
         }
+
+        die();
         pr("Memcache");
         pr($memcache->get("localhost:8888/sempoa_memcached//MatrixNilaiModel_c__2"));
         $id =

@@ -23,7 +23,7 @@ class Generic {
     }
 
     public static function getKeteranganTraining() {
-        $arrSTatus = array("<b>Lulus</b>", "<b>Tidak Lulus</b>", "<b>Sakit</b>", "<b>Absen</b>");
+        $arrSTatus = array("<i>Select</i>","<b>Lulus</b>", "<b>Tidak Lulus</b>", "<b>Sakit</b>", "<b>Absen</b>");
         return $arrSTatus;
     }
 
