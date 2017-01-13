@@ -249,7 +249,7 @@ class SempoaGuruModel extends SempoaModel
             $reg = new RegisterGuru();
             $reg->isInvoiceCreated($id);
             if ($reg->transaksi_id === null) {
-                $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, $guru->guru_ibo_id);
+                $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, $guru->guru_tc_id);
                 $reg->createInvoice($id, $biaya, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id);
                 if (AccessRight::getMyOrgType() == KEY::$IBO) {
                     SempoaInboxModel::sendMsg($guru->guru_tc_id, AccessRight::getMyOrgID(), "Ada pendaftaran Guru Baru di TC Anda", "Ada pendaftaran Guru di TC Anda bernama: " . $guru->nama_guru);

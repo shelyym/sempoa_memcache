@@ -743,26 +743,26 @@ class SettingWeb2Helper extends WebService
             </style>
             <script>
                 $("#biaya_<?= $mytype; ?>_<?= AccessRight::getMyOrgID(); ?>").submit(function (event) {
-                        //                alert( "Handler for .submit() called." );
-                        event.preventDefault();
+                    //                alert( "Handler for .submit() called." );
+                    event.preventDefault();
 
-                        var post = $("#biaya_<?= $mytype; ?>_<?= AccessRight::getMyOrgID(); ?>").serialize();
-                        $('.err_text').hide();
-                        $('.input_bordered').removeClass("input_bordered");
-                        $.post("<?= _SPPATH; ?>SettingWeb2Helper/updateAllBiaya", post, function (data) {
-                            console.log(data);
-                            if (data.status_code) {
-                                alert("Data berhasil tersimpan");
-                            } else {
-                                var err = data.err;
+                    var post = $("#biaya_<?= $mytype; ?>_<?= AccessRight::getMyOrgID(); ?>").serialize();
+                    $('.err_text').hide();
+                    $('.input_bordered').removeClass("input_bordered");
+                    $.post("<?= _SPPATH; ?>SettingWeb2Helper/updateAllBiaya", post, function (data) {
+                        console.log(data);
+                        if (data.status_code) {
+                            alert("Data berhasil tersimpan");
+                        } else {
+                            var err = data.err;
 
-                                for (x in err) {
-                                    $('#' + x).addClass("input_bordered");
-                                    var text = err[x];
-                                    $('#' + x + "_text").html(text).show();
-                                }
+                            for (x in err) {
+                                $('#' + x).addClass("input_bordered");
+                                var text = err[x];
+                                $('#' + x + "_text").html(text).show();
                             }
-                        }, 'json');
+                        }
+                    }, 'json');
 
 //                    else{
 //                        openLw('read_biaya_pendaftaran_minimal_semua_ibo', '<?//=_SPPATH;?>//SettingWeb2Helper/read_biaya_pendaftaran_minimal_semua_ibo', 'fade');
