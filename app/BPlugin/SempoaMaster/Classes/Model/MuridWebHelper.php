@@ -2513,27 +2513,54 @@ class MuridWebHelper extends WebService
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
 //        echo $_GET['bln']." ".$_GET['thn'];
-        $begin_date = $thn . "-" . $bln . "-01";
-//        $begin_date = $thn . "-" . $bln . "-02";
+        $begin_date = $thn . "-" . $bln . "-02";
         $end_date = $thn . "-" . $bln . "-" . cal_days_in_month(CAL_GREGORIAN, $bln, $thn);
         $t = time();
+        $arrBulan = Generic::getAllMonths();
         ?>
         <section class="content-header">
             <h1>
 
                 <div class="pull-right" style="font-size: 13px;">
+                    Bulan :<select id="guru_insentif_bulan_<?= $t; ?>">
+                        <?
+                        foreach ($arrBulan as $bln2) {
+                            $sel = "";
+                            if ($bln2 == $bln) {
+                                $sel = "selected";
+                            }
+                            ?>
+                            <option value="<?= $bln2; ?>" <?= $sel; ?>><?= $bln2; ?></option>
+                            <?
+                        }
+                        ?>
+                    </select>
 
-                    Bulan : <input id="guru_insentif_bulan_<?= $t; ?>" type="text" value="<?= $bln; ?>">
-                    Tahun :<input id="guru_insentif_tahun_<?= $t; ?>" type="text" value="<?= $thn; ?>">
-                    <button id="guru_insentif_button_<?= $t; ?>">Submit</button>
+                    Tahun :<select id="guru_insentif_tahun_<?= $t; ?>">
+                        <?
+                        for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
+                            $sel = "";
+                            if ($x == $thn) {
+                                $sel = "selected";
+                            }
+                            ?>
+                            <option value="<?= $x; ?>" <?= $sel; ?>><?= $x; ?></option>
+
+                            <?
+                        }
+                        ?>
+                        }
+                        ?>
+                    </select>
+                    <button id="guru_insentif_button_<?= $t; ?>">submit</button>
                     <button class="btn btn-default" onclick="back_to_profile_guru('<?= $id; ?>');">back to profile
                     </button>
                 </div>
                 Kelas <?= $guru->nama_guru; ?>
                 <script>
-                    $('#guru_insentif_button_<?=$t;?>').click(function () {
-                        var bln = $('#guru_insentif_bulan_<?=$t;?>').val();
-                        var thn = $('#guru_insentif_tahun_<?=$t;?>').val();
+                    $('#guru_insentif_button_<?= $t; ?>').click(function () {
+                        var bln = $('#guru_insentif_bulan_<?= $t; ?>').val();
+                        var thn = $('#guru_insentif_tahun_<?= $t; ?>').val();
                         openLw('guru_insentif_<?= $id; ?>', '<?= _SPPATH; ?>MuridWebHelper/guru_insentif?id=<?= $id; ?>&bln=' + bln + '&thn=' + thn + "&now=" + $.now(), 'fade');
                     });
                 </script>
@@ -2558,9 +2585,8 @@ class MuridWebHelper extends WebService
                     //ambil murid dari history yang masi aktif dalam bulan x
                     foreach ($arrlevel as $lvl) {
                         $mk = new MuridKelasMatrix();
-                        $q = "SELECT COUNT(DISTINCT murid_id) AS cnt FROM {$mk->table_name} WHERE guru_id = '$id' AND level_murid = '{$lvl->id_level}' AND ( active_date < '$begin_date' AND (nonactive_date >= '$end_date' OR nonactive_date = '1970-01-01 07:00:00'))";
+                        $q = "SELECT COUNT(DISTINCT murid_id) AS cnt FROM {$mk->table_name} WHERE guru_id = '$id' AND level_murid = '{$lvl->id_level}' AND ( active_date <= '$begin_date' AND (nonactive_date >= '$end_date' OR nonactive_date = '1970-01-01 07:00:00'))";
                         $cnt = $db->query($q, 1);
-//                        pr($q);
 //                        $jml = $mk->getJumlah("guru_id = '$id' AND level_murid = '{$lvl->id_level}' AND ( active_date <= '$begin_date' AND (nonactive_date >= '$end_date' OR nonactive_date = '1970-01-01 07:00:00'))");
                         if ($cnt->cnt < 1)
                             $cnt->cnt = 0;
