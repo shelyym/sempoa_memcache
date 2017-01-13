@@ -1032,7 +1032,8 @@ class Generic {
         if ($type == "Utama") {
             $jenisbm = new JenisBiayaModel();
             $jenisbm->getByID($orgID . "_" . $jenis_biaya); //bahaya krn di hardcode .... //test coba2 dulu myorgid
-            TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jenisbm->harga * $jmlh_item, $debet, $orgID);
+//            TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jenisbm->harga * $jmlh_item, $debet, $orgID);
+            TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jenisbm->harga * $jmlh_item, $debet, $orgID_Biaya);
         } elseif ($type == "Training") {
 
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jmlh_item, $debet, $orgID);

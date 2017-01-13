@@ -1563,8 +1563,7 @@ class GuruWebHelper extends WebService
             $guru->guru_first_register = 1;
             $guru->status = KEY::$STATUSGURUNONQUALIFIED;
             $guru->save(1);
-            Generic::createLaporanDebet(AccessRight::getMyOrgID(), AccessRight::getMyOrgID(), KEY::$DEBET_REGISTRASI_GURU_TC, KEY::$PENDAFTARAN_GURU, "Registrasi: Guru: " . Generic::getGuruNamebyID($guru_id), 1, 0, "Utama");
-
+            Generic::createLaporanDebet($guru->guru_tc_id, AccessRight::getMyOrgID(), KEY::$DEBET_REGISTRASI_GURU_TC, KEY::$PENDAFTARAN_GURU, "Registrasi: Guru: " . Generic::getGuruNamebyID($guru_id), 1, 0, "Utama");
             Generic::createLaporanKredit($objRegisterGuru->transaksi_tc_id, AccessRight::getMyOrgID(), KEY::$KREDIT_REGISTRASI_GURU_TC, KEY::$BIAYA_PENDAFTARAN_GURU, "Registrasi: Guru: " . Generic::getGuruNamebyID($guru_id), 1, 0, "Utama");
 
             $json['status_code'] = 1;

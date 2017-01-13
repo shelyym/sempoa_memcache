@@ -306,39 +306,39 @@ public function read_guru_ibo_hlp(){
             <div class="table-responsive" >
                 <table class="table table-bordered table-striped" style="background-color: #FFFFFF;">
                     <thead class ='heading'>
-                        <tr>
-                            <th>Transaksi ID</th>
-                            <th>TC</th>
-                            <th>Guru</th>
-                            <th>Status</th>
-                            <th>Harga</th>
-                            <th>Tanggal</th>
-                        </tr>
+                    <tr>
+                        <th>Transaksi ID</th>
+                        <th>TC</th>
+                        <th>Guru</th>
+                        <th>Status</th>
+                        <th>Harga</th>
+                        <th>Tanggal</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <?
-                        foreach ($arrInv as $key => $val) {
-                            if ($val->transaksi_status == KEY::$STATUS_NEW)
-                                $warna = KEY::$WARNA_BIRU;
-                            elseif ($val->transaksi_status == KEY::$STATUS_PAID)
-                                $warna = KEY::$WARNA_HIJAU;
-                            ?>
-                            <tr style="background-color: <?= $warna; ?>">
-                                <td><?= $val->transaksi_id; ?></td>
-                                <td><?= Generic::getTCNamebyID($val->transaksi_tc_id); ?></td>
-                                <td><?= Generic::getGuruNamebyID($val->transaksi_guru_id); ?></td>
-                                <td id = "status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>"><?= $arrStatus[$val->transaksi_status]; ?></td>
-                                <td><?= idr($val->transaksi_jumlah); ?></td>
-                                <td><?= $val->transaksi_date; ?></td>
-                            </tr>
-                            <script>
+                    <?
+                    foreach ($arrInv as $key => $val) {
+                        if ($val->transaksi_status == KEY::$STATUS_NEW)
+                            $warna = KEY::$WARNA_BIRU;
+                        elseif ($val->transaksi_status == KEY::$STATUS_PAID)
+                            $warna = KEY::$WARNA_HIJAU;
+                        ?>
+                        <tr style="background-color: <?= $warna; ?>">
+                            <td><?= $val->transaksi_id; ?></td>
+                            <td><?= Generic::getTCNamebyID($val->transaksi_tc_id); ?></td>
+                            <td><?= Generic::getGuruNamebyID($val->transaksi_guru_id); ?></td>
+                            <td id = "status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>"><?= $arrStatus[$val->transaksi_status]; ?></td>
+                            <td><?= idr($val->transaksi_jumlah); ?></td>
+                            <td><?= $val->transaksi_date; ?></td>
+                        </tr>
+                        <script>
                             $('#status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>').dblclick(function () {
                                 var current = $("#status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>").html();
                                 if (current == '<b>Unpaid</b>') {
                                     var html = "<select id='select_status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>'>" +
-                                            "<option value='0'><b>Unpaid</b></option>" +
-                                            "<option value='1'>Paid</option>" +
-                                            "</select>";
+                                        "<option value='0'><b>Unpaid</b></option>" +
+                                        "<option value='1'>Paid</option>" +
+                                        "</select>";
 
                                     $("#status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>").html(html);
                                     $('#select_status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>').change(function () {
@@ -354,9 +354,9 @@ public function read_guru_ibo_hlp(){
 
                             });
                         </script>
-                            <?
-                        }
-                        ?>
+                        <?
+                    }
+                    ?>
                     </tbody>
                 </table>
             </div>
