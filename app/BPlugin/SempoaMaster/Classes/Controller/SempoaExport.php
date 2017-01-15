@@ -11,10 +11,12 @@
  *
  * @author efindiongso
  */
-class SempoaExport {
+class SempoaExport
+{
 
     //put your code here
-    public function header_rekap_kupon_tc($bln) {
+    public function header_rekap_kupon_tc($bln)
+    {
         $zeile = 2;
         $header = array();
         $xsl = new GeneralExcel();
@@ -109,7 +111,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_kupon_tc($ibo_id, $bln, $thn) {
+    public function content_rekap_kupon_tc($ibo_id, $bln, $thn)
+    {
 //        unset($content);
         $content = array();
         $i = 2;
@@ -129,8 +132,8 @@ class SempoaExport {
                 $birekap = new RekapSiswaIBOModel();
                 $birekap->getWhereOne("bi_rekap_tc_id=$keyTC AND bi_rekap_bln=$bln AND bi_rekap_tahun=$thn");
 
-                $totalTerjual +=$birekap->bi_rekap_kupon;
-                $totalAktiv +=$birekap->bi_rekap_aktiv;
+                $totalTerjual += $birekap->bi_rekap_kupon;
+                $totalAktiv += $birekap->bi_rekap_aktiv;
 
 
                 $xsl = new GeneralExcel();
@@ -261,11 +264,11 @@ class SempoaExport {
         }
 
 
-
         return $content;
     }
 
-    public function header_rekap_siswa_ibo($bln) {
+    public function header_rekap_siswa_ibo($bln)
+    {
         $zeile = 2;
         $header = array();
         $xsl = new GeneralExcel();
@@ -446,7 +449,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_siswa_ibo($ibo_id, $bln, $thn) {
+    public function content_rekap_siswa_ibo($ibo_id, $bln, $thn)
+    {
         $content = array();
         $i = 2;
         $arrMyTC = Generic::getAllMyTC($ibo_id);
@@ -845,7 +849,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_bulanan_kupon($bln) {
+    public function header_rekap_bulanan_kupon($bln)
+    {
         $zeile = 2;
         $header = array();
         $xsl = new GeneralExcel();
@@ -899,7 +904,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_bulanan_kupon($tc_id, $bln, $thn) {
+    public function content_rekap_bulanan_kupon($tc_id, $bln, $thn)
+    {
         $content = array();
         $i = 1;
         $arrBulan = Generic::getAllMonths();
@@ -968,7 +974,7 @@ class SempoaExport {
                 $arrKuponStock += $arrRekap[0]->bi_kupon_stock;
                 $arrKuponmasuk += $arrRekap[0]->bi_kupon_kupon_masuk;
                 $arrKuponTraBln += $arrRekap[0]->bi_kupon_trs_bln;
-                $arrKuponStockAkhir+= $arrRekap[0]->bi_kupon_stock_akhir;
+                $arrKuponStockAkhir += $arrRekap[0]->bi_kupon_stock_akhir;
 
                 if (is_null($arrRekap[0]->bi_kupon_stock)) {
                     $kupon_stock = 0;
@@ -1089,7 +1095,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_jumlah_siswa_kpo($bln) {
+    public function header_rekap_jumlah_siswa_kpo($bln)
+    {
         $header = array();
         $zeile = 2;
         $xsl = new GeneralExcel();
@@ -1192,7 +1199,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_jumlah_siswa_kpo($ibo_id, $bln, $thn) {
+    public function content_rekap_jumlah_siswa_kpo($ibo_id, $bln, $thn)
+    {
         $arrLevel = Generic::getAllLevel();
         $aktiv = 0;
         $cuti = 0;
@@ -1206,11 +1214,11 @@ class SempoaExport {
             if ($bln != KEY::$KEY_MONTH_ALL) {
                 $hlp = new StatusHisMuridModel();
                 $aktiv = $hlp->getJumlahMuridAktivByMonth($ibo_id, $keylvl, $bln, $thn);
-                $aktivTotal +=$aktiv;
+                $aktivTotal += $aktiv;
                 $cuti = $hlp->getJumlahMuridCutiByMonth($ibo_id, $keylvl, $bln, $thn);
-                $cutiTotal +=$cuti;
+                $cutiTotal += $cuti;
                 $keluar = $hlp->getJumlahMuridKeluarByMonth($ibo_id, $keylvl, $bln, $thn);
-                $keluarTotal[$keylvl] +=$keluar;
+                $keluarTotal[$keylvl] += $keluar;
 
                 $xsl = new GeneralExcel();
                 $xsl->id = "lvl";
@@ -1264,12 +1272,12 @@ class SempoaExport {
                 foreach ($arrAllmonth as $key => $val) {
                     $hlp = new StatusHisMuridModel();
                     $aktiv = $hlp->getJumlahMuridAktivByMonth($ibo_id, $keylvl, $val, $thn);
-                    $aktivTotal +=$aktiv;
+                    $aktivTotal += $aktiv;
                     $cuti = $hlp->getJumlahMuridCutiByMonth($ibo_id, $keylvl, $val, $thn);
-                    $cutiTotal +=$cuti;
+                    $cutiTotal += $cuti;
                     $keluar = $hlp->getJumlahMuridKeluarByMonth($ibo_id, $keylvl, $val, $thn);
-                    $keluarTotal +=$keluar;
-                    $arrKeluar[$level] +=$keluar;
+                    $keluarTotal += $keluar;
+                    $arrKeluar[$level] += $keluar;
 
 
                     $xsl = new GeneralExcel();
@@ -1312,7 +1320,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_all_siswa($bln) {
+    public function header_rekap_all_siswa($bln)
+    {
         $header = array();
         $zeile = 2;
         $xsl = new GeneralExcel();
@@ -1481,7 +1490,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_all_siswa($bln, $thn) {
+    public function content_rekap_all_siswa($bln, $thn)
+    {
         $i = 2;
         $content = array();
         $arrAllIBO = Generic::getAllIBO();
@@ -1500,8 +1510,7 @@ class SempoaExport {
 
             $xsl = new GeneralExcel();
             $xsl->id = "ibo_propinsi";
-            $xsl->name = $ibo_org->propinsi;
-            ;
+            $xsl->name = $ibo_org->propinsi;;
             $xsl->anzahlcolumn = 1;
             $xsl->zeile = $i;
             $xsl->awal = 0;
@@ -1684,7 +1693,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_siswa_kpo($bln) {
+    public function header_rekap_siswa_kpo($bln)
+    {
         $header = array();
         $zeile = 2;
 
@@ -1848,7 +1858,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_siswa_kpo($ibo_id, $bln, $thn) {
+    public function content_rekap_siswa_kpo($ibo_id, $bln, $thn)
+    {
         $i = 2;
         $content = array();
         $arrMyTC = Generic::getAllMyTC($ibo_id);
@@ -2244,7 +2255,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_absen_guru($week, $tgl) {
+    public function header_rekap_absen_guru($week, $tgl)
+    {
         $header = array();
         $zeile = 2;
 
@@ -2381,7 +2393,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_absen_guru($week, $thn, $org_id) {
+    public function content_rekap_absen_guru($week, $thn, $org_id)
+    {
         $i = 3;
         $senin = 0;
         $selasa = 0;
@@ -2646,7 +2659,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_lama_belajar() {
+    public function header_rekap_lama_belajar()
+    {
         $header = array();
         $zeile = 2;
 
@@ -2695,7 +2709,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_lama_belajar($tc_id) {
+    public function content_rekap_lama_belajar($tc_id)
+    {
         $zeile = 1;
         $i = 1;
 
@@ -2790,7 +2805,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_perkembanganIBO($thn) {
+    public function header_rekap_perkembanganIBO($thn)
+    {
 
         $header = array();
         $zeile = 2;
@@ -2859,7 +2875,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_perkembanganIBO($ibo_id, $thn) {
+    public function content_rekap_perkembanganIBO($ibo_id, $thn)
+    {
         $arrMyIBO = Generic::getAllMyIBO(AccessRight::getMyOrgID());
         $arrTahun = array();
         $arrTahun[] = $thn - 3;
@@ -2952,7 +2969,8 @@ class SempoaExport {
         return $content;
     }
 
-    public function header_rekap_jumlah_siswa_buku_kupon($thn) {
+    public function header_rekap_jumlah_siswa_buku_kupon($thn)
+    {
 
         $header = array();
         $zeile = 2;
@@ -2984,7 +3002,8 @@ class SempoaExport {
         return $header;
     }
 
-    public function content_rekap_jumlah_siswa_buku_kupon($ibo_id, $thn) {
+    public function content_rekap_jumlah_siswa_buku_kupon($ibo_id, $thn)
+    {
         $kpo_id = AccessRight::getMyOrgID();
         $arrMyIBO = Generic::getAllMyIBO($kpo_id);
         $ibo_id = isset($_GET['ibo_id']) ? addslashes($_GET['ibo_id']) : key($arrMyIBO);
@@ -3006,7 +3025,6 @@ class SempoaExport {
         $content = array();
         $zeile = 2;
         foreach ($arrKey as $val) {
-
 
 
             $xsl = new GeneralExcel();
@@ -3053,4 +3071,745 @@ class SempoaExport {
         return $content;
     }
 
+    public function content_rekap_kupon_tc_lvl($tc_id, $bln, $thn)
+    {
+//        unset($content);
+        $content = array();
+        $i = 2;
+//        $arrMyTC = Generic::getAllMyTC($ibo_id);
+        $arrAllmonth = Generic::getAllMonths();
+        $totalTerjual = 0;
+        $totalAktiv = 0;
+        $arrtotalTerjual = array();
+        $arrtotalAktiv = array();
+        foreach ($arrAllmonth as $key => $val) {
+            $arrtotalTerjual[$val] = 0;
+            $arrtotalAktiv[$val] = 0;
+        }
+        if ($bln != KEY::$KEY_MONTH_ALL) {
+
+            $birekap = new RekapSiswaIBOModel();
+            $birekap->getWhereOne("bi_rekap_tc_id=$tc_id AND bi_rekap_bln=$bln AND bi_rekap_tahun=$thn");
+
+            $totalTerjual += $birekap->bi_rekap_kupon;
+            $totalAktiv += $birekap->bi_rekap_aktiv;
+
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "no";
+            $xsl->name = $i - 1;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 1;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "namatc";
+            $xsl->name = Generic::getTCNamebyID($tc_id);
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+            $xsl = new GeneralExcel();
+            $xsl->id = "kpn";
+            $xsl->name = $birekap->bi_rekap_kupon;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+            $xsl = new GeneralExcel();
+            $xsl->id = "A";
+            $xsl->name = $birekap->bi_rekap_aktiv;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+            $i++;
+        } else {
+
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "no";
+            $xsl->name = $i - 1;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 1;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "namatc";
+            $xsl->name = Generic::getTCNamebyID($tc_id);
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            foreach ($arrAllmonth as $key => $val) {
+
+                $birekap = new RekapSiswaIBOModel();
+                $birekap->getWhereOne("bi_rekap_tc_id=$tc_id AND bi_rekap_bln=$val AND bi_rekap_tahun=$thn");
+
+                if ($birekap->bi_rekap_kupon == "") {
+                    $kupon = 0;
+                } else {
+                    $kupon = $birekap->bi_rekap_kupon;
+                }
+
+                if ($birekap->bi_rekap_aktiv == "") {
+                    $aktiv = 0;
+                } else {
+                    $aktiv = $birekap->bi_rekap_aktiv;
+                }
+
+                $arrtotalTerjual[$val] += $birekap->bi_rekap_kupon;
+                $arrtotalAktiv[$val] += $birekap->bi_rekap_aktiv;
+                $xsl = new GeneralExcel();
+                $xsl->id = "kpn";
+                $xsl->name = $kupon;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+                $xsl = new GeneralExcel();
+                $xsl->id = "A";
+                $xsl->name = $aktiv;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+            }
+            $i++;
+        }
+
+        if ($bln != KEY::$KEY_MONTH_ALL) {
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalTerjual";
+            $xsl->name = $totalTerjual;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 4;
+            $xsl->mulaiColumn = "C";
+            array_push($content, $xsl);
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalAktiv";
+            $xsl->name = $totalAktiv;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 5;
+//        $xsl->mulaiColumn = "A";
+            array_push($content, $xsl);
+        } else {
+            $awal = 4;
+            $mulaiColumn = "C";
+            foreach ($arrAllmonth as $key => $val) {
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalTerjual";
+                $xsl->name = $arrtotalTerjual[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->mulaiColumn = $mulaiColumn;
+                $mulaiColumn++;
+                array_push($content, $xsl);
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalAktiv";
+                $xsl->name = $arrtotalAktiv[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->mulaiColumn = $mulaiColumn;
+                array_push($content, $xsl);
+                $mulaiColumn++;
+            }
+        }
+
+
+        return $content;
+    }
+
+    public function content_rekap_siswa_tc_lvl($tc_id, $bln, $thn)
+    {
+        $content = array();
+        $i = 2;
+        $arrBulan = Generic::getAllMonths();
+
+        $arrTotal_bl = array();
+        $arrTotal_baru = array();
+        $arrTotal_keluar = array();
+        $arrTotal_cuti = array();
+        $arrTotal_lulus = array();
+        $arrTotal_aktiv = array();
+        $arrTotal_kupon = array();
+
+        $orgTC = new SempoaOrg();
+        $orgTC->getByID($tc_id);
+
+        $xsl = new GeneralExcel();
+        $xsl->id = "no";
+        $xsl->name = $i - 1;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 1;
+        array_push($content, $xsl);
+        $xsl = new GeneralExcel();
+        $xsl->id = "kodetc";
+        $xsl->name = $orgTC->org_kode;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 0;
+        array_push($content, $xsl);
+        $xsl = new GeneralExcel();
+        $xsl->id = "namatc";
+        $xsl->name = $orgTC->nama;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 0;
+        array_push($content, $xsl);
+
+        $xsl = new GeneralExcel();
+        $xsl->id = "namaDr";
+        $xsl->name = $orgTC->nama_pemilik;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 0;
+        array_push($content, $xsl);
+
+
+        if ($bln != KEY::$KEY_MONTH_ALL) {
+            // Ermiteln data2
+            $org_tc = new RekapSiswaIBOModel();
+            $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
+
+            // Einfuellen die Werten
+            $help = '0';
+            $help = $arrDaten[0]->bi_rekap_bl;
+            $xsl = new GeneralExcel();
+            $xsl->id = "BL";
+            $xsl->name = $help;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $help = 0;
+            $help = $arrDaten[0]->bi_rekap_baru;
+            $xsl = new GeneralExcel();
+            $xsl->id = "Baru";
+            $xsl->name = $help;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $help = 0;
+            $help = $arrDaten[0]->bi_rekap_keluar;
+            $xsl = new GeneralExcel();
+            $xsl->id = "Keluar";
+            $xsl->name = $help;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $help = 0;
+            $help = $arrDaten[0]->bi_rekap_cuti;
+            $xsl = new GeneralExcel();
+            $xsl->id = "Cuti";
+            $xsl->name = $help;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+
+            $help = 0;
+            $help = $arrDaten[0]->bi_rekap_lulus;
+            $xsl = new GeneralExcel();
+            $xsl->id = "Lulus";
+            $xsl->name = $help;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $help = 0;
+            $help = $arrDaten[0]->bi_rekap_aktiv;
+            $xsl = new GeneralExcel();
+            $xsl->id = "Aktiv";
+            $xsl->name = $help;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $help = 0;
+            $help = $arrDaten[0]->bi_rekap_kupon;
+            $xsl = new GeneralExcel();
+            $xsl->id = "Kupon";
+            $xsl->name = $help;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+            // fuer Footer
+            $total_bl += $arrDaten[0]->bi_rekap_bl;
+            $total_baru += $arrDaten[0]->bi_rekap_baru;
+            $total_keluar += $arrDaten[0]->bi_rekap_keluar;
+            $total_cuti += $arrDaten[0]->bi_rekap_cuti;
+            $total_lulus += $arrDaten[0]->bi_rekap_lulus;
+            $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
+            $total_kupon += $arrDaten[0]->bi_rekap_kupon;
+        } else {
+            foreach ($arrBulan as $val) {
+                $org_tc = new RekapSiswaIBOModel();
+                $arrDaten = $org_tc->getDaten($val, $thn, $orgTC->nama);
+                $arrTotal_bl[$val] += $arrDaten[0]->bi_rekap_bl;
+                $arrTotal_baru[$val] += $arrDaten[0]->bi_rekap_baru;
+                $arrTotal_keluar[$val] += $arrDaten[0]->bi_rekap_keluar;
+                $arrTotal_cuti[$val] += $arrDaten[0]->bi_rekap_cuti;
+                $arrTotal_lulus[$val] += $arrDaten[0]->bi_rekap_lulus;
+                $arrTotal_aktiv[$val] += $arrDaten[0]->bi_rekap_aktiv;
+                $arrTotal_kupon [$val] += $arrDaten[0]->bi_rekap_kupon;
+
+                if (is_null($arrDaten[0]->bi_rekap_bl)) {
+                    $bl = 0;
+                } else {
+                    $bl = $arrDaten[0]->bi_rekap_bl;
+                }
+
+                if (is_null($arrDaten[0]->bi_rekap_baru)) {
+                    $baru = 0;
+                } else {
+                    $baru = $arrDaten[0]->bi_rekap_baru;
+                }
+
+                if (is_null($arrDaten[0]->bi_rekap_keluar)) {
+                    $keluar = 0;
+                } else {
+                    $keluar = $arrDaten[0]->bi_rekap_keluar;
+                }
+
+                if (is_null($arrDaten[0]->bi_rekap_cuti)) {
+                    $cuti = 0;
+                } else {
+                    $cuti = $arrDaten[0]->bi_rekap_cuti;
+                }
+
+
+                if (is_null($arrDaten[0]->bi_rekap_lulus)) {
+                    $lulus = 0;
+                } else {
+                    $lulus = $arrDaten[0]->bi_rekap_lulus;
+                }
+                if (is_null($arrDaten[0]->bi_rekap_aktiv)) {
+                    $aktiv = 0;
+                } else {
+                    $aktiv = $arrDaten[0]->bi_rekap_aktiv;
+                }
+
+                if (is_null($arrDaten[0]->bi_rekap_kupon)) {
+                    $kpn = 0;
+                } else {
+                    $kpn = $arrDaten[0]->bi_rekap_kupon;
+                }
+
+                // Einfuellen die Werten
+                $help = '0';
+                $help = $arrDaten[0]->bi_rekap_bl;
+                $xsl = new GeneralExcel();
+                $xsl->id = "BL";
+                $xsl->name = $bl;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $help = 0;
+                $help = $arrDaten[0]->bi_rekap_baru;
+                $xsl = new GeneralExcel();
+                $xsl->id = "Baru";
+                $xsl->name = $baru;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $help = 0;
+                $help = $arrDaten[0]->bi_rekap_keluar;
+                $xsl = new GeneralExcel();
+                $xsl->id = "Keluar";
+                $xsl->name = $help;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $help = 0;
+                $help = $arrDaten[0]->bi_rekap_cuti;
+                $xsl = new GeneralExcel();
+                $xsl->id = "Cuti";
+                $xsl->name = $cuti;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+
+                $help = 0;
+                $help = $arrDaten[0]->bi_rekap_lulus;
+                $xsl = new GeneralExcel();
+                $xsl->id = "Lulus";
+                $xsl->name = $lulus;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $help = 0;
+                $help = $arrDaten[0]->bi_rekap_aktiv;
+                $xsl = new GeneralExcel();
+                $xsl->id = "Aktiv";
+                $xsl->name = $aktiv;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $help = 0;
+                $help = $arrDaten[0]->bi_rekap_kupon;
+                $xsl = new GeneralExcel();
+                $xsl->id = "Kupon";
+                $xsl->name = $kpn;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+                // fuer Footer
+                $total_bl += $arrDaten[0]->bi_rekap_bl;
+                $total_baru += $arrDaten[0]->bi_rekap_baru;
+                $total_keluar += $arrDaten[0]->bi_rekap_keluar;
+                $total_cuti += $arrDaten[0]->bi_rekap_cuti;
+                $total_lulus += $arrDaten[0]->bi_rekap_lulus;
+                $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
+                $total_kupon += $arrDaten[0]->bi_rekap_kupon;
+            }
+        }
+        $i++;
+
+
+        // Footer
+        if ($bln != KEY::$KEY_MONTH_ALL) {
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalBL";
+            $xsl->name = $total_bl;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 1;
+            $xsl->mulaiColumn = "E";
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalBaru";
+            $xsl->name = $total_baru;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalKeluar";
+            $xsl->name = $total_keluar;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalCuti";
+            $xsl->name = $total_cuti;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalLulus";
+            $xsl->name = $total_lulus;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalAktiv";
+            $xsl->name = $total_aktiv;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalKupon";
+            $xsl->name = $total_kupon;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+        } else {
+            foreach ($arrBulan as $val) {
+
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalBL";
+                $xsl->name = $arrTotal_bl[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                if ($val == 1) {
+                    $xsl->mulaiColumn = "E";
+                }
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalBaru";
+                $xsl->name = $arrTotal_baru[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalKeluar";
+                $xsl->name = $arrTotal_keluar[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalCuti";
+                $xsl->name = $arrTotal_cuti[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalLulus";
+                $xsl->name = $arrTotal_lulus[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalAktiv";
+                $xsl->name = $arrTotal_aktiv[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalKupon";
+                $xsl->name = $arrTotal_kupon[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+            }
+        }
+
+
+        return $content;
+    }
+
+
+    public function content_rekap_bulanan_kupon_tc_lvl($tc_id, $bln, $thn)
+    {
+        $content = array();
+        $i = 1;
+        $arrBulan = Generic::getAllMonths();
+        if ($bln != KEY::$KEY_MONTH_ALL) {
+            $objRekapKupon = new BIRekapKuponModel();
+            $arrRekap = $objRekapKupon->getWhere("bi_kupon_tc_id=$tc_id AND bi_kupon_bln=$bln AND bi_kupon_thn=$thn");
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "no";
+            $xsl->name = $i;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 1;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "bln";
+            $xsl->name = Generic::getMonthName($arrRekap[0]->bi_kupon_bln);
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "bln";
+            $xsl->name = $arrRekap[0]->bi_kupon_stock;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "bln";
+            $xsl->name = $arrRekap[0]->bi_kupon_kupon_masuk;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "bln";
+            $xsl->name = $arrRekap[0]->bi_kupon_trs_bln;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "bln";
+            $xsl->name = $arrRekap[0]->bi_kupon_stock_akhir;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 0;
+            array_push($content, $xsl);
+            $arrKuponStock += $arrRekap[0]->bi_kupon_stock;
+            $arrKuponmasuk += $arrRekap[0]->bi_kupon_kupon_masuk;
+            $arrKuponTraBln += $arrRekap[0]->bi_kupon_trs_bln;
+            $arrKuponStockAkhir += $arrRekap[0]->bi_kupon_stock_akhir;
+            $i++;
+        } else {
+
+            foreach ($arrBulan as $val) {
+                $objRekapKupon = new BIRekapKuponModel();
+                $arrRekap = $objRekapKupon->getWhere("bi_kupon_tc_id=$tc_id AND bi_kupon_bln=$val AND bi_kupon_thn=$thn");
+                $arrKuponStock += $arrRekap[0]->bi_kupon_stock;
+                $arrKuponmasuk += $arrRekap[0]->bi_kupon_kupon_masuk;
+                $arrKuponTraBln += $arrRekap[0]->bi_kupon_trs_bln;
+                $arrKuponStockAkhir += $arrRekap[0]->bi_kupon_stock_akhir;
+
+                if (is_null($arrRekap[0]->bi_kupon_stock)) {
+                    $kupon_stock = 0;
+                } else {
+                    $kupon_stock = $arrRekap[0]->bi_kupon_stock;
+                }
+                if (is_null($arrRekap[0]->bi_kupon_kupon_masuk)) {
+                    $kupon_masuk = 0;
+                } else {
+                    $kupon_masuk = $arrRekap[0]->bi_kupon_kupon_masuk;
+                }
+                if (is_null($arrRekap[0]->bi_kupon_trs_bln)) {
+                    $kupon_trs_bln = 0;
+                } else {
+                    $kupon_trs_bln = $arrRekap[0]->bi_kupon_trs_bln;
+                }
+
+                if (is_null($arrRekap[0]->bi_kupon_stock_akhir)) {
+                    $kupon_stock_akhir = 0;
+                } else {
+                    $kupon_stock_akhir = $arrRekap[0]->bi_kupon_stock_akhir;
+                }
+
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "no";
+                $xsl->name = $i;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 1;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "bln";
+                $xsl->name = Generic::getMonthName($val);
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "bln";
+                $xsl->name = $kupon_stock;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "bln";
+                $xsl->name = $kupon_masuk;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "bln";
+                $xsl->name = $kupon_trs_bln;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "bln";
+                $xsl->name = $kupon_stock_akhir;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+                $i++;
+            }
+        }
+
+
+        // Footer
+        $xsl = new GeneralExcel();
+        $xsl->id = "total";
+        $xsl->name = "Total";
+        $xsl->anzahlcolumn = 2;
+        $xsl->zeile = $i;
+        $xsl->awal = 1;
+        $xsl->textAllign = "center";
+        array_push($content, $xsl);
+        $xsl = new GeneralExcel();
+        $xsl->id = "totalStock";
+        $xsl->name = $arrKuponStock;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 0;
+        $xsl->mulaiColumn = "C";
+        array_push($content, $xsl);
+
+        $xsl = new GeneralExcel();
+        $xsl->id = "kpn_msk";
+        $xsl->name = $arrKuponmasuk;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 0;
+        array_push($content, $xsl);
+
+        $xsl = new GeneralExcel();
+        $xsl->id = "tr_bln_ini";
+        $xsl->name = $arrKuponTraBln;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 0;
+        array_push($content, $xsl);
+
+        $xsl = new GeneralExcel();
+        $xsl->id = "stockAkhir";
+        $xsl->name = $arrKuponStockAkhir;
+        $xsl->anzahlcolumn = 1;
+        $xsl->zeile = $i;
+        $xsl->awal = 0;
+        array_push($content, $xsl);
+        return $content;
+    }
 }

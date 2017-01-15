@@ -1379,112 +1379,112 @@ class BIWebHelper extends WebService
                         $arrTotal_lulus = array();
                         $arrTotal_aktiv = array();
                         $arrTotal_kupon = array();
-                            $orgTC = new SempoaOrg();
-                            $orgTC->getByID($id_tc);
-                            ?>
-                            <tr>
-                                <td><?= $i; ?></td>
-                                <td><?= $orgTC->org_kode; ?></td>
-                                <td><?= $orgTC->nama; ?></td>
-                                <td><?= $orgTC->nama_pemilik; ?></td>
-                                <?
-                                foreach ($arrBulan as $val) {
-                                    if ($val != KEY::$KEY_MONTH_ALL) {
-                                        $org_tc = new RekapSiswaIBOModel();
-                                        $arrDaten = $org_tc->getDaten($val, $thn, $orgTC->nama);
-                                        $arrTotal_bl[$val] += $arrDaten[0]->bi_rekap_bl;
-                                        $arrTotal_baru[$val] += $arrDaten[0]->bi_rekap_baru;
-                                        $arrTotal_keluar[$val] += $arrDaten[0]->bi_rekap_keluar;
-                                        $arrTotal_cuti[$val] += $arrDaten[0]->bi_rekap_cuti;
-                                        $arrTotal_lulus[$val] += $arrDaten[0]->bi_rekap_lulus;
-                                        $arrTotal_aktiv[$val] += $arrDaten[0]->bi_rekap_aktiv;
-                                        $arrTotal_kupon [$val] += $arrDaten[0]->bi_rekap_kupon;
+                        $orgTC = new SempoaOrg();
+                        $orgTC->getByID($id_tc);
+                        ?>
+                        <tr>
+                            <td><?= $i; ?></td>
+                            <td><?= $orgTC->org_kode; ?></td>
+                            <td><?= $orgTC->nama; ?></td>
+                            <td><?= $orgTC->nama_pemilik; ?></td>
+                            <?
+                            foreach ($arrBulan as $val) {
+                                if ($val != KEY::$KEY_MONTH_ALL) {
+                                    $org_tc = new RekapSiswaIBOModel();
+                                    $arrDaten = $org_tc->getDaten($val, $thn, $orgTC->nama);
+                                    $arrTotal_bl[$val] += $arrDaten[0]->bi_rekap_bl;
+                                    $arrTotal_baru[$val] += $arrDaten[0]->bi_rekap_baru;
+                                    $arrTotal_keluar[$val] += $arrDaten[0]->bi_rekap_keluar;
+                                    $arrTotal_cuti[$val] += $arrDaten[0]->bi_rekap_cuti;
+                                    $arrTotal_lulus[$val] += $arrDaten[0]->bi_rekap_lulus;
+                                    $arrTotal_aktiv[$val] += $arrDaten[0]->bi_rekap_aktiv;
+                                    $arrTotal_kupon [$val] += $arrDaten[0]->bi_rekap_kupon;
 
-                                        if (is_null($arrDaten[0]->bi_rekap_bl)) {
-                                            $bl = 0;
-                                        } else {
-                                            $bl = $arrDaten[0]->bi_rekap_bl;
+                                    if (is_null($arrDaten[0]->bi_rekap_bl)) {
+                                        $bl = 0;
+                                    } else {
+                                        $bl = $arrDaten[0]->bi_rekap_bl;
+                                    }
+
+                                    if (is_null($arrDaten[0]->bi_rekap_baru)) {
+                                        $baru = 0;
+                                    } else {
+                                        $baru = $arrDaten[0]->bi_rekap_baru;
+                                    }
+
+                                    if (is_null($arrDaten[0]->bi_rekap_keluar)) {
+                                        $keluar = 0;
+                                    } else {
+                                        $keluar = $arrDaten[0]->bi_rekap_keluar;
+                                    }
+
+                                    if (is_null($arrDaten[0]->bi_rekap_cuti)) {
+                                        $cuti = 0;
+                                    } else {
+                                        $cuti = $arrDaten[0]->bi_rekap_cuti;
+                                    }
+
+
+                                    if (is_null($arrDaten[0]->bi_rekap_lulus)) {
+                                        $lulus = 0;
+                                    } else {
+                                        $lulus = $arrDaten[0]->bi_rekap_lulus;
+                                    }
+                                    if (is_null($arrDaten[0]->bi_rekap_aktiv)) {
+                                        $aktiv = 0;
+                                    } else {
+                                        $aktiv = $arrDaten[0]->bi_rekap_aktiv;
+                                    }
+
+                                    if (is_null($arrDaten[0]->bi_rekap_kupon)) {
+                                        $kpn = 0;
+                                    } else {
+                                        $kpn = $arrDaten[0]->bi_rekap_kupon;
+                                    }
+
+                                    if ($j == 1) {
+                                        if ($val <= 4 && $val != KEY::$KEY_MONTH_ALL) {
+                                            ?>
+                                            <td><?= $bl; ?></td>
+                                            <td><?= $baru; ?></td>
+                                            <td><?= $keluar; ?></td>
+                                            <td><?= $cuti; ?></td>
+                                            <td><?= $lulus; ?></td>
+                                            <td><?= $aktiv; ?></td>
+                                            <td><?= $kpn; ?></td>
+                                            <?
                                         }
-
-                                        if (is_null($arrDaten[0]->bi_rekap_baru)) {
-                                            $baru = 0;
-                                        } else {
-                                            $baru = $arrDaten[0]->bi_rekap_baru;
+                                    } elseif ($j == 2) {
+                                        if ($val >= 5 && $val <= 8) {
+                                            ?>
+                                            <td><?= $bl; ?></td>
+                                            <td><?= $baru; ?></td>
+                                            <td><?= $keluar; ?></td>
+                                            <td><?= $cuti; ?></td>
+                                            <td><?= $lulus; ?></td>
+                                            <td><?= $aktiv; ?></td>
+                                            <td><?= $kpn; ?></td>
+                                            <?
                                         }
-
-                                        if (is_null($arrDaten[0]->bi_rekap_keluar)) {
-                                            $keluar = 0;
-                                        } else {
-                                            $keluar = $arrDaten[0]->bi_rekap_keluar;
-                                        }
-
-                                        if (is_null($arrDaten[0]->bi_rekap_cuti)) {
-                                            $cuti = 0;
-                                        } else {
-                                            $cuti = $arrDaten[0]->bi_rekap_cuti;
-                                        }
-
-
-                                        if (is_null($arrDaten[0]->bi_rekap_lulus)) {
-                                            $lulus = 0;
-                                        } else {
-                                            $lulus = $arrDaten[0]->bi_rekap_lulus;
-                                        }
-                                        if (is_null($arrDaten[0]->bi_rekap_aktiv)) {
-                                            $aktiv = 0;
-                                        } else {
-                                            $aktiv = $arrDaten[0]->bi_rekap_aktiv;
-                                        }
-
-                                        if (is_null($arrDaten[0]->bi_rekap_kupon)) {
-                                            $kpn = 0;
-                                        } else {
-                                            $kpn = $arrDaten[0]->bi_rekap_kupon;
-                                        }
-
-                                        if ($j == 1) {
-                                            if ($val <= 4 && $val != KEY::$KEY_MONTH_ALL) {
-                                                ?>
-                                                <td><?= $bl; ?></td>
-                                                <td><?= $baru; ?></td>
-                                                <td><?= $keluar; ?></td>
-                                                <td><?= $cuti; ?></td>
-                                                <td><?= $lulus; ?></td>
-                                                <td><?= $aktiv; ?></td>
-                                                <td><?= $kpn; ?></td>
-                                                <?
-                                            }
-                                        } elseif ($j == 2) {
-                                            if ($val >= 5 && $val <= 8) {
-                                                ?>
-                                                <td><?= $bl; ?></td>
-                                                <td><?= $baru; ?></td>
-                                                <td><?= $keluar; ?></td>
-                                                <td><?= $cuti; ?></td>
-                                                <td><?= $lulus; ?></td>
-                                                <td><?= $aktiv; ?></td>
-                                                <td><?= $kpn; ?></td>
-                                                <?
-                                            }
-                                        } elseif ($j == 3) {
-                                            if ($val >= 9 && $val <= 12) {
-                                                ?>
-                                                <td><?= $bl; ?></td>
-                                                <td><?= $baru; ?></td>
-                                                <td><?= $keluar; ?></td>
-                                                <td><?= $cuti; ?></td>
-                                                <td><?= $lulus; ?></td>
-                                                <td><?= $aktiv; ?></td>
-                                                <td><?= $kpn; ?></td>
-                                                <?
-                                            }
+                                    } elseif ($j == 3) {
+                                        if ($val >= 9 && $val <= 12) {
+                                            ?>
+                                            <td><?= $bl; ?></td>
+                                            <td><?= $baru; ?></td>
+                                            <td><?= $keluar; ?></td>
+                                            <td><?= $cuti; ?></td>
+                                            <td><?= $lulus; ?></td>
+                                            <td><?= $aktiv; ?></td>
+                                            <td><?= $kpn; ?></td>
+                                            <?
                                         }
                                     }
                                 }
-                                ?>
-                            </tr>
-                            <?
-                            $i++;
+                            }
+                            ?>
+                        </tr>
+                        <?
+                        $i++;
                         ?>
 
                         </tbody>
@@ -1581,36 +1581,36 @@ class BIWebHelper extends WebService
                 $arrTotal_lulus = array();
                 $arrTotal_aktiv = array();
                 $arrTotal_kupon = array();
-                    $orgTC = new SempoaOrg();
-                    $orgTC->getByID($id_tc);
-                    ?>
-                    <tr>
-                        <td><?= $i; ?></td>
-                        <td><?= $orgTC->org_kode; ?></td>
-                        <td><?= $orgTC->nama; ?></td>
-                        <td><?= $orgTC->nama_pemilik; ?></td>
-                        <?
-                        $org_tc = new RekapSiswaIBOModel();
-                        $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
-                        $total_bl += $arrDaten[0]->bi_rekap_bl;
-                        $total_baru += $arrDaten[0]->bi_rekap_baru;
-                        $total_keluar += $arrDaten[0]->bi_rekap_keluar;
-                        $total_cuti += $arrDaten[0]->bi_rekap_cuti;
-                        $total_lulus += $arrDaten[0]->bi_rekap_lulus;
-                        $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
-                        $total_kupon += $arrDaten[0]->bi_rekap_kupon;
-                        ?>
-                        <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
-                        <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
-                        <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
-                        <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
-                        <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
-                        <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
-                        <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
-
-                    </tr>
+                $orgTC = new SempoaOrg();
+                $orgTC->getByID($id_tc);
+                ?>
+                <tr>
+                    <td><?= $i; ?></td>
+                    <td><?= $orgTC->org_kode; ?></td>
+                    <td><?= $orgTC->nama; ?></td>
+                    <td><?= $orgTC->nama_pemilik; ?></td>
                     <?
-                    $i++;
+                    $org_tc = new RekapSiswaIBOModel();
+                    $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
+                    $total_bl += $arrDaten[0]->bi_rekap_bl;
+                    $total_baru += $arrDaten[0]->bi_rekap_baru;
+                    $total_keluar += $arrDaten[0]->bi_rekap_keluar;
+                    $total_cuti += $arrDaten[0]->bi_rekap_cuti;
+                    $total_lulus += $arrDaten[0]->bi_rekap_lulus;
+                    $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
+                    $total_kupon += $arrDaten[0]->bi_rekap_kupon;
+                    ?>
+                    <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
+                    <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
+                    <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
+                    <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
+                    <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
+                    <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
+                    <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
+
+                </tr>
+                <?
+                $i++;
                 ?>
                 </tbody>
                 <tfoot>
@@ -2880,7 +2880,39 @@ class BIWebHelper extends WebService
                 $this->export($judulTengah, $filename, $header, $columnContent);
 
                 break;
-//            
+
+            case KEY::$REPORT_REKAP_KUPON_TC_LVL:
+                $tc_id = $_GET['tc_id'];
+                $export = new SempoaExport();
+                $columnname = $export->header_rekap_kupon_tc($bln);
+                $columnContent = $export->content_rekap_kupon_tc_lvl($tc_id, $bln, $thn);
+                $judulTengah = KEY::$JUDUL_REPORT_REKAP_KUPON_TC . Generic::getTCNamebyID($tc_id);
+                $filename = KEY::$REPORT_REKAP_KUPON_TC . Generic::getTCNamebyID($tc_id);
+                $this->export($judulTengah, $filename, $columnname, $columnContent);
+                break;
+//
+            case KEY::$REPORT_REKAP_SISWA_IBO_TC_LVL:
+                $tc_id = $_GET['tc_id'];
+                $export = new SempoaExport();
+                $header = $export->header_rekap_siswa_ibo($bln);
+                $columnContent = $export->content_rekap_siswa_tc_lvl($tc_id, $bln, $thn);
+                $judulTengah = KEY::$JUDUL_REPORT_REKAP_SISWA_TC . Generic::getTCNamebyID($tc_id);
+                $filename = KEY::$REPORT_REKAP_SISWA_IBO_TC_LVL . Generic::getTCNamebyID($tc_id);
+                $this->export($judulTengah, $filename, $header, $columnContent);
+                break;
+
+
+            case KEY::$REPORT_REKAP_BULANAN_KUPON_TC_LVL:
+                $tc_id = $_GET['tc_id'];
+                $bln = $_GET['bln'];
+                $thn = $_GET['thn'];
+                $export = new SempoaExport();
+                $header = $export->header_rekap_bulanan_kupon($bln);
+                $columnContent = $export->content_rekap_bulanan_kupon_tc_lvl($tc_id, $bln, $thn);
+                $judulTengah = KEY::$JUDUL_REKAP_BULANAN_KUPON . Generic::getTCNamebyID($tc_id);
+                $filename = KEY::$REPORT_REKAP_BULANAN_KUPON_TC_LVL . Generic::getTCNamebyID($tc_id);
+                $this->export($judulTengah, $filename, $header, $columnContent);
+                break;
         }
         if ($type) {
 

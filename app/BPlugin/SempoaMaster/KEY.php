@@ -263,14 +263,14 @@ class KEY {
     public static $JUDUL_REPORT_REKAP_SISWA_IBO = " Rekapitulasi Siswa per TC ";
     public static $REPORT_REKAP_BULANAN_KUPON = "rekap_bulanan_kupon";
     public static $JUDUL_REKAP_BULANAN_KUPON = " Laporan Rekapitulasi Kupon";
-    
-     public static $REPORT_REKAP_ABSEN_GURU = "rekap_absen_guru";
+
+    public static $REPORT_REKAP_ABSEN_GURU = "rekap_absen_guru";
     public static $JUDUL_REPORT_REKAP_ABSEN_GURU = " Laporan Absen Coach";
-    
-      public static $REPORT_REKAP_LAMA_BELAJAR_MURID_TC = "laporan_belajar_murid_tc";
+
+    public static $REPORT_REKAP_LAMA_BELAJAR_MURID_TC = "laporan_belajar_murid_tc";
     public static $JUDUL_REKAP_LAMA_BELAJAR_MURID_TC = " Laporan Lama Belajar Murid satuan Bulanan";
-    
-    
+
+
     // KPO
     public static $REPORT_REKAP_JUMLAH_SISWA_STATUS_KPO = "rekap_jumlah_siswa_by_status_kpo";
     public static $JUDUL_REPORT_REKAP_JUMLAH_SISWA_STATUS_KPO = " Laporan Jumlah Siswa Aktif, Cuti dan Keluar";
@@ -281,10 +281,16 @@ class KEY {
 
     public static $REPORT_REKAP_PENJUALAN_B_K_S = "rekap_penjualan_buku_kupon";
     public static $JUDUL_REPORT_REKAP_PENJUALAN_B_K_S = " Laporan Siswa, Buku dan Kupon Per IBO dan Per Tahun";
- 
+
     public static $REPORT_REKAP_PERKEMBANGAN_IBO = "rekap_perkembangan_ibo";
     public static $JUDUL_REKAP_PERKEMBANGAN_IBO = " Laporan Perkembangan IBO berdasarkan Rata rata jumlah Siswa, Coach per TC Per Tahun";
- 
+
+
+    public static $REPORT_REKAP_KUPON_TC_LVL = "rekap_kupon_tc_lvl";
+    public static $REPORT_REKAP_SISWA_IBO_TC_LVL = "rekap_siswa_tc_lvl";
+
+    public static $JUDUL_REPORT_REKAP_SISWA_TC = " Rekapitulasi Siswa TC";
+    public static $REPORT_REKAP_BULANAN_KUPON_TC_LVL = "rekap_bulanan_kupon_tc_lvl";
 
     public static $PATTERN_NAME = "^([a-zA-Z]+(?:\.)?(?:(?:'| )[a-zA-Z]+(?:\.)?)*)$";
 

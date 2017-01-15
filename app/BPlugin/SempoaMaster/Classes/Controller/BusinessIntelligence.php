@@ -48,7 +48,7 @@ class BusinessIntelligence extends WebService {
                         <?
                     }
                     ?>
-                </select>  
+                </select>
                 Tahun :<select id="tahun_<?= $t; ?>">
                     <?
                     for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
@@ -102,7 +102,7 @@ class BusinessIntelligence extends WebService {
                     <div class="chart" id="bar-chart" style="height: 300px; background-color: white;">
                         <?
                         $xLabels = array('aktiv', 'baru', 'cuti', 'keluar', 'lulus', 'kupon');
-//                        pr($hasil);
+                        //                        pr($hasil);
                         Charting::chartJSBar('300px', $xLabels, $hasil);
                         ?>
                     </div>
@@ -138,37 +138,37 @@ class BusinessIntelligence extends WebService {
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
+                <tr>
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@TwBootstrap</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@TwBootstrap</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                </tr>
+                <tr>
+                    <th scope="row">4</th>
+                    <td colspan="2">Larry the Bird</td>
+                    <td>@twitter</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -250,122 +250,122 @@ class BusinessIntelligence extends WebService {
 
                 <table class="table table-striped table-bordered">
                     <thead>
-                        <tr>
-                            <th rowspan="2" style="vertical-align: middle !important;">No</th>
-                            <th rowspan="2" style="vertical-align: middle !important;">Kode TC</th>
-                            <th rowspan="2">Nama TC</th>
-                            <th rowspan="2">Nama Director</th>
-                            <th colspan="7">Januari</th>
-                            <th colspan="7">Februari</th>
-                            <th colspan="7">Maret</th>
-                            <th colspan="7">April</th>
-                            <th colspan="7">Mei</th>
-                            <th colspan="7">Juni</th>
-                            <th colspan="7">Juli</th>
-                            <th colspan="7">Agustus</th>
-                            <th colspan="7">September</th>
-                            <th colspan="7">Oktober</th>
-                            <th colspan="7">November</th>
-                            <th colspan="7">Desember</th>
-                        </tr>
-                        <tr>
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                    <tr>
+                        <th rowspan="2" style="vertical-align: middle !important;">No</th>
+                        <th rowspan="2" style="vertical-align: middle !important;">Kode TC</th>
+                        <th rowspan="2">Nama TC</th>
+                        <th rowspan="2">Nama Director</th>
+                        <th colspan="7">Januari</th>
+                        <th colspan="7">Februari</th>
+                        <th colspan="7">Maret</th>
+                        <th colspan="7">April</th>
+                        <th colspan="7">Mei</th>
+                        <th colspan="7">Juni</th>
+                        <th colspan="7">Juli</th>
+                        <th colspan="7">Agustus</th>
+                        <th colspan="7">September</th>
+                        <th colspan="7">Oktober</th>
+                        <th colspan="7">November</th>
+                        <th colspan="7">Desember</th>
+                    </tr>
+                    <tr>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
 
-                        </tr>
+                    </tr>
                     </thead>
 
                 </table>
@@ -416,7 +416,7 @@ class BusinessIntelligence extends WebService {
                             <?
                         }
                         ?>
-                    </select>  
+                    </select>
                     Tahun :<select id="tahun_<?= $t; ?>">
                         <?
                         for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
@@ -475,87 +475,87 @@ class BusinessIntelligence extends WebService {
 
                 <table class="table table-bordered table-striped table-sempoa-border" style='background-color: white'>
                     <thead>
-                        <tr>
-                            <th class = "tengah" rowspan="2">No.</th>
-                            <th class = "tengah" rowspan="2">Kode TC</th>
-                            <th class = "tengah" rowspan="2">Nama TC</th>
-                            <th class = "tengah" rowspan="2">Nama Director</th>
-                            <?
-                            if ($bln != "All") {
-                                ?>
-                                <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="7"><?= Generic::getMonthName($bln); ?></th>
-
-                                <?
-                            }
-                            ?>
-
-                        </tr>
-                        <tr>
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
-
-                        </tr>
-                    </thead>
-                    <tbody id="load_<?= $bln . "_" . $thn; ?>">
+                    <tr>
+                        <th class = "tengah" rowspan="2">No.</th>
+                        <th class = "tengah" rowspan="2">Kode TC</th>
+                        <th class = "tengah" rowspan="2">Nama TC</th>
+                        <th class = "tengah" rowspan="2">Nama Director</th>
                         <?
-                        $i = 1;
-                        $total_bl = 0;
-                        $total_baru = 0;
-                        $total_keluar = 0;
-                        $total_cuti = 0;
-                        $total_lulus = 0;
-                        $total_aktiv = 0;
-                        $total_kupon = 0;
-                        foreach ($arrMyTC as $id_tc => $tc) {
-                            $orgTC = new SempoaOrg();
-                            $orgTC->getByID($id_tc);
+                        if ($bln != "All") {
                             ?>
-                            <tr>
-                                <td><?= $i; ?></td>
-                                <td><?= $orgTC->org_kode; ?></td>
-                                <td><?= $orgTC->nama; ?></td>
-                                <td><?= $orgTC->nama_pemilik; ?></td>
-                                <?
-                                $org_tc = new RekapSiswaIBOModel();
-                                $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
-                                $total_bl += $arrDaten[0]->bi_rekap_bl;
-                                $total_baru += $arrDaten[0]->bi_rekap_baru;
-                                $total_keluar += $arrDaten[0]->bi_rekap_keluar;
-                                $total_cuti += $arrDaten[0]->bi_rekap_cuti;
-                                $total_lulus += $arrDaten[0]->bi_rekap_lulus;
-                                $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
-                                $total_kupon += $arrDaten[0]->bi_rekap_kupon;
-                                ?>
-                                <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
-                            </tr>
+                            <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+
                             <?
-                            $i++;
                         }
                         ?>
+
+                    </tr>
+                    <tr>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="load_<?= $bln . "_" . $thn; ?>">
+                    <?
+                    $i = 1;
+                    $total_bl = 0;
+                    $total_baru = 0;
+                    $total_keluar = 0;
+                    $total_cuti = 0;
+                    $total_lulus = 0;
+                    $total_aktiv = 0;
+                    $total_kupon = 0;
+                    foreach ($arrMyTC as $id_tc => $tc) {
+                        $orgTC = new SempoaOrg();
+                        $orgTC->getByID($id_tc);
+                        ?>
+                        <tr>
+                            <td><?= $i; ?></td>
+                            <td><?= $orgTC->org_kode; ?></td>
+                            <td><?= $orgTC->nama; ?></td>
+                            <td><?= $orgTC->nama_pemilik; ?></td>
+                            <?
+                            $org_tc = new RekapSiswaIBOModel();
+                            $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
+                            $total_bl += $arrDaten[0]->bi_rekap_bl;
+                            $total_baru += $arrDaten[0]->bi_rekap_baru;
+                            $total_keluar += $arrDaten[0]->bi_rekap_keluar;
+                            $total_cuti += $arrDaten[0]->bi_rekap_cuti;
+                            $total_lulus += $arrDaten[0]->bi_rekap_lulus;
+                            $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
+                            $total_kupon += $arrDaten[0]->bi_rekap_kupon;
+                            ?>
+                            <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
+                        </tr>
+                        <?
+                        $i++;
+                    }
+                    ?>
                     </tbody>
                     <tfoot>
-                        <tr >
-                            <td class="total"colspan="4">Total</td>
+                    <tr >
+                        <td class="total"colspan="4">Total</td>
 
-                            <td><?= $total_bl; ?></td>
-                            <td><?= $total_baru; ?></td>
-                            <td><?= $total_keluar; ?></td>
-                            <td><?= $total_cuti; ?></td>
-                            <td><?= $total_lulus; ?></td>
-                            <td><?= $total_aktiv; ?></td>
-                            <td><?= $total_kupon; ?></td>
-                        </tr>
+                        <td><?= $total_bl; ?></td>
+                        <td><?= $total_baru; ?></td>
+                        <td><?= $total_keluar; ?></td>
+                        <td><?= $total_cuti; ?></td>
+                        <td><?= $total_lulus; ?></td>
+                        <td><?= $total_aktiv; ?></td>
+                        <td><?= $total_kupon; ?></td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -638,7 +638,7 @@ class BusinessIntelligence extends WebService {
                             <?
                         }
                         ?>
-                    </select>  
+                    </select>
                     Tahun :<select id="tahun_<?= $t; ?>">
                         <?
                         for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
@@ -669,56 +669,56 @@ class BusinessIntelligence extends WebService {
 
                 <table class ='table table-bordered table-striped' style="background-color: white;">
                     <thead>
+                    <tr>
+                        <th class = "tengah" rowspan="2">No.</th>
+                        <th class = "tengah" rowspan="2">Wilayah</th>
+                        <th class = "tengah" rowspan="2">Nama IBO</th>
+
+
+                        <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+
+
+
+                    </tr>
+                    <?
+                    if ($bln != "All") {
+                        ?>
                         <tr>
-                            <th class = "tengah" rowspan="2">No.</th>
-                            <th class = "tengah" rowspan="2">Wilayah</th>
-                            <th class = "tengah" rowspan="2">Nama IBO</th>
-
-
-                            <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="7"><?= Generic::getMonthName($bln); ?></th>
-
-
+                            <th>BL</th>
+                            <th>B</th>
+                            <th>K</th>
+                            <th>C</th>
+                            <th>L</th>
+                            <th>A</th>
+                            <th>KPN</th>
 
                         </tr>
                         <?
-                        if ($bln != "All") {
-                            ?>
-                            <tr>
-                                <th>BL</th>
-                                <th>B</th>
-                                <th>K</th>
-                                <th>C</th>
-                                <th>L</th>
-                                <th>A</th>
-                                <th>KPN</th>
-
-                            </tr>
-                            <?
-                        } else {
-                            ?>
-                            <tr>
-                                <?
-                                foreach ($arrBulan as $val) {
-                                    if ($val != "All") {
-                                        ?>
-
-                                        <th>BL</th>
-                                        <th>B</th>
-                                        <th>K</th>
-                                        <th>C</th>
-                                        <th>L</th>
-                                        <th>A</th>
-                                        <th>KPN</th>
-
-
-                                        <?
-                                    }
-                                }
-                                ?>
-                            </tr>
-                            <?
-                        }
+                    } else {
                         ?>
+                        <tr>
+                            <?
+                            foreach ($arrBulan as $val) {
+                                if ($val != "All") {
+                                    ?>
+
+                                    <th>BL</th>
+                                    <th>B</th>
+                                    <th>K</th>
+                                    <th>C</th>
+                                    <th>L</th>
+                                    <th>A</th>
+                                    <th>KPN</th>
+
+
+                                    <?
+                                }
+                            }
+                            ?>
+                        </tr>
+                        <?
+                    }
+                    ?>
 
                     </thead>
                     <?
@@ -832,7 +832,7 @@ class BusinessIntelligence extends WebService {
                         <?
                     }
                     ?>
-                </select>  
+                </select>
                 Tahun :<select id="tahun_<?= $t; ?>">
                     <?
                     for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
@@ -869,57 +869,57 @@ class BusinessIntelligence extends WebService {
             <div class="table-responsive" id = "content_kupon_<?= $tc_id . $bln . $thn; ?>">
                 <table class="table table-bordered table-striped putih">
                     <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Bulan</th>
-                            <th>Stock</th>
-                            <th>Kupon Masuk</th>
-                            <th>Transaksi Bulan ini</th>
-                            <th>Stock Akhir</th>
-                        </tr>
+                    <tr>
+                        <th>No.</th>
+                        <th>Bulan</th>
+                        <th>Stock</th>
+                        <th>Kupon Masuk</th>
+                        <th>Transaksi Bulan ini</th>
+                        <th>Stock Akhir</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <?
-                        $bi_kupon_stock = 0;
-                        $bi_kupon_kupon_masuk = 0;
-                        $bi_kupon_trs_bln = 0;
-                        $bi_kupon_stock_akhir = 0;
-                        $arrKuponStock = 0;
-                        $arrKuponmasuk = 0;
-                        $arrKuponTraBln = 0;
-                        $arrKuponStockAkhir = 0;
-                        $i = 1;
-                        $objRekapKupon = new BIRekapKuponModel();
-                        $arrRekap = $objRekapKupon->getWhere("bi_kupon_tc_id=$tc_id AND bi_kupon_bln=$bln AND bi_kupon_thn=$thn");
-                        $arrKuponStock += $arrRekap[0]->bi_kupon_stock;
-                        $arrKuponmasuk += $arrRekap[0]->bi_kupon_kupon_masuk;
-                        $arrKuponTraBln += $arrRekap[0]->bi_kupon_trs_bln;
-                        $arrKuponStockAkhir += $arrRekap[0]->bi_kupon_stock_akhir;
-                        $bi_kupon_stock = $arrRekap[0]->bi_kupon_stock;
-                        $bi_kupon_kupon_masuk = $arrRekap[0]->bi_kupon_kupon_masuk;
-                        $bi_kupon_trs_bln = $arrRekap[0]->bi_kupon_trs_bln;
-                        $bi_kupon_stock_akhir = $arrRekap[0]->bi_kupon_stock_akhir;
-                        ?>
-                        <tr>
-                            <td><?= $i; ?></td>
-                            <td><?= Generic::getMonthName($arrRekap[0]->bi_kupon_bln); ?></td>
-                            <td><?= $bi_kupon_stock; ?></td>
-                            <td><?= $bi_kupon_kupon_masuk; ?></td>
-                            <td><?= $bi_kupon_trs_bln; ?></td>
-                            <td><?= $bi_kupon_stock_akhir; ?></td>
-                        </tr>
+                    <?
+                    $bi_kupon_stock = 0;
+                    $bi_kupon_kupon_masuk = 0;
+                    $bi_kupon_trs_bln = 0;
+                    $bi_kupon_stock_akhir = 0;
+                    $arrKuponStock = 0;
+                    $arrKuponmasuk = 0;
+                    $arrKuponTraBln = 0;
+                    $arrKuponStockAkhir = 0;
+                    $i = 1;
+                    $objRekapKupon = new BIRekapKuponModel();
+                    $arrRekap = $objRekapKupon->getWhere("bi_kupon_tc_id=$tc_id AND bi_kupon_bln=$bln AND bi_kupon_thn=$thn");
+                    $arrKuponStock += $arrRekap[0]->bi_kupon_stock;
+                    $arrKuponmasuk += $arrRekap[0]->bi_kupon_kupon_masuk;
+                    $arrKuponTraBln += $arrRekap[0]->bi_kupon_trs_bln;
+                    $arrKuponStockAkhir += $arrRekap[0]->bi_kupon_stock_akhir;
+                    $bi_kupon_stock = $arrRekap[0]->bi_kupon_stock;
+                    $bi_kupon_kupon_masuk = $arrRekap[0]->bi_kupon_kupon_masuk;
+                    $bi_kupon_trs_bln = $arrRekap[0]->bi_kupon_trs_bln;
+                    $bi_kupon_stock_akhir = $arrRekap[0]->bi_kupon_stock_akhir;
+                    ?>
+                    <tr>
+                        <td><?= $i; ?></td>
+                        <td><?= Generic::getMonthName($arrRekap[0]->bi_kupon_bln); ?></td>
+                        <td><?= $bi_kupon_stock; ?></td>
+                        <td><?= $bi_kupon_kupon_masuk; ?></td>
+                        <td><?= $bi_kupon_trs_bln; ?></td>
+                        <td><?= $bi_kupon_stock_akhir; ?></td>
+                    </tr>
 
-                        <? ?>
+                    <? ?>
                     </tbody>
 
                     <tfoot>
-                        <tr>
-                            <td colspan="2" style="text-align:center; font-weight: bold">Total</td>
-                            <td><?= $arrKuponStock; ?></td>
-                            <td><?= $arrKuponmasuk; ?></td>
-                            <td><?= $arrKuponTraBln; ?></td>
-                            <td><?= $arrKuponStockAkhir; ?></td>
-                        </tr>
+                    <tr>
+                        <td colspan="2" style="text-align:center; font-weight: bold">Total</td>
+                        <td><?= $arrKuponStock; ?></td>
+                        <td><?= $arrKuponmasuk; ?></td>
+                        <td><?= $arrKuponTraBln; ?></td>
+                        <td><?= $arrKuponStockAkhir; ?></td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -985,7 +985,7 @@ class BusinessIntelligence extends WebService {
                         <?
                     }
                     ?>
-                </select>  
+                </select>
                 Tahun :<select id="tahun_<?= $t; ?>">
                     <?
                     for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
@@ -1023,61 +1023,61 @@ class BusinessIntelligence extends WebService {
             <div id = "kepala_status_<?= $bln . "_" . $thn; ?>" class="table-responsive">
                 <table class="table table-bordered table-striped" style="background-color: white;">
                     <thead>
-                        <tr>
-                            <th rowspan="2"  class = "tengah" >Level</th>
-                            <?
-                            if ($bln != "All") {
-                                ?>
-                                <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="3"><?= Generic::getMonthName($bln); ?></th>
-
-                                <?
-                            }
-                            ?>
-                            <th colspan="1">Total</th>   
-                        </tr>
-                        <tr>
-                            <th>Aktif</th>
-                            <th>Cuti</th>
-                            <th>Keluar</th>
-                            <th>Keluar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    <tr>
+                        <th rowspan="2"  class = "tengah" >Level</th>
                         <?
-                        $aktiv = 0;
-                        $cuti = 0;
-                        $keluar = 0;
-                        $aktivTotal = 0;
-                        $cutiTotal = 0;
-                        $keluarTotal = 0;
-                        foreach ($arrLevel as $key => $level) {
-                            $hlp = new StatusHisMuridModel();
-                            $aktiv = $hlp->getJumlahMuridAktivByMonth($ibo_id, $key, $bln, $thn);
-                            $aktivTotal +=$aktiv;
-                            $cuti = $hlp->getJumlahMuridCutiByMonth($ibo_id, $key, $bln, $thn);
-                            $cutiTotal +=$cuti;
-                            $keluar = $hlp->getJumlahMuridKeluarByMonth($ibo_id, $key, $bln, $thn);
-                            $keluarTotal +=$keluar;
+                        if ($bln != "All") {
                             ?>
-                            <tr>
-                                <td><?= $level; ?></td>
-                                <td><?= $aktiv; ?></td>
-                                <td><?= $cuti; ?></td>
-                                <td><?= $keluar; ?></td>
-                                <td><?= $keluar; ?></td>
-                            </tr>
+                            <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="3"><?= Generic::getMonthName($bln); ?></th>
+
                             <?
                         }
                         ?>
+                        <th colspan="1">Total</th>
+                    </tr>
+                    <tr>
+                        <th>Aktif</th>
+                        <th>Cuti</th>
+                        <th>Keluar</th>
+                        <th>Keluar</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?
+                    $aktiv = 0;
+                    $cuti = 0;
+                    $keluar = 0;
+                    $aktivTotal = 0;
+                    $cutiTotal = 0;
+                    $keluarTotal = 0;
+                    foreach ($arrLevel as $key => $level) {
+                        $hlp = new StatusHisMuridModel();
+                        $aktiv = $hlp->getJumlahMuridAktivByMonth($ibo_id, $key, $bln, $thn);
+                        $aktivTotal +=$aktiv;
+                        $cuti = $hlp->getJumlahMuridCutiByMonth($ibo_id, $key, $bln, $thn);
+                        $cutiTotal +=$cuti;
+                        $keluar = $hlp->getJumlahMuridKeluarByMonth($ibo_id, $key, $bln, $thn);
+                        $keluarTotal +=$keluar;
+                        ?>
+                        <tr>
+                            <td><?= $level; ?></td>
+                            <td><?= $aktiv; ?></td>
+                            <td><?= $cuti; ?></td>
+                            <td><?= $keluar; ?></td>
+                            <td><?= $keluar; ?></td>
+                        </tr>
+                        <?
+                    }
+                    ?>
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <td  class="total tengah">Total</td>
-                            <td><?= $aktivTotal; ?></td>
-                            <td><?= $cutiTotal; ?></td>
-                            <td><?= $keluarTotal; ?></td>
-                            <td><?= $keluarTotal; ?></td>
-                        </tr>
+                    <tr>
+                        <td  class="total tengah">Total</td>
+                        <td><?= $aktivTotal; ?></td>
+                        <td><?= $cutiTotal; ?></td>
+                        <td><?= $keluarTotal; ?></td>
+                        <td><?= $keluarTotal; ?></td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -1145,7 +1145,7 @@ class BusinessIntelligence extends WebService {
                         <?
                     }
                     ?>
-                </select>  
+                </select>
                 Tahun :<select id="tahun_<?= $t; ?>">
                     <?
                     for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
@@ -1165,7 +1165,7 @@ class BusinessIntelligence extends WebService {
 
                 <button id="submit_rekap_<?= $t; ?>">submit</button>
                 <span id="export_<?= $t; ?>" class="glyphicon glyphicon-export" aria-hidden="true"></span>
-        <!--                <span id="print_<?= $t; ?>" class="glyphicon glyphicon-print" aria-hidden="true"></span>-->
+                <!--                <span id="print_<?= $t; ?>" class="glyphicon glyphicon-print" aria-hidden="true"></span>-->
 
             </div>
         </section>
@@ -1208,80 +1208,80 @@ class BusinessIntelligence extends WebService {
             <div id = "kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
                 <table class="table table-bordered table-striped table-sempoa-border putih" >
                     <thead>
-                        <tr>
-                            <th class = "tengah" rowspan="2">No.</th>
-                            <th class = "tengah" rowspan="2">Kode TC</th>
-                            <th class = "tengah" rowspan="2">Nama TC</th>
-                            <th class = "tengah" rowspan="2">Nama Director</th>
-                            <?
-                            if ($bln != "All") {
-                                ?>
-                                <th id = "<?= $bln . "_" . $thn; ?>" class = "tengahcolumn" colspan="7"><?= Generic::getMonthName($bln); ?></th>
-
-                                <?
-                            }
-                            ?>
-
-                        </tr>
-                        <tr>
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
-
-                        </tr>
-                    </thead>
-                    <tbody id="load_<?= $bln . "_" . $thn; ?>">
+                    <tr>
+                        <th class = "tengah" rowspan="2">No.</th>
+                        <th class = "tengah" rowspan="2">Kode TC</th>
+                        <th class = "tengah" rowspan="2">Nama TC</th>
+                        <th class = "tengah" rowspan="2">Nama Director</th>
                         <?
-                        $i = 1;
-                        foreach ($arrMyTC as $id_tc => $tc) {
-                            $orgTC = new SempoaOrg();
-                            $orgTC->getByID($id_tc);
+                        if ($bln != "All") {
                             ?>
-                            <tr>
-                                <td><?= $i; ?></td>
-                                <td><?= $orgTC->org_kode; ?></td>
-                                <td><?= $orgTC->nama; ?></td>
-                                <td><?= $orgTC->nama_pemilik; ?></td>
-                                <?
-                                $org_tc = new RekapSiswaIBOModel();
-                                $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
-                                $total_bl += $arrDaten[0]->bi_rekap_bl;
-                                $total_baru += $arrDaten[0]->bi_rekap_baru;
-                                $total_keluar += $arrDaten[0]->bi_rekap_keluar;
-                                $total_cuti += $arrDaten[0]->bi_rekap_cuti;
-                                $total_lulus += $arrDaten[0]->bi_rekap_lulus;
-                                $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
-                                $total_kupon += $arrDaten[0]->bi_rekap_kupon;
-                                ?>
-                                <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
-                            </tr>
+                            <th id = "<?= $bln . "_" . $thn; ?>" class = "tengahcolumn" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+
                             <?
-                            $i++;
                         }
                         ?>
+
+                    </tr>
+                    <tr>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="load_<?= $bln . "_" . $thn; ?>">
+                    <?
+                    $i = 1;
+                    foreach ($arrMyTC as $id_tc => $tc) {
+                        $orgTC = new SempoaOrg();
+                        $orgTC->getByID($id_tc);
+                        ?>
+                        <tr>
+                            <td><?= $i; ?></td>
+                            <td><?= $orgTC->org_kode; ?></td>
+                            <td><?= $orgTC->nama; ?></td>
+                            <td><?= $orgTC->nama_pemilik; ?></td>
+                            <?
+                            $org_tc = new RekapSiswaIBOModel();
+                            $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
+                            $total_bl += $arrDaten[0]->bi_rekap_bl;
+                            $total_baru += $arrDaten[0]->bi_rekap_baru;
+                            $total_keluar += $arrDaten[0]->bi_rekap_keluar;
+                            $total_cuti += $arrDaten[0]->bi_rekap_cuti;
+                            $total_lulus += $arrDaten[0]->bi_rekap_lulus;
+                            $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
+                            $total_kupon += $arrDaten[0]->bi_rekap_kupon;
+                            ?>
+                            <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
+                        </tr>
+                        <?
+                        $i++;
+                    }
+                    ?>
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <td colspan="4" style="text-align:center; font-weight: bold">Total</td>
+                    <tr>
+                        <td colspan="4" style="text-align:center; font-weight: bold">Total</td>
 
-                            <td><?= $total_bl; ?></td>
-                            <td><?= $total_baru; ?></td>
-                            <td><?= $total_keluar; ?></td>
-                            <td><?= $total_cuti; ?></td>
-                            <td><?= $total_lulus; ?></td>
-                            <td><?= $total_aktiv; ?></td>
-                            <td><?= $total_kupon; ?></td>
-                        </tr>
+                        <td><?= $total_bl; ?></td>
+                        <td><?= $total_baru; ?></td>
+                        <td><?= $total_keluar; ?></td>
+                        <td><?= $total_cuti; ?></td>
+                        <td><?= $total_lulus; ?></td>
+                        <td><?= $total_aktiv; ?></td>
+                        <td><?= $total_kupon; ?></td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -1322,7 +1322,7 @@ class BusinessIntelligence extends WebService {
                         <?
                     }
                     ?>
-                </select>  
+                </select>
                 Tahun :<select id="tahun_<?= $t; ?>">
                     <?
                     for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
@@ -1342,7 +1342,7 @@ class BusinessIntelligence extends WebService {
 
                 <button id="submit_rekap_<?= $t; ?>">submit</button>
                 <span id="export_<?= $t; ?>" class="glyphicon glyphicon-export" aria-hidden="true"></span>
-        <!--                <span id="print_<?= $t; ?>" class="glyphicon glyphicon-print" aria-hidden="true"></span>-->
+                <!--                <span id="print_<?= $t; ?>" class="glyphicon glyphicon-print" aria-hidden="true"></span>-->
 
             </div>
         </section>
@@ -1388,87 +1388,87 @@ class BusinessIntelligence extends WebService {
             <div id = "kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
                 <table class="table table-bordered table-striped table-sempoa-border putih" >
                     <thead>
-                        <tr>
-                            <th class = "tengah" rowspan="2">No.</th>
-                            <th class = "tengah" rowspan="2">Kode TC</th>
-                            <th class = "tengah" rowspan="2">Nama TC</th>
-                            <th class = "tengah" rowspan="2">Nama Director</th>
-                            <?
-                            if ($bln != "All") {
-                                ?>
-                                <th id = "<?= $bln . "_" . $thn; ?>" class = "tengahcolumn" colspan="7"><?= Generic::getMonthName($bln); ?></th>
-
-                                <?
-                            }
-                            ?>
-
-                        </tr>
-                        <tr>
-                            <th>BL</th>
-                            <th>B</th>
-                            <th>K</th>
-                            <th>C</th>
-                            <th>L</th>
-                            <th>A</th>
-                            <th>KPN</th>
-
-                        </tr>
-                    </thead>
-                    <tbody id="load_<?= $bln . "_" . $thn; ?>">
+                    <tr>
+                        <th class = "tengah" rowspan="2">No.</th>
+                        <th class = "tengah" rowspan="2">Kode TC</th>
+                        <th class = "tengah" rowspan="2">Nama TC</th>
+                        <th class = "tengah" rowspan="2">Nama Director</th>
                         <?
-                        $i = 1;
-                        $total_bl =0;
-                        $total_baru =0;
-                        $total_keluar =0;
-                        $total_cuti =0;
-                        $total_lulus =0;
-                        $total_aktiv =0;
-                        $total_kupon =0;
-                        foreach ($arrMyTC as $id_tc => $tc) {
-                            $orgTC = new SempoaOrg();
-                            $orgTC->getByID($id_tc);
+                        if ($bln != "All") {
                             ?>
-                            <tr>
-                                <td><?= $i; ?></td>
-                                <td><?= $orgTC->org_kode; ?></td>
-                                <td><?= $orgTC->nama; ?></td>
-                                <td><?= $orgTC->nama_pemilik; ?></td>
-                                <?
-                                $org_tc = new RekapSiswaIBOModel();
-                                $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
-                                $total_bl += $arrDaten[0]->bi_rekap_bl;
-                                $total_baru += $arrDaten[0]->bi_rekap_baru;
-                                $total_keluar += $arrDaten[0]->bi_rekap_keluar;
-                                $total_cuti += $arrDaten[0]->bi_rekap_cuti;
-                                $total_lulus += $arrDaten[0]->bi_rekap_lulus;
-                                $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
-                                $total_kupon += $arrDaten[0]->bi_rekap_kupon;
-                                ?>
-                                <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
-                                <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
-                            </tr>
+                            <th id = "<?= $bln . "_" . $thn; ?>" class = "tengahcolumn" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+
                             <?
-                            $i++;
                         }
                         ?>
+
+                    </tr>
+                    <tr>
+                        <th>BL</th>
+                        <th>B</th>
+                        <th>K</th>
+                        <th>C</th>
+                        <th>L</th>
+                        <th>A</th>
+                        <th>KPN</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="load_<?= $bln . "_" . $thn; ?>">
+                    <?
+                    $i = 1;
+                    $total_bl =0;
+                    $total_baru =0;
+                    $total_keluar =0;
+                    $total_cuti =0;
+                    $total_lulus =0;
+                    $total_aktiv =0;
+                    $total_kupon =0;
+                    foreach ($arrMyTC as $id_tc => $tc) {
+                        $orgTC = new SempoaOrg();
+                        $orgTC->getByID($id_tc);
+                        ?>
+                        <tr>
+                            <td><?= $i; ?></td>
+                            <td><?= $orgTC->org_kode; ?></td>
+                            <td><?= $orgTC->nama; ?></td>
+                            <td><?= $orgTC->nama_pemilik; ?></td>
+                            <?
+                            $org_tc = new RekapSiswaIBOModel();
+                            $arrDaten = $org_tc->getDaten($bln, $thn, $orgTC->nama);
+                            $total_bl += $arrDaten[0]->bi_rekap_bl;
+                            $total_baru += $arrDaten[0]->bi_rekap_baru;
+                            $total_keluar += $arrDaten[0]->bi_rekap_keluar;
+                            $total_cuti += $arrDaten[0]->bi_rekap_cuti;
+                            $total_lulus += $arrDaten[0]->bi_rekap_lulus;
+                            $total_aktiv += $arrDaten[0]->bi_rekap_aktiv;
+                            $total_kupon += $arrDaten[0]->bi_rekap_kupon;
+                            ?>
+                            <td><?= $arrDaten[0]->bi_rekap_bl; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_baru; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_keluar; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_cuti; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_lulus; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_aktiv; ?></td>
+                            <td><?= $arrDaten[0]->bi_rekap_kupon; ?></td>
+                        </tr>
+                        <?
+                        $i++;
+                    }
+                    ?>
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <td colspan="4" style="text-align:center; font-weight: bold">Total</td>
+                    <tr>
+                        <td colspan="4" style="text-align:center; font-weight: bold">Total</td>
 
-                            <td><?= $total_bl; ?></td>
-                            <td><?= $total_baru; ?></td>
-                            <td><?= $total_keluar; ?></td>
-                            <td><?= $total_cuti; ?></td>
-                            <td><?= $total_lulus; ?></td>
-                            <td><?= $total_aktiv; ?></td>
-                            <td><?= $total_kupon; ?></td>
-                        </tr>
+                        <td><?= $total_bl; ?></td>
+                        <td><?= $total_baru; ?></td>
+                        <td><?= $total_keluar; ?></td>
+                        <td><?= $total_cuti; ?></td>
+                        <td><?= $total_lulus; ?></td>
+                        <td><?= $total_aktiv; ?></td>
+                        <td><?= $total_kupon; ?></td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -1923,81 +1923,81 @@ class BusinessIntelligence extends WebService {
         <div class="table-responsive">
             <table class="table table-bordered table-striped " style="background-color: white">
                 <thead>
-                    <tr>
-                        <th colspan="6" style="text-align:center;">Laporan Absen Coach Bulanan</th>
-                    </tr>
-                    <tr>
-                        <th>No.</th>
-                        <th>Nama Siswa</th>
-                        <th>Level Siswa</th>
-                        <th>Lama Belajar</th>
-                    </tr>
+                <tr>
+                    <th colspan="6" style="text-align:center;">Laporan Absen Coach Bulanan</th>
+                </tr>
+                <tr>
+                    <th>No.</th>
+                    <th>Nama Siswa</th>
+                    <th>Level Siswa</th>
+                    <th>Lama Belajar</th>
+                </tr>
                 </thead>
                 <tbody id ='container_coach_bulanan<?= $t; ?>'>
-                    <?
-                    $i = 1;
-                    $sudah = array();
-                    $muridMatrix = new MuridKelasMatrix();
-                    $arrGuru = $muridMatrix->getWhere("tc_id=$tc_id AND active_status = 1 ORDER BY level_murid ASC");
-                    $firstime = true;
-                    $now = new DateTime();
-                    $kelasByGuru = array();
-                    foreach ($arrGuru as $mm) {
-                        $kelasByGuru[$mm->guru_id][] = $mm;
-                    }
+                <?
+                $i = 1;
+                $sudah = array();
+                $muridMatrix = new MuridKelasMatrix();
+                $arrGuru = $muridMatrix->getWhere("tc_id=$tc_id AND active_status = 1 ORDER BY level_murid ASC");
+                $firstime = true;
+                $now = new DateTime();
+                $kelasByGuru = array();
+                foreach ($arrGuru as $mm) {
+                    $kelasByGuru[$mm->guru_id][] = $mm;
+                }
 
-                    $num = 1;
-                    foreach ($kelasByGuru as $guru_id => $arrmm) {
+                $num = 1;
+                foreach ($kelasByGuru as $guru_id => $arrmm) {
 //                        pr($arrmm);
-                        $guru = new SempoaGuruModel();
-                        $guru->getByID($guru_id);
-                        ?>
-                        <tr class="guru_coach">
-                            <td colspan="4">
-                                <?= $guru->nama_guru; ?>
-                            </td>
-                        </tr>
+                    $guru = new SempoaGuruModel();
+                    $guru->getByID($guru_id);
+                    ?>
+                    <tr class="guru_coach">
+                        <td colspan="4">
+                            <?= $guru->nama_guru; ?>
+                        </td>
+                    </tr>
 
-                        <?
-                        foreach ($arrmm as $mm) {
+                    <?
+                    foreach ($arrmm as $mm) {
+                        $datetime2 = new DateTime($mm->active_date);
+                        $datetime1 = new DateTime(date('Y-m-d H:i:s'));
+                        $interval = $datetime2->diff($datetime1);
+
+                        if (in_array($mm->murid_id . $guru_id, $sudah)) {
                             $datetime2 = new DateTime($mm->active_date);
                             $datetime1 = new DateTime(date('Y-m-d H:i:s'));
                             $interval = $datetime2->diff($datetime1);
-
-                            if (in_array($mm->murid_id . $guru_id, $sudah)) {
-                                $datetime2 = new DateTime($mm->active_date);
-                                $datetime1 = new DateTime(date('Y-m-d H:i:s'));
-                                $interval = $datetime2->diff($datetime1);
-                                continue;
-                            }
-                            $sudah[] = $mm->murid_id . $guru_id;
-                            $murid = new MuridModel();
-                            $murid->getByID($mm->murid_id);
+                            continue;
+                        }
+                        $sudah[] = $mm->murid_id . $guru_id;
+                        $murid = new MuridModel();
+                        $murid->getByID($mm->murid_id);
 //                                    Generic::getMuridNamebyID($mm->murid_id);
-                            ?>
-                            <tr>
-                                <td>
-                                    <?=
-                                    $num;
-                                    $num++;
-                                    ?>
-                                </td>
-                                <td>
-                                    <?= Generic::getMuridNamebyID($mm->murid_id); ?>
-                                </td>
-                                <td>
-                                    <?= Generic::getLevelNameByID($murid->id_level_sekarang); ?>
-                                </td>
-                                <td>
-                                    <?= floor($interval->format('%R%a ') / 30); ?> bulan
-                                </td>
-                            </tr>
+                        ?>
+                        <tr>
+                            <td>
+                                <?=
+                                $num;
+                                $num++;
+                                ?>
+                            </td>
+                            <td>
+                                <?= Generic::getMuridNamebyID($mm->murid_id); ?>
+                            </td>
+                            <td>
+                                <?= Generic::getLevelNameByID($murid->id_level_sekarang); ?>
+                            </td>
+                            <td>
+                                <?= floor($interval->format('%R%a ') / 30); ?> bulan
+                            </td>
+                        </tr>
 
-                        <? } ?>   
+                    <? } ?>
 
-                        <?
-                    }
-                    ?>
+                    <?
+                }
+                ?>
 
                 </tbody>
             </table>
@@ -2085,62 +2085,62 @@ class BusinessIntelligence extends WebService {
             <div class="table-responsive" id = "kepala_jumlah_buku_<?= $t . "_" . $thn; ?>">
                 <table  class="table table-bordered table-striped" style="background-color: white;">
                     <thead >
+                    <tr>
+                        <th></th>
+                        <?
+                        foreach ($arrTahun as $valthn) {
+                            ?>
+                            <th><?= $valthn; ?></th>
+                            <?
+                        }
+                        ?>
+
+
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <?
+                    foreach ($arrKey as $val) {
+                        ?>
                         <tr>
-                            <th></th>
+                            <td><?= $val; ?></td>
                             <?
                             foreach ($arrTahun as $valthn) {
+                                $rekap_siswa = new RekapSiswaIBOModel();
+                                if ($valthn == $thn_skrg) {
+                                    $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_ibo_id='$ibo_id' AND bi_rekap_tahun = $valthn AND bi_rekap_bln=$bln_skrg");
+                                } else {
+                                    $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_ibo_id='$ibo_id' AND bi_rekap_tahun = $valthn AND bi_rekap_bln =12");
+                                }
+                                $total[$val][$valthn] = 0;
+
+                                foreach ($arrRekapSiswa as $valRekap) {
+                                    if ($val == "Siswa") {
+                                        $total[$val][$valthn] += $valRekap->bi_rekap_aktiv;
+                                    }
+                                    if ($val == "Buku") {
+                                        $total[$val][$valthn] += $valRekap->bi_rekap_buku;
+                                    }
+                                    if ($val == "Kupon") {
+                                        $total[$val][$valthn] += $valRekap->bi_rekap_kupon;
+                                    }
+                                }
+                            }
+
+                            foreach ($arrTahun as $valthn) {
                                 ?>
-                                <th><?= $valthn; ?></th>
+                                <td><?= $total[$val][$valthn]; ?></td>
                                 <?
                             }
                             ?>
 
 
+
                         </tr>
-                    </thead>
-                    <tbody >
                         <?
-                        foreach ($arrKey as $val) {
-                            ?>
-                            <tr>
-                                <td><?= $val; ?></td>
-                                <?
-                                foreach ($arrTahun as $valthn) {
-                                    $rekap_siswa = new RekapSiswaIBOModel();
-                                    if ($valthn == $thn_skrg) {
-                                        $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_ibo_id='$ibo_id' AND bi_rekap_tahun = $valthn AND bi_rekap_bln=$bln_skrg");
-                                    } else {
-                                        $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_ibo_id='$ibo_id' AND bi_rekap_tahun = $valthn AND bi_rekap_bln =12");
-                                    }
-                                    $total[$val][$valthn] = 0;
-
-                                    foreach ($arrRekapSiswa as $valRekap) {
-                                        if ($val == "Siswa") {
-                                            $total[$val][$valthn] += $valRekap->bi_rekap_aktiv;
-                                        }
-                                        if ($val == "Buku") {
-                                            $total[$val][$valthn] += $valRekap->bi_rekap_buku;
-                                        }
-                                        if ($val == "Kupon") {
-                                            $total[$val][$valthn] += $valRekap->bi_rekap_kupon;
-                                        }
-                                    }
-                                }
-
-                                foreach ($arrTahun as $valthn) {
-                                    ?>
-                                    <td><?= $total[$val][$valthn]; ?></td>
-                                    <?
-                                }
-                                ?>
-
-
-
-                            </tr>
-                            <?
-                        }
-                        ?>
-                        <tr></tr>
+                    }
+                    ?>
+                    <tr></tr>
                     </tbody>
                     <tfoot></tfoot>
                 </table>
@@ -2214,95 +2214,95 @@ class BusinessIntelligence extends WebService {
                     <table class="table table-bordered table-striped" style="background-color: white;">
 
                         <thead>
-                            <tr>
-                                <th rowspan="2">No.</th>
-                                <th rowspan="2">Wilayah</th>
-                                <? foreach ($arrTahun as $valThn) {
-                                    ?>
-                                    <th colspan="3"><?= $valThn ?></th>
-                                    <?
-                                }
+                        <tr>
+                            <th rowspan="2">No.</th>
+                            <th rowspan="2">Wilayah</th>
+                            <? foreach ($arrTahun as $valThn) {
                                 ?>
-                            </tr>
-                            <tr>
-
-                                <? foreach ($arrTahun as $valThn) {
-                                    ?>
-                                    <th >TC</th>
-                                    <th >Coach</th>
-                                    <th >Siswa</th>
-                                    <?
-                                }
-                                ?>
-                            </tr>
-                        </thead>
-                        <tbody >
-                            <?
-                            $i = 1;
-                            foreach ($arrMyIBO as $keyIBO => $iboname) {
-                                ?>
-                                <tr>
-                                    <td><?= $i; ?></td>
-                                    <td><?= $iboname; ?></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
+                                <th colspan="3"><?= $valThn ?></th>
                                 <?
-                                $arrmytc = Generic::getAllMyTC($keyIBO);
-                                foreach ($arrmytc as $keytc => $tcname) {
-                                    ?>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-
-                                        <?
-                                        foreach ($arrTahun as $keythn => $valthn) {
-                                            $rekap_siswa = new RekapSiswaIBOModel();
-                                            if ($valthn == $thn_skrg) {
-                                                $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_tc_id=$keytc AND bi_rekap_tahun = $valthn AND bi_rekap_bln=$bln_skrg");
-                                            } else {
-                                                $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_tc_id=$keytc AND bi_rekap_tahun = $valthn AND bi_rekap_bln =12");
-                                            }
-                                            $arrCoach[$keytc][$valthn] = 0;
-                                            $arrSiswa[$keytc][$valthn] = 0;
-                                            foreach ($arrRekapSiswa as $rekap) {
-
-                                                $arrCoach[$keytc][$valthn] += $rekap->bi_rekap_jumlah_guru;
-                                                $arrSiswa[$keytc][$valthn] += $rekap->bi_rekap_aktiv;
-                                            }
-                                            ?>
-                                            <td><?= $tcname; ?></td>
-                                            <td><?= $arrCoach[$keytc][$valthn]; ?></td>
-                                            <td><?= $arrSiswa[$keytc][$valthn]; ?></td>
-                                            <?
-                                        }
-//                                pr($arrCoach);
-//                                pr($arrSiswa);
-                                        ?>
-
-
-
-
-                                    </tr>
-                                    <?
-                                }
-                                ?>
-                                <? ?>
-
-                                <?
-                                $i++;
                             }
                             ?>
+                        </tr>
+                        <tr>
+
+                            <? foreach ($arrTahun as $valThn) {
+                                ?>
+                                <th >TC</th>
+                                <th >Coach</th>
+                                <th >Siswa</th>
+                                <?
+                            }
+                            ?>
+                        </tr>
+                        </thead>
+                        <tbody >
+                        <?
+                        $i = 1;
+                        foreach ($arrMyIBO as $keyIBO => $iboname) {
+                            ?>
+                            <tr>
+                                <td><?= $i; ?></td>
+                                <td><?= $iboname; ?></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <?
+                            $arrmytc = Generic::getAllMyTC($keyIBO);
+                            foreach ($arrmytc as $keytc => $tcname) {
+                                ?>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+
+                                    <?
+                                    foreach ($arrTahun as $keythn => $valthn) {
+                                        $rekap_siswa = new RekapSiswaIBOModel();
+                                        if ($valthn == $thn_skrg) {
+                                            $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_tc_id=$keytc AND bi_rekap_tahun = $valthn AND bi_rekap_bln=$bln_skrg");
+                                        } else {
+                                            $arrRekapSiswa = $rekap_siswa->getWhere(" bi_rekap_tc_id=$keytc AND bi_rekap_tahun = $valthn AND bi_rekap_bln =12");
+                                        }
+                                        $arrCoach[$keytc][$valthn] = 0;
+                                        $arrSiswa[$keytc][$valthn] = 0;
+                                        foreach ($arrRekapSiswa as $rekap) {
+
+                                            $arrCoach[$keytc][$valthn] += $rekap->bi_rekap_jumlah_guru;
+                                            $arrSiswa[$keytc][$valthn] += $rekap->bi_rekap_aktiv;
+                                        }
+                                        ?>
+                                        <td><?= $tcname; ?></td>
+                                        <td><?= $arrCoach[$keytc][$valthn]; ?></td>
+                                        <td><?= $arrSiswa[$keytc][$valthn]; ?></td>
+                                        <?
+                                    }
+                                    //                                pr($arrCoach);
+                                    //                                pr($arrSiswa);
+                                    ?>
+
+
+
+
+                                </tr>
+                                <?
+                            }
+                            ?>
+                            <? ?>
+
+                            <?
+                            $i++;
+                        }
+                        ?>
                         </tbody>
                         <tfoot></tfoot>
 
@@ -2332,7 +2332,7 @@ class BusinessIntelligence extends WebService {
                         }, 'json');
                     });
                     $('#export_<?= $t; ?>').click(function () {
-                        window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?type=<?= KEY::$REPORT_REKAP_LAMA_BELAJAR_MURID_TC; ?>&org_id=<?= $ibo_id; ?>&tc_id=' + tc_id, "_blank ");
+                        window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?type=<?= KEY::$REPORT_REKAP_LAMA_BELAJAR_MURID_TC; ?>&tc_id=<?= $tc_id; ?>', "_blank ");
 
                     });
 
@@ -2501,7 +2501,7 @@ class BusinessIntelligence extends WebService {
                     $('#submit_absen_couch_<?= $t; ?>').click(function () {
                         var thn = $('#tahun_<?= $t; ?>').val();
                         var week = $('#minggu_<?= $t; ?>').val();
-                        var tc_id = $('#pilih_TC_<?= $t; ?>').val();
+                        var tc_id = '<?=AccessRight::getMyOrgID();?>';
                         $('#content_absen_coach_<?= $t . "_" . $todayweek . "_" . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/loadabsencoach?week=" + week + "&thn=" + thn + "&tc_id=" + tc_id, function () {
 
                         }, 'json');
@@ -2511,7 +2511,8 @@ class BusinessIntelligence extends WebService {
                         var thn = $('#tahun_<?= $t; ?>').val();
                         var week = $('#minggu_<?= $t; ?>').val();
                         var tglWeek = $("#minggu_<?= $t; ?> option:selected").text();
-                        var tc_id = $('#pilih_TC_<?= $t; ?>').val();
+                        var tc_id = '<?=AccessRight::getMyOrgID();?>';
+
                         window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?type=<?= KEY::$REPORT_REKAP_ABSEN_GURU; ?>&tc_id=' + tc_id + '&week=' + week + " &thn=" + thn + "&tglWeek= " + tglWeek, "_blank ");
 
                     });
@@ -2790,8 +2791,7 @@ class BusinessIntelligence extends WebService {
             $('#export_<?= $t; ?>').click(function () {
                 var bln = $('#bulan_<?= $t; ?>').val();
                 var thn = $('#tahun_<?= $t; ?>').val();
-                window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?type=<?= KEY::$REPORT_REKAP_KUPON_TC; ?>&bln=' + bln + "&thn=" + thn + "&ibo_id=<?= $ibo_id; ?>", "_blank ");
-                //                window.open('<?= _SPPATH; ?>BIWebHelper/testExcel?bln=' +bln + "&thn="+thn +"&ibo_id=<?= $ibo_id; ?>", "_blank ");
+                window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?type=<?= KEY::$REPORT_REKAP_KUPON_TC_LVL; ?>&bln=' + bln + "&thn=" + thn + "&tc_id=<?= $tc_id; ?>", "_blank ");
 
 
             });
@@ -2966,7 +2966,7 @@ class BusinessIntelligence extends WebService {
             $('#export_<?= $t; ?>').click(function () {
                 var bln = $('#bulan_<?= $t; ?>').val();
                 var thn = $('#tahun_<?= $t; ?>').val();
-                window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?ibo_id=<?= $ibo_id; ?>&type=<?= KEY::$REPORT_REKAP_SISWA_IBO; ?>&bln=' + bln + "&thn=" + thn, "_blank ");
+                window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?tc_id=<?= $tc_id; ?>&type=<?= KEY::$REPORT_REKAP_SISWA_IBO_TC_LVL; ?>&bln=' + bln + "&thn=" + thn, "_blank ");
             });
         </script>
         <?
@@ -3091,8 +3091,8 @@ class BusinessIntelligence extends WebService {
             $('#export_<?= $t; ?>').click(function () {
                 var bln = $('#bulan_<?= $t; ?>').val();
                 var thn = $('#tahun_<?= $t; ?>').val();
-                var tc_id = $('#pilih_TC_<?= $t; ?>').val();
-                window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?tc_id=' + tc_id + '&type=<?= KEY::$REPORT_REKAP_BULANAN_KUPON; ?>&bln=' + bln + "&thn=" + thn, "_blank ");
+                var tc_id = '<?=$tc_id;?>';
+                window.open('<?= _SPPATH; ?>BIWebHelper/exportSempoa?tc_id=' + tc_id + '&type=<?= KEY::$REPORT_REKAP_BULANAN_KUPON_TC_LVL; ?>&bln=' + bln + "&thn=" + thn, "_blank ");
             });
         </script>
         <?
