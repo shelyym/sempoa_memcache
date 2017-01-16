@@ -31,7 +31,7 @@ class RegisterGuru extends Model {
     public $transaksi_date;
     
     public function isInvoiceCreated($id_guru){
-        $invoice = new $this();
+//        $invoice = new $this();
         $invoice = $this->getWhereOne("transaksi_guru_id=$id_guru");
         return $invoice->transaksi_id;
     }

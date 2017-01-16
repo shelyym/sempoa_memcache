@@ -47,8 +47,8 @@ class TestMemcache extends WebService
         $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, 5);
 
         pr($biaya);
-        $reg = new RegisterGuru();
-        $reg->createInvoice(48, $biaya, 1, 2, 3, 5);
+//        $reg = new RegisterGuru();
+//        $reg->createInvoice(48, $biaya, 1, 2, 3, 5);
         die();
         pr("Memcache");
         pr($memcache->get("localhost:8888/sempoa_memcached//MatrixNilaiModel_c__2"));
