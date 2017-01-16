@@ -102,19 +102,16 @@ class MuridWebHelper extends WebService
                                 $buku_active = array_pop($arrMyBuku);
 //                            pr($buku_active);
                                 $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$org'");
-                                if (!is_null($stockBarang->id_barang)) {
-                                    if ($stockBarang->jumlah_stock < 0) {
-                                        $lanjut = $lanjut & false;
-                                        echo "<b> Stock Habis!</b>";
-                                    } else {
-                                        $lanjut = $lanjut & true;
-                                        $id_buku = $buku_active->id_barang_harga;
-                                        echo Generic::getLevelNameByID($murid->id_level_masuk);
-                                    }
-                                } else {
+
+                                if ($stockBarang->jumlah_stock <= 0) {
                                     $lanjut = $lanjut & false;
                                     echo "<b> Stock Habis!</b>";
+                                } else {
+                                    $lanjut = $lanjut & true;
+                                    $id_buku = $buku_active->id_barang_harga;
+                                    echo Generic::getLevelNameByID($murid->id_level_masuk);
                                 }
+
 //                                pr($stockBarang);
 
                             }
@@ -3382,7 +3379,7 @@ class MuridWebHelper extends WebService
 
                             var current = $("#result_<?= $val->nilai_murid_id . "_" . $val->nilai_level; ?>").html();
                             var html = "<input value=\"<?=$val->nilai_result;?>\" type=\"number\" name=\"nilai\" id='select_nilai_<?= $val->nilai_murid_id . "_" . $val->nilai_level . $t; ?>'>";
-//                          
+//
                             $("#result_<?= $val->nilai_murid_id . "_" . $val->nilai_level . $t; ?>").html(html);
                             $('#select_nilai_<?= $val->nilai_murid_id . "_" . $val->nilai_level . $t; ?>').change(function () {
                                 var slc = $('#select_nilai_<?= $val->nilai_murid_id . "_" . $val->nilai_level . $t; ?>').val();
