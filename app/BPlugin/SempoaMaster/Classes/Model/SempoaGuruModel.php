@@ -248,7 +248,7 @@ class SempoaGuruModel extends SempoaModel
         if ($guru->guru_first_register == 0) {
             $reg = new RegisterGuru();
             $reg->isInvoiceCreated($id);
-            if ($reg->transaksi_id === null) {
+            if (is_null($reg->transaksi_id)) {
                 $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, $guru->guru_tc_id);
                 $reg->createInvoice($id, $biaya, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id);
                 if (AccessRight::getMyOrgType() == KEY::$IBO) {
