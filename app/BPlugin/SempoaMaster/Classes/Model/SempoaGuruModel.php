@@ -237,33 +237,54 @@ class SempoaGuruModel extends SempoaModel
             $err['pendidikan_terakhir'] = "Silahkan isi Pendidikan Terakhir Anda";
         }
 
+        if(($this->guru_first_register == 0) && ($this->guru_id != null)){
+            $reg = new RegisterGuru();
+            $reg->isInvoiceCreated($this->guru_id);
+            if ($reg->transaksi_id === null) {
+                $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, $this->guru_tc_id);
+                $reg->createInvoice($this->guru_id, $biaya, $this->guru_ak_id, $this->guru_kpo_id, $this->guru_ibo_id, $this->guru_tc_id);
+                if (AccessRight::getMyOrgType() == KEY::$IBO) {
+                    SempoaInboxModel::sendMsg($this->guru_tc_id, AccessRight::getMyOrgID(), "Ada pendaftaran Guru Baru di TC Anda", "Ada pendaftaran Guru di TC Anda bernama: " . $this->nama_guru);
+                    SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), AccessRight::getMyOrgID(), "Ada pendaftaran Guru Baru di : " . Generic::getTCNamebyID($this->guru_tc_id), "Ada pendaftaran Guru di TC: " . Generic::getTCNamebyID($this->guru_tc_id) . " yang bernama: " . $this->nama_guru . " lakukan pengecekan");
+//
+                } elseif (AccessRight::getMyOrgType() == KEY::$TC) {
+                    SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), $this->guru_ibo_id, "Ada pendaftaran Guru Baru di TC Anda", "Ada pendaftaran Guru di TC Anda bernama: " . $this->nama_guru);
+                    SempoaInboxModel::sendMsg($this->guru_ibo_id, $this->guru_ibo_id, "Ada pendaftaran Guru Baru di : " . Generic::getTCNamebyID($this->guru_tc_id), "Ada pendaftaran Guru di TC: " . Generic::getTCNamebyID($this->guru_tc_id) . " yang bernama: " . $this->nama_guru . " lakukan pengecekan");
+//
+                }
 
+            }
+
+
+        }
         return $err;
     }
 
     public function onSaveSuccess($id)
     {
-        parent::onSaveSuccess($id);
-        $guru = new $this();
-        $guru->getByID($id);
-        if ($guru->guru_first_register == 0) {
-            $reg = new RegisterGuru();
-            $reg->isInvoiceCreated($id);
-            if ($reg->transaksi_id === null) {
-                $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, $guru->guru_tc_id);
-                $reg->createInvoice($id, $biaya, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id);
-                if (AccessRight::getMyOrgType() == KEY::$IBO) {
-                    SempoaInboxModel::sendMsg($guru->guru_tc_id, AccessRight::getMyOrgID(), "Ada pendaftaran Guru Baru di TC Anda", "Ada pendaftaran Guru di TC Anda bernama: " . $guru->nama_guru);
-                    SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), AccessRight::getMyOrgID(), "Ada pendaftaran Guru Baru di : " . Generic::getTCNamebyID($guru->guru_tc_id), "Ada pendaftaran Guru di TC: " . Generic::getTCNamebyID($guru->guru_tc_id) . " yang bernama: " . $guru->nama_guru . " lakukan pengecekan");
-//
-                } elseif (AccessRight::getMyOrgType() == KEY::$TC) {
-                    SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), $guru->guru_ibo_id, "Ada pendaftaran Guru Baru di TC Anda", "Ada pendaftaran Guru di TC Anda bernama: " . $guru->nama_guru);
-                    SempoaInboxModel::sendMsg($guru->guru_ibo_id, $guru->guru_ibo_id, "Ada pendaftaran Guru Baru di : " . Generic::getTCNamebyID($guru->guru_tc_id), "Ada pendaftaran Guru di TC: " . Generic::getTCNamebyID($guru->guru_tc_id) . " yang bernama: " . $guru->nama_guru . " lakukan pengecekan");
-//
-                }
 
-            }
-        }
+        parent::onSaveSuccess($id);
+
+//        $guru = new SempoaGuruModel();
+//        $guru->getByID($id);
+//        if ($guru->guru_first_register == 0) {
+//            $reg = new RegisterGuru();
+//            $reg->isInvoiceCreated($id);
+//            if ($reg->transaksi_id === null) {
+//                $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, $guru->guru_tc_id);
+//                $reg->createInvoice($id, $biaya, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id);
+//                if (AccessRight::getMyOrgType() == KEY::$IBO) {
+//                    SempoaInboxModel::sendMsg($guru->guru_tc_id, AccessRight::getMyOrgID(), "Ada pendaftaran Guru Baru di TC Anda", "Ada pendaftaran Guru di TC Anda bernama: " . $guru->nama_guru);
+//                    SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), AccessRight::getMyOrgID(), "Ada pendaftaran Guru Baru di : " . Generic::getTCNamebyID($guru->guru_tc_id), "Ada pendaftaran Guru di TC: " . Generic::getTCNamebyID($guru->guru_tc_id) . " yang bernama: " . $guru->nama_guru . " lakukan pengecekan");
+////
+//                } elseif (AccessRight::getMyOrgType() == KEY::$TC) {
+//                    SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), $guru->guru_ibo_id, "Ada pendaftaran Guru Baru di TC Anda", "Ada pendaftaran Guru di TC Anda bernama: " . $guru->nama_guru);
+//                    SempoaInboxModel::sendMsg($guru->guru_ibo_id, $guru->guru_ibo_id, "Ada pendaftaran Guru Baru di : " . Generic::getTCNamebyID($guru->guru_tc_id), "Ada pendaftaran Guru di TC: " . Generic::getTCNamebyID($guru->guru_tc_id) . " yang bernama: " . $guru->nama_guru . " lakukan pengecekan");
+////
+//                }
+//
+//            }
+//        }
     }
 
     public function getCountAktivGuruByTC($tc_id)

@@ -48,10 +48,6 @@ class TestMemcache extends WebService
         $guru = new SempoaGuruModel();
         $guru->getByID(45);
         pr($biaya);
-        $reg = new RegisterGuru();
-//        if($reg->isInvoiceCreated(45)){
-            $reg->createInvoice(45, $biaya, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id);
-//        }
 
         die();
         pr("Memcache");

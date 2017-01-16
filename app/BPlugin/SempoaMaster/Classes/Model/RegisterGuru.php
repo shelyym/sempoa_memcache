@@ -37,7 +37,19 @@ class RegisterGuru extends Model {
     }
 
     public function createInvoice($id_guru, $jumlah, $ak_id, $kpo_id, $ibo_id, $tc_id){
+
+        $murid = new MuridModel();
+        $murid->nama_siswa = "hebat";
+        $murid->save();
+
         $invoice = new RegisterGuru();
+
+//        $q = "INSERT INTO {$invoice->table_name} SET transaksi_guru_id = $id_guru,transaksi_date = leap_mysqldate(),transaksi_jumlah = $jumlah,transaksi_ak_id = $ak_id,transaksi_kpo_id = $kpo_id,transaksi_ibo_id = $ibo_id,transaksi_tc_id = $tc_id,transaksi_status = 0";
+//        global $db;
+//        $fid = $db->qid($q);
+
+
+
         $invoice->transaksi_guru_id = $id_guru;
         $invoice->transaksi_date = leap_mysqldate();
         $invoice->transaksi_jumlah= $jumlah;
@@ -46,6 +58,6 @@ class RegisterGuru extends Model {
         $invoice->transaksi_ibo_id= $ibo_id;
         $invoice->transaksi_tc_id= $tc_id;
         $invoice->transaksi_status=0;
-        $invoice->save();
+        $invoice->save(1);
     }
 }
