@@ -245,7 +245,7 @@ class SempoaGuruModel extends SempoaModel
         parent::onSaveSuccess($id);
         $guru = new $this();
         $guru->getByID($id);
-        if ($guru->guru_first_register == 0) {
+        if ($guru->guru_first_register === 0) {
             $reg = new RegisterGuru();
             $reg->isInvoiceCreated($id);
             if (is_null($reg->transaksi_id)) {
