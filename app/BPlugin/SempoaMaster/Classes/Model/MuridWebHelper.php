@@ -102,15 +102,21 @@ class MuridWebHelper extends WebService
                                 $buku_active = array_pop($arrMyBuku);
 //                            pr($buku_active);
                                 $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$org'");
-
-                                if ($stockBarang->jumlah_stock < 0) {
+                                if (!is_null($stockBarang->id_barang)) {
+                                    if ($stockBarang->jumlah_stock < 0) {
+                                        $lanjut = $lanjut & false;
+                                        echo "<b> Stock Habis!</b>";
+                                    } else {
+                                        $lanjut = $lanjut & true;
+                                        $id_buku = $buku_active->id_barang_harga;
+                                        echo Generic::getLevelNameByID($murid->id_level_masuk);
+                                    }
+                                } else {
                                     $lanjut = $lanjut & false;
                                     echo "<b> Stock Habis!</b>";
-                                } else {
-                                    $lanjut = $lanjut & true;
-                                    $id_buku = $buku_active->id_barang_harga;
-                                    echo Generic::getLevelNameByID($murid->id_level_masuk);
                                 }
+//                                pr($stockBarang);
+
                             }
                             ?>
                             <?
@@ -121,15 +127,19 @@ class MuridWebHelper extends WebService
                                 $myBuku->getWhereOne("level='1'  AND jenis_biaya = 2 AND kpo_id = $myGrandParentID LIMIT 0,1");
                                 $id_perlengkapan = $myBuku->id_barang_harga;
                                 $stockBarang = new StockModel();
-
                                 $stockBarang->getWhereOne("org_id=$org  AND id_barang=$id_barang");
                                 $jmlhStock = $stockBarang->jumlah_stock;
-
-                                if ($jmlhStock > 0) {
-                                    $id_perlengkapan = $myBuku->id_barang_harga;
-                                    $lanjut = $lanjut & true;
+                                if (!is_null($stockBarang->id_barang)) {
+                                    if ($jmlhStock > 0) {
+                                        $id_perlengkapan = $myBuku->id_barang_harga;
+                                        $lanjut = $lanjut & true;
+                                    } else {
+                                        $lanjut = $lanjut & false;
+                                        echo "<b> Stock Habis!</b>";
+                                    }
                                 } else {
                                     $lanjut = $lanjut & false;
+                                    echo "<b> Stock Habis!</b>";
                                 }
 
 
@@ -167,11 +177,17 @@ class MuridWebHelper extends WebService
                                 $stockBarang->getWhereOne("org_id=$org  AND id_barang=$id_barang");
                                 $jmlhStock = $stockBarang->jumlah_stock;
 
-                                if ($jmlhStock > 0) {
-                                    $id_perlengkapan = $myBuku->id_barang_harga;
-                                    $lanjut = $lanjut & true;
+                                if (!is_null($stockBarang->id_barang)) {
+                                    if ($jmlhStock > 0) {
+                                        $id_perlengkapan = $myBuku->id_barang_harga;
+                                        $lanjut = $lanjut & true;
+                                    } else {
+                                        $lanjut = $lanjut & false;
+                                        echo "<b> Stock Habis!</b>";
+                                    }
                                 } else {
                                     $lanjut = $lanjut & false;
+                                    echo "<b> Stock Habis!</b>";
                                 }
 
 
@@ -1611,7 +1627,7 @@ class MuridWebHelper extends WebService
             <h1>
                 <div class="pull-right">
                     <?
-                    if (($murid->status == KEY::$STATUSMURIDAKTIV) ){
+                    if (($murid->status == KEY::$STATUSMURIDAKTIV)) {
                         ?>
                         <button class="btn btn-default" id="create_invoice_bulanan_<?= $t; ?>">Buat Invoice Iuran
                             Bulanan
