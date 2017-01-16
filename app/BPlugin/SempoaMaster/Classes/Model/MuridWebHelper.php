@@ -126,14 +126,10 @@ class MuridWebHelper extends WebService
                                 $stockBarang = new StockModel();
                                 $stockBarang->getWhereOne("org_id=$org  AND id_barang=$id_barang");
                                 $jmlhStock = $stockBarang->jumlah_stock;
-                                if (!is_null($stockBarang->id_barang)) {
-                                    if ($jmlhStock > 0) {
-                                        $id_perlengkapan = $myBuku->id_barang_harga;
-                                        $lanjut = $lanjut & true;
-                                    } else {
-                                        $lanjut = $lanjut & false;
-                                        echo "<b> Stock Habis!</b>";
-                                    }
+
+                                if ($jmlhStock > 0) {
+                                    $id_perlengkapan = $myBuku->id_barang_harga;
+                                    $lanjut = $lanjut & true;
                                 } else {
                                     $lanjut = $lanjut & false;
                                     echo "<b> Stock Habis!</b>";
@@ -174,14 +170,10 @@ class MuridWebHelper extends WebService
                                 $stockBarang->getWhereOne("org_id=$org  AND id_barang=$id_barang");
                                 $jmlhStock = $stockBarang->jumlah_stock;
 
-                                if (!is_null($stockBarang->id_barang)) {
-                                    if ($jmlhStock > 0) {
-                                        $id_perlengkapan = $myBuku->id_barang_harga;
-                                        $lanjut = $lanjut & true;
-                                    } else {
-                                        $lanjut = $lanjut & false;
-                                        echo "<b> Stock Habis!</b>";
-                                    }
+
+                                if ($jmlhStock > 0) {
+                                    $id_perlengkapan = $myBuku->id_barang_harga;
+                                    $lanjut = $lanjut & true;
                                 } else {
                                     $lanjut = $lanjut & false;
                                     echo "<b> Stock Habis!</b>";
