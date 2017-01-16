@@ -43,6 +43,11 @@ class TestMemcache extends WebService
             }
         }
 
+
+        $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, 5);
+
+        pr($biaya);
+
         die();
         pr("Memcache");
         pr($memcache->get("localhost:8888/sempoa_memcached//MatrixNilaiModel_c__2"));
