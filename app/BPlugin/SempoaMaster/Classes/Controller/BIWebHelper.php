@@ -3169,6 +3169,112 @@ class BIWebHelper extends WebService
     {
         $week = addslashes($_GET['week']);
         $thn = addslashes($_GET['thn']);
+        $tc_id = addslashes($_GET['tc_id']);
+        $i = 1;
+        $senin = 0;
+        $selasa = 0;
+        $rabu = 0;
+        $kamis = 0;
+        $jumat = 0;
+        $sabtu = 0;
+        $birekap = new RekapAbsenCoach();
+        $arrRekap = $birekap->getWhere("ac_tc_id=$tc_id AND ac_week=$week AND ac_tahun=$thn");
+        foreach ($arrRekap as $val) {
+            ?>
+            <tr>
+                <td><?= $i; ?></td>
+                <td><?= $val->ac_nama_guru_dtg; ?></td>
+                <td>
+                    <?
+                    $senin += $val->ac_1;
+                    echo $val->ac_1;
+                    ?>
+                </td>
+                <td><?
+                    $arrLevel = explode(",", $val->ac_level_1);
+                    //                        pr($arrLevel);
+                    echo Generic::getLevelAbsenCoach($arrLevel);
+                    ?></td>
+                <td>
+
+                    <?
+                    $selasa += $val->ac_2;
+                    echo $val->ac_2;
+                    ?>
+
+                </td>
+                <td><?
+                    $arrLevel = explode(",", $val->ac_level_2);
+                    echo Generic::getLevelAbsenCoach($arrLevel);
+                    ?></td>
+                <td>
+                    <?
+                    $rabu += $val->ac_3;
+                    echo $val->ac_3;
+                    ?>
+                </td>
+                <td><?
+                    $arrLevel = explode(",", $val->ac_level_3);
+                    echo Generic::getLevelAbsenCoach($arrLevel);
+                    ?></td>
+                <td>
+                    <?
+                    $kamis += $val->ac_4;
+                    echo $val->ac_4;
+                    ?>
+                </td>
+                <td><?
+                    $arrLevel = explode(",", $val->ac_level_4);
+                    echo Generic::getLevelAbsenCoach($arrLevel);
+                    ?></td>
+                <td>
+                    <?
+                    $jumat += $val->ac_5;
+                    echo $val->ac_5;
+                    ?>
+                </td>
+                <td><?
+                    $arrLevel = explode(",", $val->ac_level_5);
+                    echo Generic::getLevelAbsenCoach($arrLevel);
+                    ?></td>
+                <td>
+                    <?
+                    $sabtu += $val->ac_6;
+                    echo $val->ac_6;
+                    ?>
+                </td>
+                <td><?
+                    $arrLevel = explode(",", $val->ac_level_6);
+                    echo Generic::getLevelAbsenCoach($arrLevel);
+                    ?></td>
+            </tr>
+            <?
+            $i++;
+        }
+
+        ?>
+        <tr>
+            <td colspan="2">Total</td>
+            <td><?= $senin; ?></td>
+            <td></td>
+            <td><?= $selasa; ?></td>
+            <td></td>
+            <td><?= $rabu; ?></td>
+            <td></td>
+            <td><?= $kamis; ?></td>
+            <td></td>
+            <td><?= $jumat; ?></td>
+            <td></td>
+            <td><?= $sabtu; ?></td>
+            <td></td>
+        </tr>
+        <?
+    }
+
+    public function loadabsencoach_tc()
+    {
+        $week = addslashes($_GET['week']);
+        $thn = addslashes($_GET['thn']);
         $tc_id = AccessRight::getMyOrgID();
         $i = 1;
         $senin = 0;

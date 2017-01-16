@@ -44,11 +44,15 @@ class TestMemcache extends WebService
         }
 
 
-        $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, 5);
-
+        $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, AccessRight::getMyOrgID());
+        $guru = new SempoaGuruModel();
+        $guru->getByID(45);
         pr($biaya);
-//        $reg = new RegisterGuru();
-//        $reg->createInvoice(48, $biaya, 1, 2, 3, 5);
+        $reg = new RegisterGuru();
+//        if($reg->isInvoiceCreated(45)){
+            $reg->createInvoice(45, $biaya, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id);
+//        }
+
         die();
         pr("Memcache");
         pr($memcache->get("localhost:8888/sempoa_memcached//MatrixNilaiModel_c__2"));

@@ -145,6 +145,7 @@ class SempoaGuruModel extends SempoaModel
 
     public function overwriteRead($return)
     {
+
         $return = parent::overwriteRead($return);
         $myOrgType = AccessRight::getMyOrgType();
         $arrStatusGuru = Generic::getAllStatusGuru();
@@ -245,10 +246,10 @@ class SempoaGuruModel extends SempoaModel
         parent::onSaveSuccess($id);
         $guru = new $this();
         $guru->getByID($id);
-        if ($guru->guru_first_register === 0) {
+        if ($guru->guru_first_register == 0) {
             $reg = new RegisterGuru();
             $reg->isInvoiceCreated($id);
-            if (is_null($reg->transaksi_id)) {
+            if ($reg->transaksi_id === null) {
                 $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, $guru->guru_tc_id);
                 $reg->createInvoice($id, $biaya, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id);
                 if (AccessRight::getMyOrgType() == KEY::$IBO) {

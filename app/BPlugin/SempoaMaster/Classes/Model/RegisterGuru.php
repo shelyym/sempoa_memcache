@@ -29,15 +29,15 @@ class RegisterGuru extends Model {
     public $transaksi_ibo_id;
     public $transaksi_tc_id;
     public $transaksi_date;
-    
+
     public function isInvoiceCreated($id_guru){
-//        $invoice = new $this();
-        $invoice = $this->getWhereOne("transaksi_guru_id=$id_guru");
+        $invoice = new $this();
+        $invoice->getWhereOne("transaksi_guru_id='$id_guru''");
         return $invoice->transaksi_id;
     }
 
     public function createInvoice($id_guru, $jumlah, $ak_id, $kpo_id, $ibo_id, $tc_id){
-        $invoice = new $this();
+        $invoice = new RegisterGuru();
         $invoice->transaksi_guru_id = $id_guru;
         $invoice->transaksi_date = leap_mysqldate();
         $invoice->transaksi_jumlah= $jumlah;
@@ -46,7 +46,6 @@ class RegisterGuru extends Model {
         $invoice->transaksi_ibo_id= $ibo_id;
         $invoice->transaksi_tc_id= $tc_id;
         $invoice->transaksi_status=0;
-        
         $invoice->save();
     }
 }

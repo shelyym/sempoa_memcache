@@ -1907,7 +1907,7 @@ class BusinessIntelligence extends WebService {
 
                     });
 
-                    //                    
+                    //
                 </script>
 
             </div>
@@ -2502,7 +2502,7 @@ class BusinessIntelligence extends WebService {
                         var thn = $('#tahun_<?= $t; ?>').val();
                         var week = $('#minggu_<?= $t; ?>').val();
                         var tc_id = '<?=AccessRight::getMyOrgID();?>';
-                        $('#content_absen_coach_<?= $t . "_" . $todayweek . "_" . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/loadabsencoach?week=" + week + "&thn=" + thn + "&tc_id=" + tc_id, function () {
+                        $('#content_absen_coach_<?= $t . "_" . $todayweek . "_" . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/loadabsencoach_tc?week=" + week + "&thn=" + thn + "&tc_id=" + tc_id, function () {
 
                         }, 'json');
                     })
