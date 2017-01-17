@@ -362,8 +362,11 @@ class Model extends Leap\Model\Model
 //            $cacheAvailable = $memcache->connect(MEMCACHED_HOST, MEMCACHED_PORT);
 
             $this->qid = $db->qid($q);
-            $this->{$this->main_id} = $this->qid;
 
+            $this->onSaveSuccess($this->qid);
+            $this->onSaveNewItemSuccess($this->qid);
+
+            $this->{$this->main_id} = $this->qid;
 
             $key = $cls . '_' . $this->qid;
 
@@ -407,8 +410,11 @@ class Model extends Leap\Model\Model
                 }
             }
 
+            if (!$load) $this->onSaveNewItemSuccess($this->qid);
+            $this->onSaveSuccess($this->qid);
             return 1;
-        } else return 0;
+        } else
+            return 0;
 
     }
 
@@ -463,4 +469,5 @@ class Model extends Leap\Model\Model
 
         return $bool;
     }
+
 }

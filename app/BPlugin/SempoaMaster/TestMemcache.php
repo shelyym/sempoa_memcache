@@ -17,9 +17,35 @@ class TestMemcache extends WebService
 
     }
 
-    function getMemcacheKeys()
+
+    function getMemcacheKeysThis()
     {
 
+        global $domain;
+        global $folder;
+        $memcache = new Memcache;
+        $memcache->connect('127.0.0.1', 11211)
+        or die ("Could not connect to memcache server");
+
+        $list = array();
+        $allSlabs = $memcache->getExtendedStats('slabs');
+        $items = $memcache->getExtendedStats('items');
+        foreach ($allSlabs as $server => $slabs) {
+            foreach ($slabs AS $slabId => $slabMeta) {
+                $cdump = $memcache->getExtendedStats('cachedump', (int)$slabId);
+                foreach ($cdump AS $keys => $arrVal) {
+                    if (!is_array($arrVal)) continue;
+                    foreach ($arrVal AS $k => $v) {
+                        echo $k . '<br>';
+                        pr($memcache->get($k));
+                    }
+                }
+            }
+        }
+
+    }
+    function getMemcacheKeys()
+    {
 
         global $domain;
         global $folder;
@@ -44,10 +70,23 @@ class TestMemcache extends WebService
         }
 
 
-        $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, AccessRight::getMyOrgID());
-        $guru = new SempoaGuruModel();
-        $guru->getByID(45);
-        pr($biaya);
+
+        $reg = new RegisterGuru();
+        $reg->isInvoiceCreated(50);
+        pr($reg);
+        echo "end";
+
+//
+//
+//
+//
+//        $biaya = Generic::getBiayaByJenis(KEY::$BIAYA_PENDAFTARAN_GURU, AccessRight::getMyOrgID());
+//        $guru = new SempoaGuruModel();
+//        $guru->getByID(45);
+//        pr($biaya);
+
+
+
 
         die();
         pr("Memcache");
