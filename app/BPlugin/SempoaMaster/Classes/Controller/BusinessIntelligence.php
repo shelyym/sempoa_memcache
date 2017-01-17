@@ -2502,7 +2502,7 @@ class BusinessIntelligence extends WebService {
                         var thn = $('#tahun_<?= $t; ?>').val();
                         var week = $('#minggu_<?= $t; ?>').val();
                         var tc_id = '<?=AccessRight::getMyOrgID();?>';
-                        $('#content_absen_coach_<?= $t . "_" . $todayweek . "_" . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/loadabsencoach_tc?week=" + week + "&thn=" + thn + "&tc_id=" + tc_id, function () {
+                        $('#content_absen_coach_<?= $t . "_" . $todayweek . "_" . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/loadabsencoach?week=" + week + "&thn=" + thn + "&tc_id=" + tc_id, function () {
 
                         }, 'json');
                     })
@@ -2725,6 +2725,7 @@ class BusinessIntelligence extends WebService {
                     <thead>
                     <tr>
                         <td class ="tengahcolumn" rowspan="2">No.</td>
+                        <td class="tengahcolumn" rowspan="2">Nama TC</td>
                         <?
                         if ($bln != "All") {
                             ?>
@@ -2755,6 +2756,7 @@ class BusinessIntelligence extends WebService {
                     ?>
                     <tr>
                         <td><?= $i; ?></td>
+                        <td><?= Generic::getTCNamebyID(AccessRight::getMyOrgID()); ?></td>
                         <td><?
                             if ($birekap->bi_rekap_kupon == "") {
                                 echo 0;
@@ -2778,7 +2780,7 @@ class BusinessIntelligence extends WebService {
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="1" style="text-align:center; font-weight: bold">Total</td>
+                        <td colspan="2" style="text-align:center; font-weight: bold">Total</td>
                         <td><?= $totalTerjual ?></td>
                         <td><?= $totalAktiv ?></td>
                     </tr>
@@ -2889,6 +2891,7 @@ class BusinessIntelligence extends WebService {
                     <tr>
                         <th class = "tengah" rowspan="2">No.</th>
                         <th class = "tengah" rowspan="2">Kode TC</th>
+                        <th class="tengah" rowspan="2">Nama TC</th>
                         <th class = "tengah" rowspan="2">Nama Director</th>
                         <?
                         if ($bln != "All") {
@@ -2921,6 +2924,7 @@ class BusinessIntelligence extends WebService {
                     <tr>
                         <td><?= $i; ?></td>
                         <td><?= $orgTC->org_kode; ?></td>
+                        <td><?= Generic::getTCNamebyID(AccessRight::getMyOrgID()); ?></td>
                         <td><?= $orgTC->nama_pemilik; ?></td>
                         <?
                         $org_tc = new RekapSiswaIBOModel();
