@@ -398,4 +398,47 @@ class CronJob extends WebService
         return $rekap_siswa->bi_rekap_aktiv;
     }
 
+    /*
+     * Cron Job set  status ke keluar setelah lebih dr 2 bulan cuti
+     */
+
+    public function setMuridKeluar(){
+
+        $muridStatus = new StatusHisMuridModel();
+        $arrMuridsCuti = $muridStatus->getWhere("status=2 AND status_tanggal_akhir = 1970-01-01 07:00:00 AND TIMESTAMPDIFF(MONTH, status_tanggal_mulai, now())>2");
+
+        $jumlahMurid = 0;
+        foreach($arrMuridsCuti as $mur){
+            $jumlahMurid++;
+            $mur->status_tanggal_akhir = leap_mysqldate();
+            $mur->save(1);
+
+
+
+            $murid = new MuridModel();
+            $murid->getByID($mur->status_murid_id);
+            $murid->status = KEY::$STATUSMURIDNKELUAR;
+            $murid->save(1);
+            // Ganti status murid di model murid
+
+            // Create History Murid dgn status keluar
+
+            $statusMurid = new StatusHisMuridModel();
+            $statusMurid->status_murid_id = $mur->status_murid_id;
+            $statusMurid->status_tanggal_mulai = leap_mysqldate();
+            $statusMurid->status_level_murid = $murid->id_level_sekarang;
+            $statusMurid->status = KEY::$STATUSMURIDNKELUAR;
+            $statusMurid->status_ak_id = $murid->murid_ak_id;
+            $statusMurid->status_kpo_id = $murid->murid_kpo_id;
+            $statusMurid->status_ibo_id = $murid->murid_ibo_id;
+            $statusMurid->status_tc_id = $murid->murid_ibo_id;
+            $statusMurid->save();
+
+            $logMurid = new LogStatusMurid();
+            $logMurid->createLogMurid($mur->status_murid_id);
+
+        }
+       echo "Sebanyak " . $jumlahMurid . " ganti status dari Cuti ke keluar";
+
+    }
 }

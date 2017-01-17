@@ -137,8 +137,8 @@ class SettingWeb2Helper extends WebService
             $ibo_id = $org->org_parent_id;
             $org = new SempoaOrg();
             $org->getByID($ibo_id);
-
             $id = $org->org_parent_id;
+            $id = AccessRight::getMyOrgID();
         }
 
         $set = new SettingJenisBiayaModel();
