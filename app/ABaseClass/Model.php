@@ -409,6 +409,20 @@ class Model extends Leap\Model\Model
                     $mc->set($key, $product);
                 }
             }
+            else{
+                $mid = $this->{$this->main_id};
+
+
+                $key = $cls . '_' . $mid;
+
+                // We store an associative array containing our product data
+                $product = \Crud::clean2printEinzelnWithColoums($this);
+
+                // And we ask Memcached to store that data
+                if ($cacheAvailable == true) {
+                    $mc->set($key, $product);
+                }
+            }
 
             if (!$load) $this->onSaveNewItemSuccess($this->qid);
             $this->onSaveSuccess($this->qid);
