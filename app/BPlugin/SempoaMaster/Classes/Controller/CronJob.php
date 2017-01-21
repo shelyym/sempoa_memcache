@@ -19,6 +19,7 @@ class CronJob extends WebService
      * 1. create_invoice_spp_cronjobAllTC -> tiap awal bulan jam 00:10!
      * 2. create_rekap_siswa ->tiap akhir bulan!
      * 3. cronJobRekapKuponBulanan ->tiap akhir bulan!
+     * 4. setMuridKeluar -> tiap malam
      */
 
 

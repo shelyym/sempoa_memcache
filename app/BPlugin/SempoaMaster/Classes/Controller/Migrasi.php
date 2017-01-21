@@ -82,8 +82,6 @@ class Migrasi extends WebService
         $level['advance 3'] = 14;
 
 
-
-
         $status = array();
         $status['keluar'] = KEY::$STATUSMURIDNKELUAR;
         $status['aktif'] = KEY::$STATUSMURIDAKTIV;
@@ -550,7 +548,7 @@ class Migrasi extends WebService
 //                pr($guru);
                 $trainerBaru = new TrainerModel();
                 unset($dataTrainer);
-              $dataTrainer['kode_trainer'] = $trainer->kode_trainer;
+                $dataTrainer['kode_trainer'] = $trainer->kode_trainer;
                 $arrDatenType['kode_trainer'] = "int";
                 $dataTrainer['tanggal_masuk'] = $trainer->tanggal_masuk;
                 $arrDatenType['tanggal_masuk'] = "String";
@@ -630,19 +628,20 @@ class Migrasi extends WebService
         $arrKuponTransaksi = array();
         $arrTCinTarget = $this->getAllTCinDB();
         $db_Quelle = $this->getDB($serverpath, $db_username, $db_password, $db_name);
-        foreach($arrTCinTarget as $keyorg_id=>$tc){
+        foreach ($arrTCinTarget as $keyorg_id => $tc) {
             $qQuelle = "SELECT * FROM table_transaksi WHERE kode_tc='$keyorg_id' AND jenis_transaksi = 'MONTHLYFEE' AND MONTH(tanggal_pakai)= $bln AND YEAR(tanggal_pakai)=$thn AND harga !=0";
 
             $arrKuponTransaksi[$keyorg_id] = $this->query($qQuelle, $db_Quelle);
-            $arrKuponTransaksi[$keyorg_id]['tc_id']=$tc->org_id;
+            $arrKuponTransaksi[$keyorg_id]['tc_id'] = $tc->org_id;
 
         }
-       pr("start");
+        pr("start");
         $this->insertKuponTerpakaiToDBAsli($arrKuponTransaksi);
         pr("Akhir");
     }
 
-    public function getAllTCinDB(){
+    public function getAllTCinDB()
+    {
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
@@ -653,12 +652,14 @@ class Migrasi extends WebService
         $arrTC = $this->query($qQuelle, $db_Quelle);
 
         $arrTCinDB = array();
-        foreach($arrTC as $val){
+        foreach ($arrTC as $val) {
             $arrTCinDB[$val->org_kode] = $val;
         }
         return $arrTCinDB;
     }
-    public function insertKuponTerpakaiToDBAsli($arrKuponTransaksi){
+
+    public function insertKuponTerpakaiToDBAsli($arrKuponTransaksi)
+    {
 
         $jenis_pembayaran = array();
         $jenis_pembayaran['EDC'] = 3;
@@ -673,20 +674,20 @@ class Migrasi extends WebService
         $count = 0;
 
         $arrTC = array();
-        foreach($arrKuponTransaksi as $keyorg_id=> $kuponObj){
+        foreach ($arrKuponTransaksi as $keyorg_id => $kuponObj) {
 
             $tc_id = $kuponObj['tc_id'];
             $ibo_id = Generic::getMyParentID($tc_id);
             $kpo_id = Generic::getMyParentID($ibo_id);
             $ak_id = Generic::getMyParentID($kpo_id);
-            foreach($kuponObj as $kupon){
+            foreach ($kuponObj as $kupon) {
                 $iuranBulanan = new IuranBulanan();
                 $iuranBulanan->bln_murid_id = $this->getMuridIdByKodeSiswa($kupon->kode_siswa);
                 $date = $kupon->tanggal_pakai;
-                $bln = date("m",strtotime($date));
-                $thn = date("Y",strtotime($date));
+                $bln = date("m", strtotime($date));
+                $thn = date("Y", strtotime($date));
                 //11-2016
-                $iuranBulanan->bln_date = $bln."-".$thn;
+                $iuranBulanan->bln_date = $bln . "-" . $thn;
                 $iuranBulanan->bln_date_pembayaran = $kupon->tanggal_transaksi;
 
                 // bulan
@@ -699,16 +700,14 @@ class Migrasi extends WebService
                 $iuranBulanan->bln_kpo_id = $kpo_id;
                 $iuranBulanan->bln_ibo_id = $ibo_id;
                 $iuranBulanan->bln_tc_id = $tc_id;
-                $iuranBulanan->bln_no_urut_inv  = $iuranBulanan->getLastNoUrutInvoice($thn,$bln,$tc_id);
-                $iuranBulanan->bln_no_invoice= "SPP/" . $thn . "/".$bln."/". $iuranBulanan->bln_no_urut_inv;
-                if($iuranBulanan->save()){
+                $iuranBulanan->bln_no_urut_inv = $iuranBulanan->getLastNoUrutInvoice($thn, $bln, $tc_id);
+                $iuranBulanan->bln_no_invoice = "SPP/" . $thn . "/" . $bln . "/" . $iuranBulanan->bln_no_urut_inv;
+                if ($iuranBulanan->save()) {
                     $count++;
                 }
             }
 
             pr($count);
-
-
 
 
 //            pr($kuponObj->tanggal_pakai);
@@ -720,17 +719,48 @@ class Migrasi extends WebService
 
     }
 
-    public function getMuridIdByKodeSiswa($kode_siswa){
+    public function getMuridIdByKodeSiswa($kode_siswa)
+    {
         $objMurid = new MuridModel();
         $objMurid->getWhereOne("kode_siswa='$kode_siswa'");
         return $objMurid->id_murid;
     }
 
-    public function coba(){
+    public function coba()
+    {
         $a = new IuranBulanan();
-        $b = $a->getLastNoUrutInvoice(2016,11,AccessRight::getMyOrgID());
+        $b = $a->getLastNoUrutInvoice(2016, 11, AccessRight::getMyOrgID());
         pr($b);
         $a = "Coba sekali, sesame";
 //        $ab
+    }
+
+    public function migrasiStatusMurid()
+    {
+        $murid = new MuridModel();
+        $arrMurids = $murid->getWhere("status=1");
+        $i = 0;
+        foreach ($arrMurids as $mur) {
+            $statusMurid = new StatusHisMuridModel();
+            $statusMurid->getWhereOne("status_murid_id=$mur->id_murid");
+            if (is_null($statusMurid->status_id)) {
+                $i++;
+                $statusMurid = new StatusHisMuridModel();
+                $statusMurid->status_murid_id = $mur->id_murid;
+                $statusMurid->status_tanggal_mulai = leap_mysqldate();
+                $statusMurid->status_level_murid = $mur->id_level_sekarang;
+                $statusMurid->status = $mur->status;
+                $statusMurid->status_ak_id = $mur->murid_ak_id;
+                $statusMurid->status_kpo_id = $mur->murid_kpo_id;
+                $statusMurid->status_ibo_id = $mur->murid_ibo_id;
+                $statusMurid->status_tc_id = $mur->murid_tc_id;
+                $statusMurid->save();
+                $logMurid = new LogStatusMurid();
+                $logMurid->createLogMurid($mur->id_murid);
+
+            }
+        }
+        echo "jumlah yg termigrasi: " + $i;
+
     }
 }
