@@ -483,6 +483,13 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
     public function cobaAbsen()
     {
 
+        $guru = new SempoaGuruModel();
+        $guru->getByID(57);
+        $guru->nama_panggilan = "Mike";
+        $guru->guru_first_register = 1;
+        $guru->save(1);
+        pr($guru);
+        die();
         $a = new CronJob();
 
         $b = $a->getPenjualanKuponByTC('5', 12, 2016);

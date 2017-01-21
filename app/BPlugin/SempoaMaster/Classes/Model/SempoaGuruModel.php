@@ -15,7 +15,7 @@ class SempoaGuruModel extends SempoaModel
     public $default_read_coloms = "guru_id,kode_guru,nama_guru,id_level_training_guru,status,email_guru,guru_tc_id";
 //    public $default_read_coloms = "guru_id,kode_guru,tanggal_masuk,nama_guru,nama_panggilan,jenis_kelamin,alamat,tempat_lahir,agama,tanggal_lahir,nomor_hp,pendidikan_terakhir,kode_tc,email_guru,status,id_level_training_guru,gambar,id_level_training_guru,guru_ak_id,guru_kpo_id,guru_ibo_id,guru_tc_id";
 //allowed colom in CRUD filter
-    public $coloumlist = "guru_id,kode_guru,tanggal_masuk,nama_guru,nama_panggilan,jenis_kelamin,alamat,tempat_lahir,agama,tanggal_lahir,nomor_hp,pendidikan_terakhir,kode_tc,email_guru,status,id_level_training_guru,gambar,id_level_training_guru,guru_catatan,guru_ak_id,guru_kpo_id,guru_ibo_id,guru_tc_id";
+    public $coloumlist = "guru_id,kode_guru,tanggal_masuk,nama_guru,nama_panggilan,jenis_kelamin,alamat,tempat_lahir,agama,tanggal_lahir,nomor_hp,pendidikan_terakhir,kode_tc,email_guru,status,id_level_training_guru,gambar,id_level_training_guru,guru_catatan,guru_ak_id,guru_kpo_id,guru_ibo_id,guru_tc_id,guru_first_register";
     public $guru_id;
     public $kode_guru;
     public $tanggal_masuk;
@@ -44,7 +44,6 @@ class SempoaGuruModel extends SempoaModel
 
     public function overwriteForm($return, $returnfull)
     {
-
 
         $myOrgType = AccessRight::getMyOrgType();
         $return = parent::overwriteForm($return, $returnfull);

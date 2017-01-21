@@ -175,42 +175,7 @@ class MuridModel extends SempoaModel {
             $err['id_level_masuk'] = Lang::t('Please provide ID Level Masuk');
         }
 
-        if ($this->id_murid != "") {
-            $objMurid = new MuridModel();
-            $objMurid->getByID($this->id_murid);
 
-            if ($this->status != $objMurid->status) {
-                $objStatus = new StatusHisMuridModel();
-                $objStatus->getWhereOne("status_murid_id='$this->id_murid'  ORDER BY status_tanggal_mulai DESC");
-                $logMurid = new LogStatusMurid();
-                $logMurid->createLogMurid($this->id_murid);
-                if ($objStatus->status_id == "") {
-                    $statusMurid = new StatusHisMuridModel();
-                    $statusMurid->status_murid_id = $this->id_murid;
-                    $statusMurid->status_tanggal_mulai = leap_mysqldate();
-                    $statusMurid->status_level_murid = $this->id_level_sekarang;
-                    $statusMurid->status = $this->status;
-                    $statusMurid->status_ak_id = $this->murid_ak_id;
-                    $statusMurid->status_kpo_id = $this->murid_kpo_id;
-                    $statusMurid->status_ibo_id = $this->murid_ibo_id;
-                    $statusMurid->status_tc_id = $this->murid_tc_id;
-                    $statusMurid->save();
-                } else {
-                    $objStatus->status_tanggal_akhir = leap_mysqldate();
-                    $objStatus->save(1);
-                    $statusMurid = new StatusHisMuridModel();
-                    $statusMurid->status_murid_id = $this->id_murid;
-                    $statusMurid->status_tanggal_mulai = leap_mysqldate();
-                    $statusMurid->status_level_murid = $this->id_level_sekarang;
-                    $statusMurid->status = $this->status;
-                    $statusMurid->status_ak_id = $this->murid_ak_id;
-                    $statusMurid->status_kpo_id = $this->murid_kpo_id;
-                    $statusMurid->status_ibo_id = $this->murid_ibo_id;
-                    $statusMurid->status_tc_id = $this->murid_tc_id;
-                    $statusMurid->save();
-                }
-            }
-        }
 
         if (!isset($this->id_murid)) {
             $logMurid = new LogStatusMurid();
