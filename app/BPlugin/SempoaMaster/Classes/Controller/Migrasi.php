@@ -24,7 +24,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_migrasi_2";
+        $db_name = "sempoa_migrasi_3";
         $db_prefix = '';
 //        $db_name_migrasi = "c1nt466__sempoa_asli";
 
@@ -34,15 +34,13 @@ class Migrasi extends WebService
         $arrsudah = array();
         $arrMurid = array();
         foreach ($arrMuridAsli as $murid) {
-//            pr($murid);
             $rest = substr($murid->kode_siswa, 1);
             $ibo = substr($rest, 1, 2);
             $tc = substr($rest, 2);
             $tc = substr($tc, 1, 3);
             $org_ibo = $ibo . $tc;
-
-
             $arrMurid[$org_ibo][] = $murid;
+
         }
 
         pr("mulai");
@@ -96,11 +94,12 @@ class Migrasi extends WebService
         $db_username = "root";
         $db_password = "root";
 //        sempoa_live
-        $db_name = "sempoa_live";
+        $db_name = "sempoa_live_3";
         $db_prefix = '';
         $mysql = $this->getDB($serverpath, $db_username, $db_password, $db_name);
         $count = 1;
         $dataMurid = array();
+        $arrMigrasi = array();
 //        pr(count($arrMurid));
         foreach ($arrMurid as $keyorg_id => $muridObj) {
 //            pr($keyorg_id);
@@ -108,96 +107,100 @@ class Migrasi extends WebService
                 unset($dataMurid);
                 $objTC = $this->getIBOData($keyorg_id);
                 if (!is_null($objTC->org_id)) {
-                    pr($objTC);
-//                    pr( $murid->kode_siswa);
-                    pr($murid);
-                    unset($dataMurid);
-                    unset($arrDatenType);
-                    $strKey = "";
-                    $strval = "";
-                    $tc_id = $objTC->org_id;
+                    if ($objTC->tc_migrasi != 1) {
+                        pr($objTC->nama);
+                        unset($dataMurid);
+                        unset($arrDatenType);
+                        $strKey = "";
+                        $strval = "";
+                        $tc_id = $objTC->org_id;
 //                    pr($keyorg_id);
-                    $ibo_id = Generic::getMyParentID($tc_id);
-                    $kpo_id = Generic::getMyParentID($ibo_id);
-                    $ak_id = Generic::getMyParentID($kpo_id);
-                    $dataMurid['kode_siswa'] = $murid->kode_siswa;
-                    $arrDatenType['kode_siswa'] = "String";
-                    $dataMurid['nama_siswa'] = $murid->nama_siswa;
-                    $arrDatenType['nama_siswa'] = "String";
-                    $dataMurid['jenis_kelamin'] = $jenisKelamin[$murid->jenis_kelamin];
-                    $arrDatenType['jenis_kelamin'] = "String";
-                    $dataMurid['alamat'] = $murid->alamat;
-                    $arrDatenType['alamat'] = "String";
-                    $dataMurid['agama'] = $agama[$murid->agama];
-                    $arrDatenType['agama'] = "String";
-                    $dataMurid['tempat_lahir'] = $murid->tempat_lahir;
-                    $arrDatenType['tempat_lahir'] = "String";
-                    $dataMurid['tanggal_lahir'] = $murid->tanggal_lahir;
-                    $arrDatenType['tanggal_lahir'] = "String";
-                    $dataMurid['telepon'] = $murid->telepon;
-                    $arrDatenType['telepon'] = "String";
-                    $dataMurid['nama_sekolah'] = $murid->nama_sekolah;
-                    $arrDatenType['nama_sekolah'] = "String";
-                    $dataMurid['nama_ortu'] = $murid->nama_ortu;
-                    $arrDatenType['nama_ortu'] = "String";
-                    $dataMurid['gambar'] = $murid->gambar;
-                    $arrDatenType['gambar'] = "String";
-                    $dataMurid['tanggal_masuk'] = $murid->tanggal_masuk;
-                    $arrDatenType['tanggal_masuk'] = "String";
-                    $dataMurid['email_ortu'] = $murid->email_ortu;
-                    $arrDatenType['email_ortu'] = "String";
-                    $dataMurid['id_level_masuk'] = $level[$murid->level_masuk];
-                    $arrDatenType['id_level_masuk'] = "int";
-                    $dataMurid['id_level_sekarang'] = $level[$murid->level_sekarang];
-                    $arrDatenType['id_level_sekarang'] = "int";
-                    $dataMurid['nomor_pendaftaran'] = $murid->nomor_pendaftaran;
-                    $arrDatenType['nomor_pendaftaran'] = "String";
-                    $dataMurid['status'] = $status[$murid->status];
-                    $arrDatenType['status'] = "int";
-                    $dataMurid['murid_ak_id'] = $ak_id;
-                    $dataMurid['murid_kpo_id'] = $kpo_id;
-                    $dataMurid['murid_ibo_id'] = $ibo_id;
-                    $dataMurid['murid_tc_id'] = $tc_id;
-                    $dataMurid['pay_firsttime'] = 1;
 
-                    $arrKey = array();
-                    $arrVal = array();
-                    foreach ($dataMurid as $key => $val) {
-                        $arrKey[] = $key;
-                        if ($val == "") {
+                        $ibo_id = Generic::getMyParentID($tc_id);
+                        $kpo_id = Generic::getMyParentID($ibo_id);
+                        $ak_id = Generic::getMyParentID($kpo_id);
+                        $dataMurid['kode_siswa'] = $murid->kode_siswa;
+                        $arrDatenType['kode_siswa'] = "String";
+                        $dataMurid['nama_siswa'] = $murid->nama_siswa;
+                        $arrDatenType['nama_siswa'] = "String";
+                        $dataMurid['jenis_kelamin'] = $jenisKelamin[$murid->jenis_kelamin];
+                        $arrDatenType['jenis_kelamin'] = "String";
+                        $dataMurid['alamat'] = $murid->alamat;
+                        $arrDatenType['alamat'] = "String";
+                        $dataMurid['agama'] = $agama[$murid->agama];
+                        $arrDatenType['agama'] = "String";
+                        $dataMurid['tempat_lahir'] = $murid->tempat_lahir;
+                        $arrDatenType['tempat_lahir'] = "String";
+                        $dataMurid['tanggal_lahir'] = $murid->tanggal_lahir;
+                        $arrDatenType['tanggal_lahir'] = "String";
+                        $dataMurid['telepon'] = $murid->telepon;
+                        $arrDatenType['telepon'] = "String";
+                        $dataMurid['nama_sekolah'] = $murid->nama_sekolah;
+                        $arrDatenType['nama_sekolah'] = "String";
+                        $dataMurid['nama_ortu'] = $murid->nama_ortu;
+                        $arrDatenType['nama_ortu'] = "String";
+                        $dataMurid['gambar'] = $murid->gambar;
+                        $arrDatenType['gambar'] = "String";
+                        $dataMurid['tanggal_masuk'] = $murid->tanggal_masuk;
+                        $arrDatenType['tanggal_masuk'] = "String";
+                        $dataMurid['email_ortu'] = $murid->email_ortu;
+                        $arrDatenType['email_ortu'] = "String";
+                        $dataMurid['id_level_masuk'] = $level[$murid->level_masuk];
+                        $arrDatenType['id_level_masuk'] = "int";
+                        $dataMurid['id_level_sekarang'] = $level[$murid->level_sekarang];
+                        $arrDatenType['id_level_sekarang'] = "int";
+                        $dataMurid['nomor_pendaftaran'] = $murid->nomor_pendaftaran;
+                        $arrDatenType['nomor_pendaftaran'] = "String";
+                        $dataMurid['status'] = $status[$murid->status];
+                        $arrDatenType['status'] = "int";
+                        $dataMurid['murid_ak_id'] = $ak_id;
+                        $dataMurid['murid_kpo_id'] = $kpo_id;
+                        $dataMurid['murid_ibo_id'] = $ibo_id;
+                        $dataMurid['murid_tc_id'] = $tc_id;
+                        $dataMurid['pay_firsttime'] = 1;
+
+                        $arrKey = array();
+                        $arrVal = array();
+                        foreach ($dataMurid as $key => $val) {
+                            $arrKey[] = $key;
+                            if ($val == "") {
 //                            if ($arrDatenType[$key] == "String") {
 //                                $val = "\"\"";
 //                            }
-                            if ($arrDatenType[$key] == "int") {
-                                $val = 0;
-                            }
-                        } elseif ($val == "0000-00-00") {
-                            $val = KEY::$TGL_KOSONG;
+                                if ($arrDatenType[$key] == "int") {
+                                    $val = 0;
+                                }
+                            } elseif ($val == "0000-00-00") {
+                                $val = KEY::$TGL_KOSONG;
 
-                        }
-                        if ($arrDatenType[$key] == "String") {
-                            $val = "\"" . $val . "\"";
-                        }
+                            }
+                            if ($arrDatenType[$key] == "String") {
+                                $val = "\"" . $val . "\"";
+                            }
 //                       x
 
-                        $arrVal[] = $val;
-                    }
-                    $strKey = implode(",", $arrKey);
-                    $strval = implode(",", $arrVal);
-                    $q = "INSERT INTO sempoa__siswa (" . $strKey . ") VALUES (" . $strval . ")";
-                    pr($q);
-                    $count++;
-                    $q2 = mysql_query($q);
-                    if (!$q2) {
+                            $arrVal[] = $val;
+                        }
+                        $strKey = implode(",", $arrKey);
+                        $strval = implode(",", $arrVal);
+                        $q = "INSERT INTO sempoa__siswa (" . $strKey . ") VALUES (" . $strval . ")";
+                        $arrMigrasi[$objTC->name] = $tc_id;
+                        $count++;
+                        $q2 = mysql_query($q);
+                        if (!$q2) {
 //                        pr($q);
-                    } else {
+                        } else {
 
-                        pr("Sukses");
-                        pr($count);
+                            pr("Sukses");
+                            pr($count);
+                        }
                     }
                 }
+
+
             }
         }
+        pr($arrMigrasi);
         pr($count);
     }
 
@@ -209,12 +212,12 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_live";
+        $db_name = "sempoa_live_3";
         $db_prefix = '';
 
         $db = $this->getDB($serverpath, $db_username, $db_password, $db_name);
 
-        $q = "SELECT * FROM sempoa__tc WHERE org_kode='$data_tc'";
+        $q = "SELECT * FROM sempoa__tc WHERE org_kode='$data_tc' AND tc_migrasi!=1";
         $arrTC = $this->query($q, $db);
         return $arrTC[0];
 
@@ -235,7 +238,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_migrasi_2";
+        $db_name = "sempoa_migrasi_3";
         $db_prefix = '';
         $db_name_migrasi = "c1nt466__sempoa_asli";
 
@@ -283,7 +286,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_migrasi_2";
+        $db_name = "sempoa_migrasi_3";
         $db_prefix = '';
 //        $db_name_migrasi = "c1nt466__sempoa_asli";
 
@@ -345,7 +348,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_live";
+        $db_name = "sempoa_live_3";
         $db_prefix = '';
         $mysql = $this->getDB($serverpath, $db_username, $db_password, $db_name);
         $count = 1;
@@ -358,7 +361,10 @@ class Migrasi extends WebService
                 if (!array_key_exists($keyorg_id, $arrTC)) {
                     $objTC = $this->getIBOData($keyorg_id);
                     if (!is_null($objTC->org_id)) {
-                        $arrTC[$keyorg_id] = $objTC;
+                        if($objTC->tc_migrasi != 1){
+                            $arrTC[$keyorg_id] = $objTC;
+                        }
+
                     }
                 }
             }
@@ -462,7 +468,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_migrasi_2";
+        $db_name = "sempoa_migrasi_3";
 
         $db_M = $this->getDB($serverpath, $db_username, $db_password, $db_name);
         $q = "SELECT * FROM table_trainer";
@@ -522,7 +528,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_live";
+        $db_name = "sempoa_live_3";
         $db_prefix = '';
         $mysql = $this->getDB($serverpath, $db_username, $db_password, $db_name);
         $count = 1;
@@ -534,7 +540,10 @@ class Migrasi extends WebService
                 if (!array_key_exists($keyorg_id, $arrIBO)) {
                     $objTC = $this->getIBOData($keyorg_id);
                     if (!is_null($objTC->org_id)) {
-                        $arrIBO[$keyorg_id] = $objTC;
+                        if($objTC->tc_migrasi != 1){
+                            $arrIBO[$keyorg_id] = $objTC;
+                        }
+
                     }
                 }
             }
@@ -620,7 +629,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_migrasi_2";
+        $db_name = "sempoa_migrasi_3";
 
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
@@ -645,10 +654,10 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_live";
+        $db_name = "sempoa_live_3";
         $db_prefix = '';
         $db_Quelle = $this->getDB($serverpath, $db_username, $db_password, $db_name);
-        $qQuelle = "SELECT * FROM sempoa__tc WHERE org_type='tc'";
+        $qQuelle = "SELECT * FROM sempoa__tc WHERE org_type='tc' AND tc_migrasi !=1";
         $arrTC = $this->query($qQuelle, $db_Quelle);
 
         $arrTCinDB = array();
@@ -668,7 +677,7 @@ class Migrasi extends WebService
         $serverpath = "localhost";
         $db_username = "root";
         $db_password = "root";
-        $db_name = "sempoa_live";
+        $db_name = "sempoa_live_3";
         $db_prefix = '';
         $mysql = $this->getDB($serverpath, $db_username, $db_password, $db_name);
         $count = 0;
@@ -763,4 +772,5 @@ class Migrasi extends WebService
         echo "jumlah yg termigrasi: " + $i;
 
     }
+
 }

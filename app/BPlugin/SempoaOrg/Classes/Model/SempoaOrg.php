@@ -13,7 +13,7 @@ class SempoaOrg extends Model {
     //Default Coloms for read
     public $default_read_coloms = "org_id,org_kode,org_type,org_parent_id,nama,alamat,nomor_telp,email,propinsi,nama_pemilik,org_catatan,tanggal_lahir,alamat_rmh_priv,telp_priv,hp_priv,email_priv,tgl_kontrak";
 //allowed colom in CRUD filter
-    public $coloumlist = "org_id,org_kode,org_type,org_parent_id,org_lat,org_lng,nama,alamat,nomor_telp,email,biaya_perlengkapan,biaya_pendaftaran,biaya_iuran,biaya_buku,gambar,map,last_update,propinsi,kode_pic,nama_pemilik,org_catatan,batas_ruangan,batas_guru,batas_murid,ruangan,tanggal_lahir,alamat_rmh_priv,telp_priv,hp_priv,email_priv,tgl_kontrak";
+    public $coloumlist = "org_id,org_kode,org_type,org_parent_id,org_lat,org_lng,nama,alamat,nomor_telp,email,biaya_perlengkapan,biaya_pendaftaran,biaya_iuran,biaya_buku,gambar,map,last_update,propinsi,kode_pic,nama_pemilik,org_catatan,batas_ruangan,batas_guru,batas_murid,ruangan,tanggal_lahir,alamat_rmh_priv,telp_priv,hp_priv,email_priv,tgl_kontrak,tc_migrasi";
     public $org_id;
     public $org_kode;
     public $org_type;
@@ -45,6 +45,6 @@ class SempoaOrg extends Model {
     public $hp_priv;
     public $email_priv;
     public $tgl_kontrak;
-   
+    public $tc_migrasi;
 
 }
