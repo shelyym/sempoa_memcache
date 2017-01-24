@@ -36,7 +36,7 @@ class CronJob extends WebService
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $murid = new MuridModel();
-        $arrMurid = $murid->getWhere("status = 1 OR status = 2");
+        $arrMurid = $murid->getWhere("status = 1");
         $total = 0;
         foreach ($arrMurid as $mur) {
 //

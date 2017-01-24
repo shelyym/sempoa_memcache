@@ -11,7 +11,7 @@
  *
  * @author efindiongso
  */
-class KelasWebModel extends SempoaModel {
+class KelasWebModel extends Model {
 
     //put your code here
     var $table_name = "sempoa__kelas";

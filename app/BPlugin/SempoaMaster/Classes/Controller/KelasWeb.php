@@ -77,7 +77,7 @@ class KelasWeb extends WebService
 
         $crud->btn_extra = '<a class="btn btn-default" onclick="openLw(\'create_operasional_kelas\', \'' . _SPPATH . 'KelasWeb/create_operasional_kelas\', \'fade\');activkanMenuKiri(\'create_operasional_kelas\');" style="cursor: pointer;">manage kelas</a>';
 
-        $crud->run_custom($obj, "KelasWeb", "create_kelas_tc");
+        $crud->run_custom($obj, "KelasWeb", "read_kelas_tc");
 
         die();
 //        $exp = explode(",",SempoaWebSetting::getData('Jam_Kelas'));
