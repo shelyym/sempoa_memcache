@@ -853,6 +853,9 @@ class MuridWebHelper extends WebService
         </div>
         <script>
             $('#status_<?= $murid->id_murid; ?>_<?=$t;?>').dblclick(function () {
+                <?
+                if($murid->pay_firsttime == 1){
+                ?>
                 $('#status_<?= $murid->id_murid; ?>_<?=$t;?>').html(<?= $html ?>);
                 $('#select_status_<?= $murid->id_murid; ?>').change(function () {
                     var id_status = $('#select_status_<?= $murid->id_murid; ?>').val();
@@ -868,6 +871,15 @@ class MuridWebHelper extends WebService
                     }, 'json');
 
                 });
+                <?
+                }
+                else{
+                ?>
+                alert("Murid belum melakukan pembayaran pertama");
+                <?
+                }
+                ?>
+
             });
 
 

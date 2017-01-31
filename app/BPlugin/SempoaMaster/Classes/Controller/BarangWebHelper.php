@@ -306,7 +306,9 @@ class BarangWebHelper extends WebService
             $PO->po_tanggal = leap_mysqldate();
 //            $PO->po_pengirim = $myOrgID;
 
-            $PO->po_pengirim = Account::getMyID();
+            $PO->po_user_id_pengirim = Account::getMyID();
+            $PO->po_pengirim = $myOrgID;
+//            $PO->po_pengirim = Account::getMyID();
             $PO->po_penerima = $kpo_id;
             $PO->po_status = "0";
             $PO->po_total_harga = $total_harga;
@@ -1930,8 +1932,7 @@ class BarangWebHelper extends WebService
                     <?
                     foreach ($arrPO as $po) {
                         $pembeli = new Account();
-                        $pembeli->getByID($po->po_pengirim);
-//                            pr($po->po_status);
+                        $pembeli->getByID($po->po_user_id_pengirim);
                         $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
                         if ($po->po_status == KEY::$STATUS_NEW)
                             $warna = KEY::$WARNA_BIRU;
@@ -1955,7 +1956,7 @@ class BarangWebHelper extends WebService
                                 <span class="caret" style="cursor: pointer;"></span>
                             </td>
                             <td><?= $po->po_tanggal ?></td>
-                            <td><?= Generic::getTCNamebyID($pembeli->admin_org_id) . "/ " . $pembeli->admin_nama_depan; ?></td>
+                            <td><?= Generic::getTCNamebyID($po->po_pengirim) . "/ " . $pembeli->admin_nama_depan; ?></td>
                             <td id='status_po_<?= $po->po_id; ?>'><?
                                 if ($po->po_status == 0) {
                                     echo "New";

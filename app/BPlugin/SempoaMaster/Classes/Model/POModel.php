@@ -17,10 +17,11 @@ class POModel extends Model {
     var $table_name = "transaksi__PO";
     var $main_id = "po_id";
     //Default Coloms for read
-    public $default_read_coloms = "po_id,po_tanggal,po_pengirim,po_penerima,po_status,po_keterangan";
+    public $default_read_coloms = "po_id,po_user_id_pengirim,po_tanggal,po_pengirim,po_penerima,po_status,po_keterangan";
 //allowed colom in CRUD filter
-    public $coloumlist = "po_id,po_tanggal,po_pengirim,po_penerima,po_status,po_keterangan";
-    public $po_id;
+    public $coloumlist = "po_id,po_user_id_pengirim,po_tanggal,po_pengirim,po_penerima,po_status,po_keterangan";
+    public $po_user_id_pengirim;
+    public $org_id;
     public $po_tanggal;
     public $po_pengirim;
     public $po_penerima;
