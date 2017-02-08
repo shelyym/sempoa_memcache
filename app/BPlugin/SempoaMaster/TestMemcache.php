@@ -79,7 +79,6 @@ class TestMemcache extends WebService
         $memcache->connect('127.0.0.1', 11211)
         or die ("Could not connect to memcache server");
 
-        $list = array();
         $allSlabs = $memcache->getExtendedStats('slabs');
         $items = $memcache->getExtendedStats('items');
         foreach ($allSlabs as $server => $slabs) {
@@ -89,22 +88,11 @@ class TestMemcache extends WebService
                     if (!is_array($arrVal)) continue;
                     foreach ($arrVal AS $k => $v) {
                         $check = strpos($k, "/");
-                        $b = substr($k,0,$check)."/";
-                        if($b == $domain.$folder ){
+                        $b = substr($k, 0, $check) . "/";
+                        if ($b == $domain . $folder) {
                             echo $k . '<br>' . $check;
                             pr($memcache->get($k));
                         }
-
-
-
-
-//                        $check = strpos($k, $folder);
-//                        if ($check) {
-//                            echo $k . '<br>' . $check;
-//                            pr($memcache->get($k));
-//                        }
-
-
                     }
                 }
             }
@@ -118,12 +106,12 @@ class TestMemcache extends WebService
     function delMemcacheKeysByMyFolder()
     {
 
+        global $domain;
         global $folder;
         $memcache = new Memcache;
         $memcache->connect('127.0.0.1', 11211)
         or die ("Could not connect to memcache server");
 
-        $list = array();
         $allSlabs = $memcache->getExtendedStats('slabs');
         $items = $memcache->getExtendedStats('items');
         foreach ($allSlabs as $server => $slabs) {
@@ -132,27 +120,27 @@ class TestMemcache extends WebService
                 foreach ($cdump AS $keys => $arrVal) {
                     if (!is_array($arrVal)) continue;
                     foreach ($arrVal AS $k => $v) {
-                        $check = strpos($k, $folder);
-                        if ($check) {
-                            echo $k . '<br>' . $check;
+                        $check = strpos($k, "/");
+                        $b = substr($k, 0, $check) . "/";
+                        if ($b == $domain . $folder) {
+                            echo $k . '<br>' ;
+
                             $memcache->delete($k);
                             pr($memcache->get($k));
                         }
-
-
                     }
                 }
             }
         }
-
     }
 
 
-    function printTest(){
+    function printTest()
+    {
 
         $s = "sandbox-sempoa.indomegabyte.com//NewsChannel2Org_c__1_";
         $check = strpos($s, "/");
-        $b = substr($s,0,$check);
+        $b = substr($s, 0, $check);
         pr($b);
 //        substr("Hello world",0,10)."<br>";
 
