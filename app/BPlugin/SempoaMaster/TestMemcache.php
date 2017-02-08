@@ -90,7 +90,6 @@ class TestMemcache extends WebService
                     foreach ($arrVal AS $k => $v) {
                         $check = strpos($k, "/");
                         $b = substr($k,0,$check)."/";
-                        pr($b . " " . $domain.$folder);
                         if($b == $domain.$folder ){
                             echo $k . '<br>' . $check;
                             pr($memcache->get($k));
