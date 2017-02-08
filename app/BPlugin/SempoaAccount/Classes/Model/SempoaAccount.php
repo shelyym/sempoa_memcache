@@ -8,7 +8,7 @@
 
 class SempoaAccount extends Account{
 
-    var $default_read_coloms = "admin_username,admin_nama_depan,admin_email,admin_role,admin_org_type,admin_org_id,admin_ak_id,admin_kpo_id,admin_ibo_id,admin_tc_id";
+    var $default_read_coloms = "admin_id,admin_username,admin_nama_depan,admin_email,admin_role,admin_org_type,admin_org_id,admin_ak_id,admin_kpo_id,admin_ibo_id,admin_tc_id";
 //masi copy paste
 var $uname_min = 5;
 var $uname_max = 15;
@@ -21,7 +21,7 @@ var $passwd_max = 15;
     var $admin_ibo_id;
     var $admin_tc_id;
 
-    var $coloumlist = "admin_username,admin_password,admin_lastupdate,admin_reg_date,admin_aktiv,admin_email,admin_role,admin_type,admin_webpassword,admin_org_type,admin_org_id,admin_ak_id,admin_kpo_id,admin_ibo_id,admin_tc_id";
+    var $coloumlist = "admin_id,admin_username,admin_nama_depan,admin_password,admin_lastupdate,admin_reg_date,admin_aktiv,admin_email,admin_role,admin_type,admin_webpassword,admin_org_type,admin_org_id,admin_ak_id,admin_kpo_id,admin_ibo_id,admin_tc_id";
     public $hideColoums = array("admin_kpo_id");
 
     function form_constraints(){

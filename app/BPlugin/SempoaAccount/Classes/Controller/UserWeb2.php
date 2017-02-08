@@ -83,8 +83,12 @@ class UserWeb2 extends WebService {
         </div>
         <?
     }
-
+    /*
+     * $group_id ini adalah tc_id, ibo_id oder kpo_id
+     * $group ini seperti tc, ibo oder kpo
+     */
     public static function update_user($group, $group_id) {
+//        pr($group_id);
         FormCreator::receive(array("SempoaAccount", "form_constraints_edit"), array("admin_password"));
         $t = time() . rand(0, 10);
         $acc_id = isset($_GET['id']) ? addslashes($_GET['id']) : die("No ID");
@@ -103,6 +107,7 @@ class UserWeb2 extends WebService {
             foreach ($arrRole as $rol) {
                 $new[$rol->role_id] = $rol->role_name;
             }
+//            pr($acc);
             $arrDetails = array(
                 "admin_id" => new \Leap\View\InputText("hidden", "admin_id", "admin_id", $acc->admin_id),
                 "admin_email" => new \Leap\View\InputText("email", "admin_email", "admin_email", $acc->admin_email),
@@ -127,7 +132,9 @@ class UserWeb2 extends WebService {
             $arribo[$myOrg->org_id] = $myOrg->org_kode . " " . $myOrg->nama;
 
             $arrDetails['admin_org_id'] = new \Leap\View\InputSelect($arribo, "admin_org_id", "admin_org_id", $group_id);
-            $onSuccess = "$('#user_form_" . $ibo_id . $t . "').hide();lwclose(selected_page);";
+//            $onSuccess = "$('#user_form_" . $ibo->org_id . $t . "').hide();lwclose(selected_page);";
+            $onSuccess = "$('#user_form_" . $group_id . $t . "').hide();lwclose(selected_page);";
+
             FormCreator::createForm("Edit User", $arrDetails, _SPPATH . self::$webclass . "/update_user_my_" . $group, $onSuccess);
             ?>
         </div>
@@ -265,8 +272,9 @@ class UserWeb2 extends WebService {
 
     public function update_user_my_tc() {
         $group = "tc";
-        $tc_id = AccessRight::getMyOrgID();
-        self::update_user($group, $tc_id);
+//        $tc_id= $_GET['id'];
+        $org_id = AccessRight::getMyOrgID();
+        self::update_user($group, $org_id);
     }
 
     public function create_user_my_tc() {
