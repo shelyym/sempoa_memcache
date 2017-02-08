@@ -92,9 +92,9 @@ class TestMemcache extends WebService
 //                        $s = "sandbox-sempoa.indomegabyte.com//NewsChannel2Org_c__1_";
                         $check = strpos($k, "/");
                         $b = substr($k,0,$check);
-
+                        pr($b . " " . $domain.$folder);
                         if($b == $domain.$folder ){
-                            pr($b . " " . $domain.$folder);
+
                             echo $k . '<br>' . $check;
                             pr($memcache->get($k));
                         }
