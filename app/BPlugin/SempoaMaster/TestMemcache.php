@@ -88,11 +88,24 @@ class TestMemcache extends WebService
                 foreach ($cdump AS $keys => $arrVal) {
                     if (!is_array($arrVal)) continue;
                     foreach ($arrVal AS $k => $v) {
-                        $check = strpos($k, $folder);
-                        if ($check) {
+
+//                        $s = "sandbox-sempoa.indomegabyte.com//NewsChannel2Org_c__1_";
+                        $check = strpos($k, "/");
+                        $b = substr($k,0,$check);
+//                        pr($b . " " . $folder);
+                        if($b === $folder ){
                             echo $k . '<br>' . $check;
                             pr($memcache->get($k));
                         }
+
+
+
+
+//                        $check = strpos($k, $folder);
+//                        if ($check) {
+//                            echo $k . '<br>' . $check;
+//                            pr($memcache->get($k));
+//                        }
 
 
                     }
@@ -134,6 +147,17 @@ class TestMemcache extends WebService
                 }
             }
         }
+
+    }
+
+
+    function printTest(){
+
+        $s = "sandbox-sempoa.indomegabyte.com//NewsChannel2Org_c__1_";
+        $check = strpos($s, "/");
+        $b = substr($s,0,$check);
+        pr($b);
+//        substr("Hello world",0,10)."<br>";
 
     }
 
