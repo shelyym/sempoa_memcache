@@ -333,6 +333,7 @@ class Migrasi extends WebService
         $level['advance 3'] = 14;
 
         $status = array();
+        $status[''] = KEY::$STATUSGURUQUALIFIED;
         $status['aktif'] = KEY::$STATUSGURUQUALIFIED;
         $status['keluar'] = KEY::$STATUSGURURESIGN;
 
@@ -772,5 +773,7 @@ class Migrasi extends WebService
         echo "jumlah yg termigrasi: " + $i;
 
     }
+
+
 
 }

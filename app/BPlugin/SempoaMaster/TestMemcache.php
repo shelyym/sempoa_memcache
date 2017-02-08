@@ -102,4 +102,22 @@ class TestMemcache extends WebService
         pr($muridModel);
 //        pr(get_called_class);
     }
+
+    function printMemcacheKey(){
+
+
+        $m = new Memcached();
+        $m->addServer('localhost', 11211);
+        $keys = $m->getAllKeys();
+        foreach ($keys as $index => $key) {
+            pr($key);
+//            if (strpos($key,$prefix) !== 0) {
+//                unset($keys[$index]);
+//            } else {
+////                $m->delete($key);
+//            }
+        }
+        return $keys;
+
+    }
 }
