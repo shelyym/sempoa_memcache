@@ -73,7 +73,7 @@ class TestMemcache extends WebService
 
     function getMemcacheKeysByMyFolder()
     {
-
+        global $domain;
         global $folder;
         $memcache = new Memcache;
         $memcache->connect('127.0.0.1', 11211)
@@ -92,8 +92,9 @@ class TestMemcache extends WebService
 //                        $s = "sandbox-sempoa.indomegabyte.com//NewsChannel2Org_c__1_";
                         $check = strpos($k, "/");
                         $b = substr($k,0,$check);
-                        pr($b . " " . $folder);
-                        if($b == $folder ){
+
+                        if($b == $domain.$folder ){
+                            pr($b . " " . $domain.$folder);
                             echo $k . '<br>' . $check;
                             pr($memcache->get($k));
                         }
