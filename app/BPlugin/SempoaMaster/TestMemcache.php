@@ -88,13 +88,10 @@ class TestMemcache extends WebService
                 foreach ($cdump AS $keys => $arrVal) {
                     if (!is_array($arrVal)) continue;
                     foreach ($arrVal AS $k => $v) {
-
-//                        $s = "sandbox-sempoa.indomegabyte.com//NewsChannel2Org_c__1_";
                         $check = strpos($k, "/");
-                        $b = substr($k,0,$check);
+                        $b = substr($k,0,$check)."/";
                         pr($b . " " . $domain.$folder);
                         if($b == $domain.$folder ){
-
                             echo $k . '<br>' . $check;
                             pr($memcache->get($k));
                         }
