@@ -692,9 +692,9 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
                 <span style="cursor: pointer;" onclick="$('.sudahbayar').hide();$('.belumbayar').show();">Belum Bayar</span> : <b style="color: red;"><?=$belumbayar;?></b>
             </div>
             <script>
-                $(document).ready(function(){
-                    $('#summary_holder').html($('#summary_bayar').html());
-                });
+//                $(document).ready(function(){
+//                    $('#summary_holder').html($('#summary_bayar').html());
+//                });
             </script>
         </section>
 
