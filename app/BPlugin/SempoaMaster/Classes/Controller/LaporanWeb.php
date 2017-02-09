@@ -89,6 +89,7 @@ class LaporanWeb extends WebService
     //TC
     public function create_operasional_pembayaran_iuran_bulanan_tc()
     {
+        echo "Bulanan";
 
         $myorg = AccessRight::getMyOrgID();
 
