@@ -99,7 +99,7 @@ class LaporanWeb extends WebService
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
         $murid = new MuridModel();
-        $arrMurid = $murid->getWhere("(status = 1  OR status = 2) AND murid_tc_id = '$tc_id' ORDER BY nama_siswa ASC");
+        $arrMurid = $murid->getWhere("(status = 1) AND murid_tc_id = '$tc_id' ORDER BY nama_siswa ASC");
         $status = new MuridWeb2Model();
         $arrs = $status->getAll();
 
