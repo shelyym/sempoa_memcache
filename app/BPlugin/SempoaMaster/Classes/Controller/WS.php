@@ -637,7 +637,9 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
                     foreach ($arrMurid as $mk) {
 
                         $iuranBulanan = new IuranBulanan();
-                        $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = $bln AND bln_tahun = $thn AND bln_tc_id=$myorg");
+                        $iuranBulanan->getWhereOne("bln_murid_id = $mk->id_murid AND bln_mon = $bln AND bln_tahun = $thn AND bln_tc_id=$myorg");
+                        pr($iuranBulanan);
+                        die();
                         ?>
 
                         <tr id='payment_<?= $iuranBulanan->bln_id; ?>' class="<?if ($iuranBulanan->bln_status) {?>sudahbayar <?}else{?> belumbayar<?}?>">
@@ -692,9 +694,9 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
                 <span style="cursor: pointer;" onclick="$('.sudahbayar').hide();$('.belumbayar').show();">Belum Bayar</span> : <b style="color: red;"><?=$belumbayar;?></b>
             </div>
             <script>
-//                $(document).ready(function(){
-//                    $('#summary_holder').html($('#summary_bayar').html());
-//                });
+                $(document).ready(function(){
+                    $('#summary_holder').html($('#summary_bayar').html());
+                });
             </script>
         </section>
 
