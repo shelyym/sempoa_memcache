@@ -533,12 +533,12 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
     public function testIBDaan(){
         $myorg = AccessRight::getMyOrgID();
-        echo $myorg;
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
         $murid = new MuridModel();
         $arrMurid = $murid->getWhere("(status = 1  OR status = 2) AND murid_tc_id = $tc_id ORDER BY nama_siswa ASC");
+        pr($arrMurid);
         $status = new MuridWeb2Model();
         $arrs = $status->getAll();
 
