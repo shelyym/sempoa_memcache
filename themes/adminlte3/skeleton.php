@@ -758,7 +758,7 @@
             <!-- FastClick -->
             <script src="<?= _SPPATH . _THEMEPATH; ?>/plugins/fastclick/fastclick.js"></script>
             <!-- AdminLTE App -->
-            <script src="<?= _SPPATH . _THEMEPATH; ?>/dist/js/app.min.js"></script>
+            <script src="<?= _SPPATH . _THEMEPATH; ?>/dist/js/app.js"></script>
             <!-- Sparkline -->
             <script src="<?= _SPPATH . _THEMEPATH; ?>/plugins/sparkline/jquery.sparkline.min.js"></script>
             <!-- jvectormap -->
