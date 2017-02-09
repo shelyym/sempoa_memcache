@@ -169,8 +169,13 @@ class UserWeb2 extends WebService {
     public function delete_user_my_ibo() {
         
     }
-
     public function update_user_my_ibo() {
+        $group = "ibo";
+//        $tc_id= $_GET['id'];
+        $org_id = AccessRight::getMyOrgID();
+        self::update_user($group, $org_id);
+    }
+    public function update_user_my_ibo_tmp() {
         FormCreator::receive(array("SempoaAccount", "form_constraints_edit"), array("admin_password"));
         $t = time() . rand(0, 10);
         $acc_id = isset($_GET['id']) ? addslashes($_GET['id']) : die("No ID");
