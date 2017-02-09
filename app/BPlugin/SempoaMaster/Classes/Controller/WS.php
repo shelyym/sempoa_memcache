@@ -537,7 +537,7 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
         $murid = new MuridModel();
-        $arrMurid = $murid->getWhere("(status = 1  OR status = 2) AND murid_tc_id = $tc_id ORDER BY nama_siswa ASC");
+        $arrMurid = $murid->getWhere("(status = 1) AND murid_tc_id = $tc_id ORDER BY nama_siswa ASC");
 //        pr($arrMurid);
         $status = new MuridWeb2Model();
         $arrs = $status->getAll();
@@ -641,7 +641,7 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
             $belumbayar = 0;
         foreach ($arrMurid as $key => $mk) {
 
-        if ($key <= 130){
+//        if ($key <= 130){
             $iuranBulanan = new IuranBulanan();
             $iuranBulanan->getWhereOne("bln_murid_id = $mk->id_murid AND bln_mon = $bln AND bln_tahun = $thn AND bln_tc_id=$myorg");
 //                        pr($iuranBulanan);
@@ -690,7 +690,7 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
             </script>
         <?
         //                        die();
-        }
+//        }
 
         }
         ?>
