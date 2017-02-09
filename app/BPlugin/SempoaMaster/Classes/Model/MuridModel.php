@@ -117,10 +117,6 @@ class MuridModel extends SempoaModel {
 //        $arClassSetting = Generic::getClassSettingByKPOID($myGrandParentID);
         $return['id_level_masuk'] = new Leap\View\InputSelect($arrLevelTrainer, "id_level_masuk", "id_level_masuk", $this->id_level_masuk);
         $return['id_level_sekarang'] = new Leap\View\InputSelect($arrLevelTrainer, "id_level_sekarang", "id_level_sekarang", $this->id_level_sekarang);
-        $return['id_level_sekarang'] = new Leap\View\InputText("hidden", "id_level_sekarang", "id_level_sekarang", $this->id_level_sekarang);
-//        $return['id_level_sekarang_text'] = new Leap\View\InputText("text", "id_level_sekarang", "id_level_sekarang", $arrLevelTrainer[$this->id_level_sekarang]);
-//        $return['id_level_sekarang_text']->setReadOnly();
-
 
         $return['murid_ak_id']->setReadOnly();
         $return['murid_kpo_id']->setReadOnly();
@@ -130,11 +126,14 @@ class MuridModel extends SempoaModel {
 
 
         if($this->pay_firsttime==0 ){
-            pr("masuk");
             $return['status'] = new Leap\View\InputText("hidden", "status", "status", $this->status);
             $return['status_text'] = new Leap\View\InputText("text", "status_text", "status_text", $arrStatusMurid[$this->status]);
             $return['status_text']->setReadOnly();
             $return['id_level_sekarang'] = new Leap\View\InputText('hidden', "id_level_sekarang", "id_level_sekarang", $this->id_level_masuk);
+
+        }
+        else{
+            $return['id_level_sekarang'] = new Leap\View\InputText("hidden", "id_level_sekarang", "id_level_sekarang", $this->id_level_sekarang);
 
         }
 
@@ -147,6 +146,10 @@ class MuridModel extends SempoaModel {
         $err = array();
 
         if (!isset($this->id_level_sekarang)) {
+            $this->id_level_sekarang = $this->id_level_masuk;
+        }
+
+        if ($this->pay_firsttime==0 ) {
             $this->id_level_sekarang = $this->id_level_masuk;
         }
 
@@ -261,6 +264,9 @@ class MuridModel extends SempoaModel {
 
     public function onSaveSuccess($id) {
         parent::onSaveSuccess($id);
+        $objMurid = new MuridModel();
+        $objMurid ->getByID($id);
+        $objMurid->id_level_sekarang = $objMurid->id_level_masuk;
         // Pertama kali
         $objStatus = new StatusHisMuridModel();
         $objStatus->getWhereOne("status_murid_id='$id'  ORDER BY status_tanggal_mulai DESC");
