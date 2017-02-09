@@ -132,7 +132,8 @@ class MuridModel extends SempoaModel {
             $return['status'] = new Leap\View\InputText("hidden", "status", "status", $this->status);
             $return['status_text'] = new Leap\View\InputText("text", "status_text", "status_text", $arrStatusMurid[$this->status]);
             $return['status_text']->setReadOnly();
-            $return['id_level_sekarang'] = new Leap\View\InputText('hidden', "id_level_sekarang", "id_level_sekarang", $this->id_level_masuk);
+            $this->id_level_sekarang = $this->id_level_masuk;
+//            $return['id_level_sekarang'] = new Leap\View\InputText('hidden', "id_level_sekarang", "id_level_sekarang", $this->id_level_masuk);
 
         }
 
