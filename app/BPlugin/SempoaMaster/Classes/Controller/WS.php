@@ -639,7 +639,6 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
                         $iuranBulanan = new IuranBulanan();
                         $iuranBulanan->getWhereOne("bln_murid_id = $mk->id_murid AND bln_mon = $bln AND bln_tahun = $thn AND bln_tc_id=$myorg");
                         pr($iuranBulanan);
-                        die();
                         ?>
 
                         <tr id='payment_<?= $iuranBulanan->bln_id; ?>' class="<?if ($iuranBulanan->bln_status) {?>sudahbayar <?}else{?> belumbayar<?}?>">
@@ -683,6 +682,7 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
                             })
                         </script>
                         <?
+                        die();
                     }
                     ?>
                     </tbody>
