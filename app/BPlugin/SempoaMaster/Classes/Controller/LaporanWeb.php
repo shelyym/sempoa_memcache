@@ -161,8 +161,6 @@ class LaporanWeb extends WebService
                     var thn = $('#tahun_<?= $t; ?>').val();
                     var tc_id = '<?= $myorg ?>';
                     openLw('create_operasional_pembayaran_iuran_bulanan_tc', '<?=_SPPATH;?>LaporanWeb/create_operasional_pembayaran_iuran_bulanan_tc'+'?now='+$.now()+'&bln='+bln+ "&thn=" + thn + "&tc_id=" + tc_id, 'fade');
-//                    $('#container_iuran_<?//= $t; ?>//').load("<?//= _SPPATH; ?>//LaporanWebHelper/loadIuranBulanan?bln=" + bln + "&thn=" + thn + "&tc_id=" + tc_id, function () {
-//                    }, 'json');
                 });
             </script>
         </section>
