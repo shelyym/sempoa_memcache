@@ -674,13 +674,7 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
                             <td><?= $arrSTatus[$iuranBulanan->bln_status]; ?></td>
                         </tr>
 
-                        <script>
 
-
-                            $('#pay_now_<?= $iuranBulanan->bln_id; ?>').click(function () {
-                                openLw('murid_Invoices_<?= $mk->id_murid; ?>', '<?= _SPPATH; ?>MuridWebHelper/murid_invoices?id=<?= $mk->id_murid; ?>', 'fade');
-                            })
-                        </script>
                         <?
 //                        die();
                     }
