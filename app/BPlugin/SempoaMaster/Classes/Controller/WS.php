@@ -636,7 +636,7 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
                     $sudahbayar = 0; $belumbayar = 0;
                     foreach ($arrMurid as $key=>$mk) {
 
-                        if($key <=200){
+                        if($key <=144){
                             $iuranBulanan = new IuranBulanan();
                             $iuranBulanan->getWhereOne("bln_murid_id = $mk->id_murid AND bln_mon = $bln AND bln_tahun = $thn AND bln_tc_id=$myorg");
 //                        pr($iuranBulanan);
