@@ -92,9 +92,9 @@ class LaporanWeb extends WebService
         echo "Bulanan";
 
 
-        die();
+//        die();
         $myorg = AccessRight::getMyOrgID();
-
+        echo $myorg;
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
