@@ -128,7 +128,9 @@ class MuridModel extends SempoaModel {
         $return['pay_firsttime'] = new Leap\View\InputText("hidden", "pay_firsttime", "pay_firsttime", $this->pay_firsttime);
         $return['nama_siswa']=new Leap\View\InputTextPattern("text","nama_siswa","nama_siswa",$this->nama_siswa,KEY::$PATTERN_NAME);
 
+
         if($this->pay_firsttime==0 ){
+            pr("masuk");
             $return['status'] = new Leap\View\InputText("hidden", "status", "status", $this->status);
             $return['status_text'] = new Leap\View\InputText("text", "status_text", "status_text", $arrStatusMurid[$this->status]);
             $return['status_text']->setReadOnly();
