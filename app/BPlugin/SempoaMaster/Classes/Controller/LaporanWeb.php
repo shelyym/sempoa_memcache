@@ -775,7 +775,7 @@ class LaporanWeb extends WebService
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $myOrgID = AccessRight::getMyOrgID();
         $transaksi = new TransaksiModel();
-        $arrTransaksi = $transaksi->getWhere("entry_org_id = '$tc_id'  AND entry_akun_id = " . $type . "  AND (MONTH(entry_date)=$bln) AND (YEAR(entry_date)=$thn) ORDER BY entry_date DESC");
+        $arrTransaksi = $transaksi->getWhere("entry_org_id = '$myOrgID'  AND entry_akun_id = " . $type . "  AND (MONTH(entry_date)=$bln) AND (YEAR(entry_date)=$thn) ORDER BY entry_date DESC");
 //        pr($arrTransaksi);
         $t = time();
         $arrBulan = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
@@ -822,7 +822,7 @@ class LaporanWeb extends WebService
                 $('#submit_bln_<?= $t; ?>').click(function () {
                     var bln = $('#bulan_<?= $t; ?>').val();
                     var thn = $('#tahun_<?= $t; ?>').val();
-                    var tc_id = '<?= $myorg ?>';
+                    var tc_id = '<?= $myOrgID ?>';
                     $('#container_laporan_<?= $t; ?>').load("<?= _SPPATH; ?>LaporanWebHelper/loadLaporantc?bln=" + bln + "&thn=" + thn + "&tc_id=" + <?= $myOrgID; ?> +"&type=" +<?= $type; ?>, function () {
                     }, 'json');
                 });
