@@ -4487,14 +4487,19 @@ class MuridWebHelper extends WebService
         $id = addslashes($_GET['id']);
         $iuranbulanan = new IuranBulanan();
         $iuranbulanan->getWhereOne("bln_murid_id=$id ORDER by bln_id DESC");
-        $bln = $iuranbulanan->bln_mon;
-        $thn = $iuranbulanan->bln_tahun;
 
-        if ($bln == 12) {
-            $bln = 1;
-            $thn = $thn + 1;
+        if (is_null($iuranbulanan->bln_id)) {
+            $bln = date("n");
+            $thn = date("Y");
         } else {
-            $bln = $bln + 1;
+            $bln = $iuranbulanan->bln_mon;
+            $thn = $iuranbulanan->bln_tahun;
+            if ($bln == 12) {
+                $bln = 1;
+                $thn = $thn + 1;
+            } else {
+                $bln = $bln + 1;
+            }
         }
 
         $murid = new MuridModel();
@@ -4508,7 +4513,7 @@ class MuridWebHelper extends WebService
         $iuranbulanan->bln_kpo_id = $murid->murid_kpo_id;
         $iuranbulanan->bln_ibo_id = $murid->murid_ibo_id;
         $iuranbulanan->bln_tc_id = $murid->murid_tc_id;
-
+        $iuranbulanan->bln_create_date = leap_mysqldate();
         if ($iuranbulanan->save()) {
             $json['status_code'] = 1;
             $json['status_message'] = "Invoice sudah tercetak";

@@ -52,6 +52,7 @@ class CronJob extends WebService
             $iur->bln_kpo_id = $mur->murid_kpo_id;
             $iur->bln_ibo_id = $mur->murid_ibo_id;
             $iur->bln_ak_id = $mur->murid_ak_id;
+            $iur->bln_create_date = leap_mysqldate();
             if ($iur->save()) {
                 $total++;
             }
@@ -88,6 +89,7 @@ class CronJob extends WebService
             $iur->bln_kpo_id = $kpo;
             $iur->bln_ibo_id = $ibo_id;
             $iur->bln_ak_id = $ak;
+            $iur->bln_create_date = leap_mysqldate();
             if ($iur->save()) {
                 $total++;
             }
