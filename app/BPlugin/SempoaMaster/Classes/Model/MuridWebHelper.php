@@ -2089,6 +2089,7 @@ class MuridWebHelper extends WebService
         $now = new \DateTime($murid->tanggal_masuk);
         $month = $now->format('m');
         $year = $now->format('Y');
+        $arrPembayaran = Generic::getJenisPembayaran();
         foreach ($arrMK as $mk) {
             $kuponSatuan->getByID($mk->bln_kupon_id);
             ?>
@@ -2151,6 +2152,27 @@ class MuridWebHelper extends WebService
                         echo $mk->bln_date_pembayaran;
                     }
                     ?></td>
+
+                <td><?
+                    if ($mk->bln_status)
+                        echo $arrPembayaran[$mk->bln_cara_bayar];
+                    else {
+                        if (AccessRight::getMyOrgType() == "tc") {
+                            ?>
+                            <select id="jenis_pmbr_invoice_spp_<?= $mk->bln_id;?>">
+                                <?
+                                foreach ($arrPembayaran as $key => $by) {
+                                    ?>
+                                    <option value="<?= $key; ?>"><?= $by; ?></option>
+                                    <?
+                                }
+                                ?>
+                            </select>
+                            <?
+                        }
+                    }
+                    ?></td>
+
                 <td>
                     <?
                     if ($mk->bln_kupon_id == 0) {
@@ -2187,10 +2209,12 @@ class MuridWebHelper extends WebService
                 $('#payNow_<?= $mk->bln_id; ?>').click(function () {
                     var bln_id = <?= $mk->bln_id; ?>;
                     var kupon = $('#kupon_name_t_<?= $mk->bln_id; ?>').val();
+                    var jpb = $('#jenis_pmbr_invoice_spp_<?= $mk->bln_id ?>').val();
                     $.post("<?= _SPPATH; ?>LaporanWebHelper/update_iuran_bulanan", {
                         lvl_murid:<?=$murid->id_level_sekarang;?>,
                         bln_id: bln_id,
                         kupon_id: kupon,
+                        jpb:jpb,
                         kupon_owner:<?=AccessRight::getMyOrgID();?>
 
                     }, function (data) {
