@@ -71,6 +71,7 @@ class LaporanWebHelper extends WebService {
         $kupon_id = addslashes($_POST['kupon_id']);
         $kupon_owner = addslashes($_POST['kupon_owner']);
         $level_murid = addslashes($_POST['lvl_murid']);
+        $jpb = addslashes($_POST['jpb']);
         // cari kupon ist vorhanden!
 
         $obKuponOwner = new KuponSatuan();
@@ -92,6 +93,7 @@ class LaporanWebHelper extends WebService {
         $iuranBulanan->bln_date_pembayaran = date("Y-m-d H:i:s");
         $iuranBulanan->bln_no_urut_inv = $iuranBulanan->getLastNoUrutInvoice($thn_skrg, $bln_skrg, AccessRight::getMyOrgID());
         $iuranBulanan->bln_no_invoice = "SPP/" . $thn_skrg . "/".$bln_skrg."/". $iuranBulanan->bln_no_urut_inv;
+        $iuranBulanan->bln_cara_bayar = $jpb;
         $iuranBulanan->save(1);
         $kupon = new KuponSatuan();
         $kupon->getByID($kupon_id);
