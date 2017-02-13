@@ -270,7 +270,8 @@ class MuridModel extends SempoaModel {
         // Pertama kali
         $objStatus = new StatusHisMuridModel();
         $objStatus->getWhereOne("status_murid_id='$id'  ORDER BY status_tanggal_mulai DESC");
-        if ($objStatus->status_id == "") {
+
+        if (is_null($objStatus->status_id)) {
             $statusMurid = new StatusHisMuridModel();
             $statusMurid->status_murid_id = $id;
             $statusMurid->status_tanggal_mulai = leap_mysqldate();
@@ -279,8 +280,23 @@ class MuridModel extends SempoaModel {
             $statusMurid->status_ak_id = $this->murid_ak_id;
             $statusMurid->status_kpo_id = $this->murid_kpo_id;
             $statusMurid->status_ibo_id = $this->murid_ibo_id;
-            $statusMurid->status_tc_id = $this->murid_ibo_id;
+            $statusMurid->status_tc_id = $this->murid_tc_id;
             $statusMurid->save();
+        }
+        else{
+            if($objStatus->status != $objMurid->status){
+
+                // update
+                $update = new StatusHisMuridModel();
+                $update->updateHistoryMurid($id);
+
+                // create status baru
+                $newHistory = new StatusHisMuridModel();
+                $newHistory->createHistory($id);
+
+                $logMurid = new LogStatusMurid();
+                $logMurid->createLogMurid($id);
+            }
         }
     }
 

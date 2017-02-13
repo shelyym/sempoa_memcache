@@ -98,4 +98,10 @@ class StatusHisMuridModel extends Model {
         return $objStatus;
     }
 
+    public function updateHistoryMurid($id_murid){
+        $this->getWhereOne("status_murid_id='$id_murid'  ORDER BY status_tanggal_mulai DESC");
+        $this->status_tanggal_akhir = leap_mysqldate();
+        $this->save(1);
+    }
+
 }

@@ -2742,22 +2742,27 @@ class MuridWebHelper extends WebService
         $succ = $objMurid->save(1);
         $json['murid'] = $objMurid;
         if ($succ) {
-            $objStatus = new StatusHisMuridModel();
-            $objStatus->getWhereOne("status_murid_id='$id_murid'  ORDER BY status_tanggal_mulai DESC");
-            $objStatus->status_tanggal_akhir = leap_mysqldate();
-            $objStatus->save(1);
-            $statusMurid = new StatusHisMuridModel();
-            $statusMurid->status_murid_id = $id_murid;
-            $statusMurid->status_tanggal_mulai = leap_mysqldate();
-            $statusMurid->status_level_murid = $objMurid->id_level_sekarang;
-            $statusMurid->status = $id_status;
-            $statusMurid->status_ak_id = $objMurid->murid_ak_id;
-            $statusMurid->status_kpo_id = $objMurid->murid_kpo_id;
-            $statusMurid->status_ibo_id = $objMurid->murid_ibo_id;
-            $statusMurid->status_tc_id = $objMurid->murid_tc_id;
-            $statusMurid->save();
-            $logMurid = new LogStatusMurid();
-            $logMurid->createLogMurid($id_murid);
+//            $objStatus = new StatusHisMuridModel();
+//            $objStatus->getWhereOne("status_murid_id='$id_murid'  ORDER BY status_tanggal_mulai DESC");
+//
+//            if(!is_null($objStatus->status_id)){
+//                $objStatus->status_tanggal_akhir = leap_mysqldate();
+
+//                $objStatus->save(1);
+//            }
+
+//            $statusMurid = new StatusHisMuridModel();
+//            $statusMurid->status_murid_id = $id_murid;
+//            $statusMurid->status_tanggal_mulai = leap_mysqldate();
+//            $statusMurid->status_level_murid = $objMurid->id_level_sekarang;
+//            $statusMurid->status = $id_status;
+//            $statusMurid->status_ak_id = $objMurid->murid_ak_id;
+//            $statusMurid->status_kpo_id = $objMurid->murid_kpo_id;
+//            $statusMurid->status_ibo_id = $objMurid->murid_ibo_id;
+//            $statusMurid->status_tc_id = $objMurid->murid_tc_id;
+//            $statusMurid->save();
+//            $logMurid = new LogStatusMurid();
+//            $logMurid->createLogMurid($id_murid);
             $json['status_code'] = 1;
             $json['status_message'] = "Update success";
             echo json_encode($json);
