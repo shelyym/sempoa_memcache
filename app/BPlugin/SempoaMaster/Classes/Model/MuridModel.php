@@ -11,7 +11,8 @@
  *
  * @author efindiongso
  */
-class MuridModel extends SempoaModel {
+class MuridModel extends SempoaModel
+{
 
     //put your code here
     var $table_name = "sempoa__siswa";
@@ -48,14 +49,14 @@ class MuridModel extends SempoaModel {
     public $hideColoums = array("murid_ak_id", "murid_kpo_id", "murid_ibo_id");
 
 
-
     // Webservice
     public $crud_setting = array("add" => 1, "search" => 1, "viewall" => 1, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 1);
     public $crud_webservice_allowed = "id_murid,kode_siswa,nama_siswa,jenis_kelamin,alamat,agama,tempat_lahir,id_level_sekarang,tanggal_lahir,telepon,nama_sekolah,nama_ortu,gambar,email_ortu";
     public $crud_add_photourl = array("gambar");
 
 
-    public function overwriteForm($return, $returnfull) {
+    public function overwriteForm($return, $returnfull)
+    {
         $t = time();
 
 
@@ -72,12 +73,12 @@ class MuridModel extends SempoaModel {
             $return['murid_ak_id'] = new Leap\View\InputText("hidden", "murid_ak_id", "murid_ak_id", $myParentID);
             $return['murid_kpo_id'] = new Leap\View\InputText("hidden", "murid_kpo_id", "murid_kpo_id", $myOrg);
             $return['murid_ibo_id'] = new Leap\View\InputText("hidden", "murid_ibo_id", "murid_ibo_id", $this->murid_ibo_id);
-             $return['murid_tc_id'] = new Leap\View\InputText("hidden", "murid_tc_id", "murid_tc_id", $this->murid_tc_id);
+            $return['murid_tc_id'] = new Leap\View\InputText("hidden", "murid_tc_id", "murid_tc_id", $this->murid_tc_id);
         } else if (AccessRight::getMyOrgType() == "ibo") {
             $return['murid_ak_id'] = new Leap\View\InputText("hidden", "murid_ak_id", "murid_ak_id", $myGrandParentID);
             $return['murid_kpo_id'] = new Leap\View\InputText("hidden", "murid_kpo_id", "murid_kpo_id", $myParentID);
             $return['murid_ibo_id'] = new Leap\View\InputText("hidden", "murid_ibo_id", "murid_ibo_id", $myOrg);
-            
+
             $arrTc = Generic::getAllMyTC(AccessRight::getMyOrgID());
             $return['murid_tc_id'] = new Leap\View\InputSelect($arrTc, "murid_tc_id", "murid_tc_id", $this->murid_tc_id);
         } else if (AccessRight::getMyOrgType() == "tc") {
@@ -95,11 +96,11 @@ class MuridModel extends SempoaModel {
         $return['kode_siswa']->setReadOnly();
 
         $return['status'] = new Leap\View\InputSelect($arrStatusMurid, "status", "status", $this->status);
-        if($this->status==""){
-            $return['status'] = new Leap\View\InputSelect(array("0"=>"Non Aktiv"), "status", "status", $this->status);
+        if ($this->status == "") {
+            $return['status'] = new Leap\View\InputSelect(array("0" => "Non Aktiv"), "status", "status", $this->status);
         }
 
-        $return['jenis_kelamin'] = new Leap\View\InputSelect(array("" => "Not Set","m" => "Male", "f" => "Female"), "jenis_kelamin", "jenis_kelamin", strtolower($this->jenis_kelamin));
+        $return['jenis_kelamin'] = new Leap\View\InputSelect(array("" => "Not Set", "m" => "Male", "f" => "Female"), "jenis_kelamin", "jenis_kelamin", strtolower($this->jenis_kelamin));
 //        $return['agama'] = new Leap\View\InputAttribute("status", "agama", "agama", $this->agama);
         $arrAgama = Generic::getAllAgama();
         $return['agama'] = new Leap\View\InputSelect($arrAgama, "agama", "agama", $this->agama);
@@ -122,17 +123,16 @@ class MuridModel extends SempoaModel {
         $return['murid_kpo_id']->setReadOnly();
         $return['murid_ibo_id']->setReadOnly();
         $return['pay_firsttime'] = new Leap\View\InputText("hidden", "pay_firsttime", "pay_firsttime", $this->pay_firsttime);
-        $return['nama_siswa']=new Leap\View\InputTextPattern("text","nama_siswa","nama_siswa",$this->nama_siswa,KEY::$PATTERN_NAME);
+        $return['nama_siswa'] = new Leap\View\InputTextPattern("text", "nama_siswa", "nama_siswa", $this->nama_siswa, KEY::$PATTERN_NAME);
 
 
-        if($this->pay_firsttime==0 ){
+        if ($this->pay_firsttime == 0) {
             $return['status'] = new Leap\View\InputText("hidden", "status", "status", $this->status);
             $return['status_text'] = new Leap\View\InputText("text", "status_text", "status_text", $arrStatusMurid[$this->status]);
             $return['status_text']->setReadOnly();
             $return['id_level_sekarang'] = new Leap\View\InputText('hidden', "id_level_sekarang", "id_level_sekarang", $this->id_level_masuk);
 
-        }
-        else{
+        } else {
             $return['id_level_sekarang'] = new Leap\View\InputText("hidden", "id_level_sekarang", "id_level_sekarang", $this->id_level_sekarang);
 
         }
@@ -141,7 +141,8 @@ class MuridModel extends SempoaModel {
         return $return;
     }
 
-    public function constraints() {
+    public function constraints()
+    {
         //err id => err msg
         $err = array();
 
@@ -149,7 +150,7 @@ class MuridModel extends SempoaModel {
             $this->id_level_sekarang = $this->id_level_masuk;
         }
 
-        if ($this->pay_firsttime==0 ) {
+        if ($this->pay_firsttime == 0) {
             $this->id_level_sekarang = $this->id_level_masuk;
         }
 
@@ -199,15 +200,16 @@ class MuridModel extends SempoaModel {
         return $err;
     }
 
-    public function overwriteRead($return) {
+    public function overwriteRead($return)
+    {
         $objs = $return['objs'];
         $arrLevel = Generic::getAllLevel();
         foreach ($objs as $obj) {
 
-            if (isset($obj->id_level_sekarang) && $obj->id_level_sekarang >0) {
+            if (isset($obj->id_level_sekarang) && $obj->id_level_sekarang > 0) {
                 $obj->id_level_sekarang = $arrLevel[$obj->id_level_sekarang];
             }
-            if (isset($obj->id_level_masuk) && $obj->id_level_masuk>0) {
+            if (isset($obj->id_level_masuk) && $obj->id_level_masuk > 0) {
                 $obj->id_level_masuk = $arrLevel[$obj->id_level_masuk];
             }
             if (isset($obj->jenis_kelamin)) {
@@ -215,7 +217,7 @@ class MuridModel extends SempoaModel {
                     $obj->jenis_kelamin = "Male";
                 } elseif ($obj->jenis_kelamin == 'f') {
                     $obj->jenis_kelamin = "Female";
-                }else{
+                } else {
                     $obj->jenis_kelamin = "<i>Not Set</i>";
                 }
             }
@@ -262,52 +264,50 @@ class MuridModel extends SempoaModel {
         return $return;
     }
 
-    public function onSaveSuccess($id) {
+    public function onSaveSuccess($id)
+    {
         parent::onSaveSuccess($id);
         $objMurid = new MuridModel();
-        $objMurid ->getByID($id);
+        $objMurid->getByID($id);
         $objMurid->id_level_sekarang = $objMurid->id_level_masuk;
         // Pertama kali
-        $objStatus = new StatusHisMuridModel();
-        $objStatus->getWhereOne("status_murid_id='$id'  ORDER BY status_tanggal_mulai DESC");
 
-        if (is_null($objStatus->status_id)) {
-            $statusMurid = new StatusHisMuridModel();
-            $statusMurid->status_murid_id = $id;
-            $statusMurid->status_tanggal_mulai = leap_mysqldate();
-            $statusMurid->status_level_murid = $this->id_level_sekarang;
-            $statusMurid->status = $this->status;
-            $statusMurid->status_ak_id = $this->murid_ak_id;
-            $statusMurid->status_kpo_id = $this->murid_kpo_id;
-            $statusMurid->status_ibo_id = $this->murid_ibo_id;
-            $statusMurid->status_tc_id = $this->murid_tc_id;
-            $statusMurid->save();
-        }
-        else{
-            if($objStatus->status != $objMurid->status){
+        if ($objMurid->pay_firsttime == 0) {
+            $objStatus = new StatusHisMuridModel();
+            $objStatus->getWhereOne("status_murid_id='$id' ORDER BY status_tanggal_mulai DESC");
+            if (is_null($objStatus->status_id)) {
+                $statusMurid = new StatusHisMuridModel();
+                $statusMurid->createHistory($id);
 
-                // update
+
+            } else {
+                $statusMurid = new StatusHisMuridModel();
+//                $statusMurid->updateHistoryMurid($id, $objMurid->status);
+            }
+        } // sdh melakukan pembayaran pertama
+        else {
+            $objStatus = new StatusHisMuridModel();
+            $objStatus->getWhereOne("status_murid_id='$id' ORDER BY status_tanggal_mulai DESC");
+            if ($objStatus->status != $objMurid->status) {
                 $update = new StatusHisMuridModel();
                 $update->updateHistoryMurid($id);
-
-                // create status baru
                 $newHistory = new StatusHisMuridModel();
                 $newHistory->createHistory($id);
-
-                $logMurid = new LogStatusMurid();
-                $logMurid->createLogMurid($id);
             }
         }
+
     }
 
-    public function getMuridAktiv($tc_id) {
+    public function getMuridAktiv($tc_id)
+    {
         $arrMurid = $this->getWhere("status=1 AND murid_tc_id=$tc_id ");
         $res = 0;
         $res = count($arrMurid);
         return $res;
     }
-    
-     public function getJumlahMuridAktivByMonthIBO($ibo_id, $bln, $thn) {
+
+    public function getJumlahMuridAktivByMonthIBO($ibo_id, $bln, $thn)
+    {
         $count = $this->getJumlah("murid_ibo_id=$ibo_id AND status=1");
         return $count;
     }

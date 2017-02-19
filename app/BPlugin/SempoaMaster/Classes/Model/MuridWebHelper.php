@@ -424,6 +424,8 @@ class MuridWebHelper extends WebService
         //First Time
         $first = new PaymentFirstTimeLog();
         $first->getByID($murid_id);
+        $json['$first'] = $first;
+//        $first->getWhereOne("murid_id=$murid_id AND first_undo!=1");
         if ($first->murid_pay_value > 0) {
             $json['status_code'] = 0;
             $json['status_message'] = "Sudah melakukan pembayaran pertama";
@@ -450,7 +452,6 @@ class MuridWebHelper extends WebService
             $murid = new MuridModel();
             $murid->getByID($murid_id);
             $murid->pay_firsttime = 1;
-            $murid->save();
             //bayar pakai kupon
             $iu = new IuranBulanan();
             $iu->bln_tc_id = AccessRight::getMyOrgID();
@@ -468,6 +469,7 @@ class MuridWebHelper extends WebService
             $iu->bln_date_pembayaran = leap_mysqldate();
             $succ2 = $iu->save();
             if ($succ2) {
+
                 $ksatuan = new KuponSatuan();
                 $ksatuan->getByID($pilih_kupon);
                 $ksatuan->kupon_pemakaian_date = leap_mysqldate();
@@ -477,7 +479,7 @@ class MuridWebHelper extends WebService
                 //activkan murid
 //                $murid->id_level_masuk =
                 $murid->status = 1;
-                $murid->save();
+                $murid->save(1);
                 $j = new MuridJourney();
                 $j->journey_murid_id = $murid_id;
                 $j->journey_level_mulai = $murid->id_level_masuk;
@@ -498,24 +500,6 @@ class MuridWebHelper extends WebService
                 $stockBarang->jumlah_stock = $stockBarang->jumlah_stock - 1;
                 $stockBarang->save();
 
-                // History Status
-                $objStatus = new StatusHisMuridModel();
-                $objStatus->getWhereOne("status_murid_id='$murid_id'  ORDER BY status_tanggal_mulai DESC");
-                $objStatus->status_tanggal_akhir = leap_mysqldate();
-                $objStatus->save(1);
-
-                $statusMurid = new StatusHisMuridModel();
-                $statusMurid->status_murid_id = $murid_id;
-                $statusMurid->status_tanggal_mulai = leap_mysqldate();
-                $statusMurid->status_level_murid = $murid->id_level_sekarang;
-                $statusMurid->status = $murid->status;
-                $statusMurid->status_ak_id = $murid->murid_ak_id;
-                $statusMurid->status_kpo_id = $murid->murid_kpo_id;
-                $statusMurid->status_ibo_id = $murid->murid_ibo_id;
-                $statusMurid->status_tc_id = $murid->murid_tc_id;
-                $statusMurid->save();
-                $logMurid = new LogStatusMurid();
-                $logMurid->createLogMurid($murid_id);
 
                 $objIuranBuku = new IuranBuku();
 
@@ -574,6 +558,135 @@ class MuridWebHelper extends WebService
         die();
     }
 
+    function undo_process_firstpayment()
+    {
+        //murid_biaya_serial
+        $murid_id = addslashes($_GET['murid_id']);
+        $id_level = addslashes($_GET['level_murid']);
+
+        $murid = new MuridModel();
+        $murid->getByID($murid_id);
+
+
+        $myID = $murid->murid_tc_id;
+        $myOrgID = $murid->murid_tc_id;
+        $myParentID = Generic::getMyParentID($myOrgID);
+        // KPO
+
+        $myGrandParentID = Generic::getMyParentID($myParentID);
+        $myGrandGrandParentID = Generic::getMyParentID($myGrandParentID);
+
+
+        $fp = new PaymentFirstTimeLog();
+        $fp->getWhereOne($murid_id);
+        if (is_null($fp->murid_id)) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Data Murid tidak ditemukan!";
+            echo json_encode($json);
+            die();
+        }
+        $murid->pay_firsttime = 0;
+        $murid->status =  0;
+        $murid->save(1);
+
+        $arrRetourBiaya = unserialize($fp->murid_biaya_serial);
+//        $json['obj'] = $arrRetourBiaya;
+        $fp->murid_pay_value = "";
+        $fp->save(1);
+        foreach ($arrRetourBiaya as $val) {
+            foreach ($val as $key => $valhlp) {
+                if (($key == "jenis_biaya") AND ($valhlp == "Registrasi")) {
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_REGISTRASI_TC, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+
+                }
+                if (($key == "jenis_biaya") AND ($valhlp == "Iuran Buku")) {
+                    $myBuku = new BarangWebModel();
+                    $arrMyBuku = $myBuku->getWhere("level=$murid->id_level_sekarang  AND jenis_biaya = 1 AND kpo_id = $myGrandParentID LIMIT 0,1");
+                    $stockBarang = new StockModel();
+                    $buku_active = array_pop($arrMyBuku);
+                    $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$myID'");
+                    $id_buku = $buku_active->id_barang_harga;
+                    $stockBarang->retourStock($id_buku, $myID);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BUKU_TC, KEY::$BIAYA_IURAN_BUKU, "Iuran Buku: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+
+                }
+
+                if (($key == "jenis_biaya") AND ($valhlp == "Perlengkapan Junior")) {
+
+                    $myBuku = new BarangWebModel();
+                    $id_perlengkapan = $myBuku->getPerlengkapanJunior($myGrandParentID);
+                    $stockBarang = new StockModel();
+                    $stockBarang->retourStock($id_perlengkapan, $myID);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_PERLENGKAPAN_TC, KEY::$BIAYA_PERLENGKAPAN_JUNIOR, "Perlengkapan: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+                }
+
+                if (($key == "jenis_biaya") AND ($valhlp == "Perlengkapan Fondation")) {
+                    $myBuku = new BarangWebModel();
+                    $id_perlengkapan = $myBuku->getPerlengkapanJunior($myGrandParentID);
+                    $stockBarang = new StockModel();
+                    $stockBarang->retourStock($id_perlengkapan, $myID);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_PERLENGKAPAN_TC, KEY::$BIAYA_PERLENGKAPAN_FOUNDATION, "Perlengkapan: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+                }
+
+                if (($key == "nomor")) {
+                    $kuponSatuan = new KuponSatuan();
+                    $kuponSatuan->retourKupon($val['nomor']);
+                    $arrjenisBiayaSPP = Generic::getJenisBiayaType();
+                    $jenisBiayaSPP = $arrjenisBiayaSPP[$id_level];
+                    $m = new DateTime($fp->murid_pay_date);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BULANAN_TC, $jenisBiayaSPP, "Iuran Bulanan: Siswa: " . Generic::getMuridNamebyID($murid_id) . ", Bulan: " . $m->format("m-Y") . " dgn Kode Kupon: " . $val['nomor'], -1, 0, "Utama");
+
+                }
+
+
+            }
+        }
+
+
+
+        $nilaiMurid = new NilaiModel();
+        $nilaiMurid->getWhereOne("nilai_murid_id=$murid_id AND nilai_level=$id_level");
+        if (!is_null($nilaiMurid->nilai_id)) {
+            $nilaiMurid->nilai_delete = 1;
+            $nilaiMurid->save(1);
+        }
+        $json['status_code'] = 1;
+        $json['status_message'] = "Firstpayment berhasil di Undo";
+
+
+        echo json_encode($json);
+        die();
+
+
+        $j = new MuridJourney();
+        $j->journey_murid_id = $murid_id;
+        $j->journey_level_mulai = $murid->id_level_masuk;
+        $j->journey_mulai_date = leap_mysqldate();
+        $j->journey_tc_id = AccessRight::getMyOrgID();
+        $j->save();
+
+
+        $nilaiMurid = new NilaiModel();
+        $arrNilai = $nilaiMurid->getWhere("nilai_murid_id ='$murid_id' AND nilai_level='$murid->id_level_sekarang'");
+        if (count($arrNilai) == 0) {
+            $nilaiMurid->nilai_murid_id = $murid_id;
+            $nilaiMurid->nilai_level = $murid->id_level_sekarang;
+            $nilaiMurid->nilai_create_date = leap_mysqldate();
+            $nilaiMurid->nilai_org_id = $myID;
+            $nilaiMurid->save();
+        }
+
+
+        $json['status_code'] = 0;
+        $json['status_message'] = "Gagal";
+        echo json_encode($json);
+        die();
+    }
+
     function profile()
     {
         $myType = AccessRight::getMyOrgType();
@@ -581,7 +694,7 @@ class MuridWebHelper extends WebService
         $murid = new MuridModel();
         $murid->getByID($id);
         $arrStatusMurid = Generic::getAllStatusMurid();
-
+        $arrLevelMurid = Generic::getAllLevel();
         $html = "\"<select id='select_status_$murid->id_murid'>";
         foreach ($arrStatusMurid as $key => $value) {
             if ($key == $murid->status) {
@@ -591,6 +704,20 @@ class MuridWebHelper extends WebService
             }
         }
         $html = $html . "</select>\"";
+
+
+
+        $htmlLevel = "\"<select id='select_lvl_$murid->id_murid'>";
+        foreach ($arrLevelMurid as $key => $value) {
+            if ($key == $murid->id_level_sekarang) {
+                $htmlLevel = $htmlLevel . "<option value='$key' selected>$value</option>";
+            } else {
+                $htmlLevel = $htmlLevel . "<option value='$key'>$value</option>";
+            }
+        }
+        $htmlLevel = $htmlLevel . "</select>\"";
+
+
         $t = time();
         ?>
 
@@ -744,6 +871,28 @@ class MuridWebHelper extends WebService
                                     </button>
                                 </td>
                             </tr>
+
+                            <?
+                            if(AccessRight::getMyOrgType() == KEY::$IBO){
+                                ?>
+                                <tr>
+                                    <td>
+                                        <b>Adjust Level ke Kurikulum Baru</b>
+                                    </td>
+                                    <td id="adjust_level_kurikulum_<?= $murid->id_murid."_" . $t; ?>" colspan="2" style="font-weight: bold;">
+                                        <?= Generic::getLevelNameByID($murid->id_level_sekarang);  ?>
+                                    </td>
+                                </tr>
+                                <?
+
+                            }
+
+
+                            ?>
+
+
+
+
                         <? } ?>
                     </table>
                 </div>
@@ -769,7 +918,7 @@ class MuridWebHelper extends WebService
                             <td>
                                 Pendaftaran Pertama
                             </td>
-                            <td colspan="2">
+                            <td>
                                 <?
                                 if ($murid->pay_firsttime == '0') {
 //                $obj->removeAutoCrudClick = array("pay_firsttime");
@@ -780,6 +929,37 @@ class MuridWebHelper extends WebService
                                 }
                                 ?>
                             </td>
+
+
+                            <td>
+                                <?
+
+
+                                if (($murid->pay_firsttime == 1) AND (AccessRight::getMyOrgType() == KEY::$IBO)) {
+                                    $fp = new PaymentFirstTimeLog();
+                                    $fp->getWhereOne("murid_id=$murid->id_murid");
+//                                    pr($fp);
+                                    if (!is_null($fp->murid_id)) {
+                                        $now = time();
+                                        $your_date = strtotime($fp->murid_pay_date);
+                                        $datediff = Generic::diffTwoDaysInDay($now, $your_date);
+//                                        echo $murid->id_murid . " - " . $fp->murid_pay_date . " - " . Generic::getMuridNamebyID($fp->murid_id) . " - ".$datediff;
+                                        if ($datediff <= 14) {
+                                            ?>
+                                            <span id="undo_first_payment_<?= $murid->id_murid; ?>" class="fa fa-undo"
+                                                  aria-hidden="true"></span>
+                                            <?
+
+                                            ;
+                                        }
+                                    }
+
+                                } else {
+
+                                }
+                                ?>
+                            </td>
+
                         </tr>
                     </table>
                 </div>
@@ -852,6 +1032,20 @@ class MuridWebHelper extends WebService
             </div>
         </div>
         <script>
+
+            $('#undo_first_payment_<?=$murid->id_murid . $t; ?>').click(function () {
+                if (confirm("Anda yakin akan mengUNDO transaksi?")) {
+                    $.get("<?= _SPPATH; ?>MuridWebHelper/undo_process_firstpayment?murid_id=<?= $murid->id_murid; ?>" + "&level_murid=<?= $murid->id_level_masuk; ?>", function (data) {
+                        alert(data.status_message);
+                        if (data.status_code) {
+
+                            lwrefresh(selected_page);
+                        }
+//                        console.log(data.murid);
+
+                    }, 'json');
+                }
+            });
             $('#status_<?= $murid->id_murid; ?>_<?=$t;?>').dblclick(function () {
                 <?
                 if($murid->pay_firsttime == 1){
@@ -880,6 +1074,25 @@ class MuridWebHelper extends WebService
                 }
                 ?>
 
+            });
+
+            $('#adjust_level_kurikulum_<?= $murid->id_murid."_" . $t; ?>').dblclick(function () {
+                $('#adjust_level_kurikulum_<?= $murid->id_murid . "_" . $t; ?>').html(<?= $htmlLevel ?>);
+
+                $('#select_lvl_<?=$murid->id_murid; ?>').change(function () {
+
+                    var id_level = $('#select_lvl_<?=$murid->id_murid; ?>').val();
+                    $.get("<?= _SPPATH; ?>MuridWebHelper/changeLevelKurikulum?id_murid=<?= $murid->id_murid; ?>" + "&id_level_murid=" + id_level, function (data) {
+                        console.log(data);
+                        alert(data.status_message);
+                        if (data.status_code) {
+                            lwrefresh(selected_page);
+                        }
+                        console.log(data.murid);
+
+                    }, 'json');
+                })
+//
             });
 
 
@@ -1705,9 +1918,28 @@ class MuridWebHelper extends WebService
                                     <th>
                                         Jenis Pembayaran
                                     </th>
-                                    <th>
-                                        Print
-                                    </th>
+                                    <?
+                                    if ((AccessRight::getMyOrgType() == KEY::$TC)) {
+                                        ?>
+                                        <th>
+                                            Print
+                                        </th>
+                                        <?
+
+                                    }
+
+                                    ?>
+
+                                    <?
+                                    if (AccessRight::getMyOrgType() == KEY::$IBO) {
+                                        ?>
+                                        <th>
+                                            Undo
+                                        </th>
+                                        <?
+                                    }
+                                    ?>
+
                                 </tr>
                                 </thead>
 
@@ -1742,7 +1974,7 @@ class MuridWebHelper extends WebService
                                                 z-index: = 10000000;
                                             }
                                         </style>
-                                        <td class='kupon'>
+                                        <td class='kupon' id="no_kupon_<?= $mk->bln_id; ?>">
                                             <?
                                             if ($mk->bln_kupon_id != 0) {
                                                 echo $mk->bln_kupon_id;
@@ -1798,34 +2030,88 @@ class MuridWebHelper extends WebService
                                                 }
                                             }
                                             ?></td>
-                                        <td>
-                                            <?
-                                            if ($mk->bln_kupon_id == 0) {
+                                        <?
+                                        if ((AccessRight::getMyOrgType() == KEY::$TC)) {
+                                            ?>
+                                            <td>
+                                                <?
+                                                if ($mk->bln_kupon_id == 0) {
 //                                                echo $mk->bln_kupon_id;
-                                            } else {
-
-                                                if (($mk->bln_date == $month . "-" . $year)) {
-                                                    echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
-                                            </a>";
                                                 } else {
-                                                    ?>
-                                                    <a target="_blank"
-                                                       href="<?= _SPPATH; ?>MuridWebHelper/printSPP?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
+
+
+                                                    if (($mk->bln_date == $month . "-" . $year)) {
+                                                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                            </a>";
+                                                    } else {
+                                                        ?>
+                                                        <a target="_blank"
+                                                           href="<?= _SPPATH; ?>MuridWebHelper/printSPP?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
 
                                                         <span class="glyphicon glyphicon-print"
                                                               aria-hidden="true"></span>
-                                                    </a>
-                                                    <?
+                                                        </a>
+                                                        <?
+
+                                                    }
+
 
                                                 }
+                                                ?>
+                                            </td>
+                                            <?
+                                        }
+                                        ?>
 
-
+                                        <td>
+                                            <?
+                                            if ((AccessRight::getMyOrgType() == KEY::$IBO) AND ($mk->bln_date_pembayaran != KEY::$TGL_KOSONG)) {
+                                                $now = time();
+                                                $your_date = strtotime($mk->bln_date_pembayaran);
+                                                $datediff = $now - $your_date;
+                                                $datediff = floor($datediff / (60 * 60 * 24));
+                                                if ($datediff <= 14) {
+                                                    ?>
+                                                    <span id="undo_<?= $mk->bln_id; ?>" class="fa fa-undo"
+                                                          aria-hidden="true"></span>
+                                                    <?
+                                                }
                                             }
                                             ?>
+
+
                                         </td>
                                     </tr>
                                     <script>
-
+                                        // hilangkan t utk mengaktivkan
+                                        $('#undo_<?= $mk->bln_id . $t; ?>').click(function () {
+                                            var bln_id = <?= $mk->bln_id; ?>;
+                                            var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
+                                            alert(kupon);
+                                            if (kupon != null) {
+                                                if (confirm("yakin?"))
+                                                    $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_bulanan", {
+                                                        lvl_murid:<?=$murid->id_level_sekarang;?>,
+                                                        bln_id: bln_id,
+                                                        kupon_id: kupon,
+                                                        kupon_owner:<?=$murid->murid_tc_id;?>
+                                                    }, function (data) {
+                                                        console.log(data);
+                                                        alert(data.status_message);
+                                                        if (data.status_code) {
+//                                                        $('.bBayar_<?//= $mk->bln_id; ?>//').hide();
+//                                                        $('#pilih_kupon_<?//= $t; ?>//').attr("disabled", "true");
+//                                                        $('#status_<?//= $mk->bln_id; ?>//').html("Paid");
+//                                                        $('#tglpembayaran_<?//= $mk->bln_id; ?>//').html('<?//= leap_mysqldate(); ?>//');
+                                                            lwrefresh(selected_page);
+                                                            lwrefresh("Profile_Murid");
+                                                        }
+                                                    }, 'json');
+                                            }
+                                            else {
+                                                alert("Kupon tidak tersedia!");
+                                            }
+                                        });
 
                                         <? if ($mk->bln_status) { ?>
                                         $('.bBayar_<?= $mk->bln_id; ?>').hide();
@@ -1843,7 +2129,7 @@ class MuridWebHelper extends WebService
                                                     lvl_murid:<?=$murid->id_level_sekarang;?>,
                                                     bln_id: bln_id,
                                                     kupon_id: kupon,
-                                                    jpb:jpb,
+                                                    jpb: jpb,
                                                     kupon_owner:<?=AccessRight::getMyOrgID();?>
                                                 }, function (data) {
                                                     console.log(data);
@@ -1920,9 +2206,26 @@ class MuridWebHelper extends WebService
                                 <th>
                                     Jenis Pembayaran
                                 </th>
-                                <th>
-                                    Print
-                                </th>
+                                <?
+                                if ((AccessRight::getMyOrgType() == KEY::$TC)) {
+                                    ?>
+                                    <th>
+                                        Print
+                                    </th>
+                                    <?
+
+                                }
+                                ?>
+                                <?
+                                if (AccessRight::getMyOrgType() == "XYZ") {
+                                    ?>
+                                    <th>
+                                        Undo
+                                    </th>
+                                    <?
+                                }
+                                ?>
+
                             </tr>
                             </thead>
                             <tbody id='container_load_history_iuranBuku'>
@@ -1967,30 +2270,63 @@ class MuridWebHelper extends WebService
                                             }
                                         }
                                         ?></td>
-                                    <td>
-                                        <?
-                                        if ($val->bln_status == 0) {
-//                                                echo $mk->bln_kupon_id;
-                                        } else {
-                                            if ($murid->id_level_masuk == $val->bln_buku_level) {
-                                                echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
-                                            </a>";
-                                            } else {
-                                                ?>
-                                                <a target="_blank"
-                                                   href="<?= _SPPATH; ?>MuridWebHelper/printBuku?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
 
-                                                    <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-                                                </a>
+                                    <?
+                                    if ((AccessRight::getMyOrgType() == KEY::$TC)) {
+                                        ?>
+                                        <td>
+                                            <?
+                                            if ($val->bln_status == 0) {
+//                                                echo $mk->bln_kupon_id;
+                                            } else {
+                                                if ($murid->id_level_masuk == $val->bln_buku_level) {
+                                                    echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                            </a>";
+                                                } else {
+                                                    ?>
+                                                    <a target="_blank"
+                                                       href="<?= _SPPATH; ?>MuridWebHelper/printBuku?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
+
+                                                        <span class="glyphicon glyphicon-print"
+                                                              aria-hidden="true"></span>
+                                                    </a>
+                                                    <?
+                                                }
+
+
+                                            }
+                                            ?>
+
+                                        </td>
+                                        <?
+
+                                    }
+                                    ?>
+                                    <?
+                                    if (AccessRight::getMyOrgType() == "XYZ") {
+                                        ?>
+                                        <td>
+                                            <?
+                                            $now = time();
+                                            $your_date = strtotime($val->bln_date_pembayaran);
+                                            $datediff = Generic::diffTwoDaysInDay($now, $your_date);
+                                            if ($datediff <= 14) {
+                                                ?>
+                                                <span id="undo_<?= $val->bln_id; ?>" class="fa fa-undo"
+                                                      aria-hidden="true"></span>
                                                 <?
                                             }
+                                            ?>
+                                        </td>
+                                        <?
+                                    }
+                                    ?>
 
-
-                                        }
-                                        ?>
-
-                                    </td>
                                     <script>
+
+                                        $('#undo_<?= $val->bln_id; ?>').click(function () {
+                                        });
+
                                         <?
                                         if ($val->bln_status) {
                                         ?>
@@ -2117,7 +2453,7 @@ class MuridWebHelper extends WebService
                         z-index: = 10000000;
                     }
                 </style>
-                <td class='kupon'>
+                <td class='kupon' id="no_kupon_<?= $mk->bln_id; ?>">
                     <?
                     if ($mk->bln_status) {
                         echo $mk->bln_kupon_id;
@@ -2159,7 +2495,7 @@ class MuridWebHelper extends WebService
                     else {
                         if (AccessRight::getMyOrgType() == "tc") {
                             ?>
-                            <select id="jenis_pmbr_invoice_spp_<?= $mk->bln_id;?>">
+                            <select id="jenis_pmbr_invoice_spp_<?= $mk->bln_id; ?>">
                                 <?
                                 foreach ($arrPembayaran as $key => $by) {
                                     ?>
@@ -2173,32 +2509,88 @@ class MuridWebHelper extends WebService
                     }
                     ?></td>
 
+                <?
+                if ((AccessRight::getMyOrgType() == KEY::$TC)) {
+                    ?>
+
+                    <td>
+                        <?
+                        if ($mk->bln_kupon_id == 0) {
+//                                                echo $mk->bln_kupon_id;
+                        } else {
+
+                            if (($mk->bln_date == $month . "-" . $year)) {
+                                echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                            </a>";
+                            } else {
+                                ?>
+                                <a target="_blank"
+                                   href="<?= _SPPATH; ?>MuridWebHelper/printSPP?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
+
+                                    <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+                                </a>
+                                <?
+
+                            }
+
+
+                        }
+                        ?>
+                    </td>
+                    <?
+
+                }
+                ?>
+
+
                 <td>
                     <?
-                    if ($mk->bln_kupon_id == 0) {
-//                                                echo $mk->bln_kupon_id;
-                    } else {
-
-                        if (($mk->bln_date == $month . "-" . $year)) {
-                            echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
-                                            </a>";
-                        } else {
+                    if ((AccessRight::getMyOrgType() == KEY::$IBO) AND ($mk->bln_date_pembayaran != KEY::$TGL_KOSONG)) {
+                        $now = time();
+                        $your_date = strtotime($mk->bln_date_pembayaran);
+                        $datediff = $now - $your_date;
+                        $datediff = floor($datediff / (60 * 60 * 24));
+                        if ($datediff <= 14) {
                             ?>
-                            <a target="_blank"
-                               href="<?= _SPPATH; ?>MuridWebHelper/printSPP?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
-
-                                <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-                            </a>
+                            <span id="undo_<?= $mk->bln_id; ?>" class="fa fa-undo"
+                                  aria-hidden="true"></span>
                             <?
-
                         }
 
 
                     }
+
                     ?>
+
+
                 </td>
             </tr>
             <script>
+
+
+                $('#undo_<?= $mk->bln_id; ?>').click(function () {
+                    var bln_id = <?= $mk->bln_id; ?>;
+                    var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
+                    if (kupon != null) {
+                        if (confirm("yakin?"))
+                            $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_bulanan", {
+                                lvl_murid:<?=$murid->id_level_sekarang;?>,
+                                bln_id: bln_id,
+                                kupon_id: kupon,
+                                kupon_owner:<?=$murid->murid_tc_id;?>
+                            }, function (data) {
+                                console.log(data);
+                                alert(data.status_message);
+                                if (data.status_code) {
+                                    lwrefresh(selected_page);
+                                    lwrefresh("Profile_Murid");
+                                }
+                            }, 'json');
+                    }
+                    else {
+                        alert("Kupon tidak tersedia!");
+                    }
+                });
                 <? if ($mk->bln_status) { ?>
                 $('.td .bBayar').hide();
                 <? } else {
@@ -2214,7 +2606,7 @@ class MuridWebHelper extends WebService
                         lvl_murid:<?=$murid->id_level_sekarang;?>,
                         bln_id: bln_id,
                         kupon_id: kupon,
-                        jpb:jpb,
+                        jpb: jpb,
                         kupon_owner:<?=AccessRight::getMyOrgID();?>
 
                     }, function (data) {
@@ -2742,27 +3134,7 @@ class MuridWebHelper extends WebService
         $succ = $objMurid->save(1);
         $json['murid'] = $objMurid;
         if ($succ) {
-//            $objStatus = new StatusHisMuridModel();
-//            $objStatus->getWhereOne("status_murid_id='$id_murid'  ORDER BY status_tanggal_mulai DESC");
 //
-//            if(!is_null($objStatus->status_id)){
-//                $objStatus->status_tanggal_akhir = leap_mysqldate();
-
-//                $objStatus->save(1);
-//            }
-
-//            $statusMurid = new StatusHisMuridModel();
-//            $statusMurid->status_murid_id = $id_murid;
-//            $statusMurid->status_tanggal_mulai = leap_mysqldate();
-//            $statusMurid->status_level_murid = $objMurid->id_level_sekarang;
-//            $statusMurid->status = $id_status;
-//            $statusMurid->status_ak_id = $objMurid->murid_ak_id;
-//            $statusMurid->status_kpo_id = $objMurid->murid_kpo_id;
-//            $statusMurid->status_ibo_id = $objMurid->murid_ibo_id;
-//            $statusMurid->status_tc_id = $objMurid->murid_tc_id;
-//            $statusMurid->save();
-//            $logMurid = new LogStatusMurid();
-//            $logMurid->createLogMurid($id_murid);
             $json['status_code'] = 1;
             $json['status_message'] = "Update success";
             echo json_encode($json);
@@ -4576,6 +4948,42 @@ class MuridWebHelper extends WebService
 
         echo json_encode($json);
         die();
+
+
+    }
+
+    function changeLevelKurikulum(){
+        // id_murid
+        // Level_murid
+        $id_murid = $_GET['id_murid'];
+        $id_level = $_GET['id_level_murid'];
+
+        $murid = new MuridModel();
+        $murid->getByID($id_murid);
+
+        if(is_null($murid->id_murid)){
+            $json['status_code'] = 0;
+            $json['status_message'] = "Murid tidak ditemukan";
+            echo json_encode($json);
+            die();
+        }
+
+        $id_lvl_hlp = $murid->id_level_sekarang;
+        $murid->id_level_sekarang = $id_level;
+        $murid->save(1);
+        $json['murid'] = $murid;
+
+        $mj = new MuridJourney();
+        $mj->getWhereOne("journey_murid_id=$id_murid AND journey_level_mulai=$id_lvl_hlp");
+        if(!is_null($mj->journey_id)){
+            $mj->journey_level_mulai = $id_level;
+            $mj->save(1);
+            $json['status_code'] = 1;
+            $json['status_message'] = "Level Murid berhasil di set ke Level Kurikulum Baru";
+            echo json_encode($json);
+            die();
+        }
+        // Journey diganti level murid sebelumnya ke yg skrg
 
 
     }
