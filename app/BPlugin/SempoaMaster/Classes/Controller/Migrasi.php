@@ -785,7 +785,7 @@ class Migrasi extends WebService
             $id_murid = $mur->id_murid;
             $mj->getWhereOne("journey_murid_id=$id_murid");
             if (!is_null($mj->journey_id)) {
-//            pr($id_murid);
+            pr($id_murid);
             } else {
 
                 $mk = new MuridJourney();
