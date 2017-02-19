@@ -362,7 +362,7 @@ class Migrasi extends WebService
                 if (!array_key_exists($keyorg_id, $arrTC)) {
                     $objTC = $this->getIBOData($keyorg_id);
                     if (!is_null($objTC->org_id)) {
-                        if($objTC->tc_migrasi != 1){
+                        if ($objTC->tc_migrasi != 1) {
                             $arrTC[$keyorg_id] = $objTC;
                         }
 
@@ -541,7 +541,7 @@ class Migrasi extends WebService
                 if (!array_key_exists($keyorg_id, $arrIBO)) {
                     $objTC = $this->getIBOData($keyorg_id);
                     if (!is_null($objTC->org_id)) {
-                        if($objTC->tc_migrasi != 1){
+                        if ($objTC->tc_migrasi != 1) {
                             $arrIBO[$keyorg_id] = $objTC;
                         }
 
@@ -774,6 +774,48 @@ class Migrasi extends WebService
 
     }
 
+    public function migrasiLevelMurid()
+    {
+        $murid = new MuridModel();
+        $arrMurid = $murid->getWhere("status=1");
+        $count = 0;
 
+        foreach ($arrMurid as $mur) {
+            $mj = new MuridJourney();
+            $id_murid = $mur->id_murid;
+            $mj->getWhereOne("journey_murid_id=$id_murid");
+            if (!is_null($mj->journey_id)) {
+//            pr($id_murid);
+            } else {
+
+                $mk = new MuridJourney();
+                $mk->createJourney($id_murid, $mur->id_level_sekarang, "2017-01-31 14:20:27", $mur->murid_tc_id);
+                $count++;
+            }
+        }
+        echo "tercreate " . $count . " level ";
+    }
+
+    function MigraOwnerIDKuponSatuan(){
+        global $db;
+
+        $sql = "SELECT satuan.kupon_id, bundle.tc_id FROM transaksi__kupon_satuan satuan INNER JOIN transaksi__kupon_bundle bundle on satuan.kupon_bundle_id = bundle.bundle_id WHERE satuan.kupon_status = 1 AND satuan.kupon_owner_id=3";
+        $arr = $db->query($sql, 2);
+//pr($sql);
+//        die();
+        $count = 0;
+        foreach($arr as $val){
+            $kupon = new KuponSatuan();
+            $kupon->getWhereOne("kupon_id=$val->kupon_id");
+            $kupon->bck_owner_id = $kupon->kupon_owner_id;
+            $kupon->kupon_owner_id = $val->tc_id;
+//            die();
+            $kupon->save(1);
+            $count++;
+        }
+
+        echo $count;
+
+    }
 
 }

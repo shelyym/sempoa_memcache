@@ -1625,4 +1625,9 @@ class Generic {
     }
 
 
+    public static function diffTwoDaysInDay($date1, $date2){
+        $datediff = $date1 - $date2;
+        $datediff =  floor($datediff / (60 * 60 * 24));
+        return $datediff;
+    }
 }

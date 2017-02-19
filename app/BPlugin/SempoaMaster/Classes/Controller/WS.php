@@ -718,4 +718,101 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
             echo 'Exception abgefangen: ', $e->getMessage(), "\n";
         }
     }
+
+    function cobaSeria(){
+
+        $murid_id = 6417;
+        $id_level = 3;
+
+        $murid = new MuridModel();
+        $murid->getByID($murid_id);
+
+
+        $myID = $murid->murid_tc_id;
+        $myOrgID = $murid->murid_tc_id;
+        $myParentID = Generic::getMyParentID($myOrgID);
+        // KPO
+
+        $myGrandParentID = Generic::getMyParentID($myParentID);
+        $myGrandGrandParentID = Generic::getMyParentID($myGrandParentID);
+
+
+        $fp = new PaymentFirstTimeLog();
+        $fp->getWhereOne($murid_id);
+//        pr($fp->murid_biaya_serial);
+        $arrRetourBiaya = unserialize($fp->murid_biaya_serial);
+
+
+        foreach($arrRetourBiaya as $val){
+            foreach($val as $key=>$valhlp){
+                if (($key== "jenis_biaya") AND ($valhlp == "Registrasi")){
+                    pr($val['harga']);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_REGISTRASI_TC, KEY::$BIAYA_REGISTRASI, "Registrasi: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+
+                }
+                if (($key== "jenis_biaya") AND ($valhlp == "Iuran Buku")){
+                    $myBuku = new BarangWebModel();
+                    $arrMyBuku = $myBuku->getWhere("level=$murid->id_level_sekarang  AND jenis_biaya = 1 AND kpo_id = $myGrandParentID LIMIT 0,1");
+                    $stockBarang = new StockModel();
+                    $buku_active = array_pop($arrMyBuku);
+                    $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$myID'");
+                    $id_buku = $buku_active->id_barang_harga;
+                    $stockBarang->retourStock($id_buku,$myID);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BUKU_TC, KEY::$BIAYA_IURAN_BUKU, "Iuran Buku: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+
+                }
+
+                if (($key== "jenis_biaya") AND ($valhlp == "Perlengkapan Junior")){
+
+                    $myBuku = new BarangWebModel();
+                    $id_perlengkapan = $myBuku->getPerlengkapanJunior($myGrandParentID);
+                    $stockBarang = new StockModel();
+                    $stockBarang->retourStock($id_perlengkapan,$myID);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_PERLENGKAPAN_TC, KEY::$BIAYA_PERLENGKAPAN_JUNIOR, "Perlengkapan: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+                }
+
+                if (($key== "jenis_biaya") AND ($valhlp == "Perlengkapan Fondation")){
+                    $myBuku = new BarangWebModel();
+                    $id_perlengkapan = $myBuku->getPerlengkapanJunior($myGrandParentID);
+                    $stockBarang = new StockModel();
+                    $stockBarang->retourStock($id_perlengkapan,$myID);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_PERLENGKAPAN_TC, KEY::$BIAYA_PERLENGKAPAN_FOUNDATION, "Perlengkapan: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
+
+                }
+
+                if (($key== "nomor") ){
+                    $kuponSatuan = new KuponSatuan();
+                    $kuponSatuan->retourKupon($val['nomor']);
+                    $arrjenisBiayaSPP = Generic::getJenisBiayaType();
+                    $jenisBiayaSPP = $arrjenisBiayaSPP[$id_level];
+                    $m = new DateTime($fp->murid_pay_date);
+                    Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BULANAN_TC, $jenisBiayaSPP, "Iuran Bulanan: Siswa: " . Generic::getMuridNamebyID($murid_id) . ", Bulan: " . $m->format("m-Y") . " dgn Kode Kupon: " . $val['nomor'], -1, 0, "Utama");
+
+                }
+
+
+            }
+        }
+
+        $murid->pay_firsttime = 0;
+        $murid->save(1);
+
+    }
+
+    function cobaFirebase(){
+
+        echo "firebase";
+       $DEFAULT_URL = 'https://belajar-a564b.firebaseio.com/';
+        $DEFAULT_TOKEN = 'LxZBm3kMxkSmglvJDtwTFGOmbOn6cNOWjRY7HZvv';
+        $DEFAULT_PATH = '/firebase/example';
+
+        $firebase = new \Firebase\FirebaseLib(DEFAULT_URL, DEFAULT_TOKEN);
+
+// --- reading the stored string ---
+        $name = $firebase->get(DEFAULT_PATH . '/efindi');
+        pr($name);
+    }
 }

@@ -645,7 +645,7 @@ class MuridWeb extends WebService
         $murid = new MuridModel();
         $nilaiMurid = new NilaiModel();
         $myOrgID = AccessRight::getMyOrgID();
-        $q = "SELECT * FROM {$nilaiMurid->table_name} nilai INNER JOIN {$murid->table_name} murid ON nilai.nilai_murid_id=murid.id_murid WHERE nilai.nilai_org_id='$myOrgID' AND murid.status !=0 AND nilai.nilai_result = 0";
+        $q = "SELECT * FROM {$nilaiMurid->table_name} nilai INNER JOIN {$murid->table_name} murid ON nilai.nilai_murid_id=murid.id_murid WHERE nilai.nilai_org_id='$myOrgID' AND nilai.nilai_delete!=1 AND murid.status !=0 AND nilai.nilai_result = 0";
         global $db;
         $arrNilaiMurid = $db->query($q, 2);
         ?>

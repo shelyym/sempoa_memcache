@@ -17,8 +17,8 @@ class CronJob extends WebService
     /*
      *  14.12.2016, total ada 3 Cronjob yg aktiv dari Class ini
      * 1. create_invoice_spp_cronjobAllTC -> tiap awal bulan jam 00:10!
-     * 2. create_rekap_siswa ->tiap akhir bulan!
-     * 3. cronJobRekapKuponBulanan ->tiap akhir bulan!
+     * 2. create_rekap_siswa ->tiap Malam Weekdays
+     * 3. cronJobRekapKuponBulanan ->tiap Malam Weekdays
      * 4. setMuridKeluar -> tiap malam
      */
 
@@ -138,45 +138,79 @@ class CronJob extends WebService
                         $jmlhMuridBL = $rekap_siswa->getCountSiswaAktivBulanLalu($bln, $thn, $keyTC);
                         if ($jmlhMuridBaru > 0) {
                         }
-                        if (is_null($rekap_siswa->bi_rekap_kode_tc)) {
-                            $rekap_siswa = new RekapSiswaIBOModel();
 
-                            $tc = new SempoaOrg();
-                            $tc->getByID($keyTC);
-                            $rekap_siswa->bi_rekap_tc_id = $keyTC;
-                            $rekap_siswa->bi_rekap_ibo_id = $keyIBO;
-                            $rekap_siswa->bi_rekap_kpo_id = $keyKPO;
-                            $rekap_siswa->bi_rekap_ak_id = $keyak;
-                            $rekap_siswa->bi_rekap_siswa_waktu = $waktu;
-                            $rekap_siswa->bi_rekap_kode_tc = $tc->org_kode;
-                            $rekap_siswa->bi_rekap_nama_tc = $tc->nama;
-                            $rekap_siswa->bi_rekap_nama_director = $tc->nama_pemilik;
-                            $rekap_siswa->bi_rekap_bl = $jmlhMuridBL;
-                            $rekap_siswa->bi_rekap_baru = $jmlhMuridBaru;
-                            $rekap_siswa->bi_rekap_aktiv = $jmlhMuridAktiv;
-                            $rekap_siswa->bi_rekap_cuti = $jmlhMuridCuti;
-                            $rekap_siswa->bi_rekap_keluar = $jmlhMuridKeluar;
-                            $rekap_siswa->bi_rekap_lulus = $jmlhMuridLulus;
-                            $rekap_siswa->bi_rekap_kupon = $this->getPenjualanKuponByTC($keyTC, $bln, $thn);
-                            $rekap_siswa->bi_rekap_jumlah_guru = $this->getGuruAktivByTC($keyTC, $bln, $thn);
-                            $rekap_siswa->bi_rekap_bln = $bln;
-                            $rekap_siswa->bi_rekap_tahun = $thn;
-                            $rekap_siswa->bi_rekap_buku = $this->getPenjualanBukuByTC($keyTC, $bln, $thn);
-                            $rekap_siswa->save();
-                            $createBaru++;
-                        } else {
-                            $rekap_siswa->bi_rekap_bl = $jmlhMuridBL;
-                            $rekap_siswa->bi_rekap_baru = $jmlhMuridBaru;
-                            $rekap_siswa->bi_rekap_aktiv = $jmlhMuridAktiv;
-                            $rekap_siswa->bi_rekap_cuti = $jmlhMuridCuti;
-                            $rekap_siswa->bi_rekap_keluar = $jmlhMuridKeluar;
-                            $rekap_siswa->bi_rekap_lulus = $jmlhMuridLulus;
-                            $rekap_siswa->bi_rekap_kupon = $this->getPenjualanKuponByTC($keyTC, $bln, $thn);
-                            $rekap_siswa->bi_rekap_jumlah_guru = $this->getGuruAktivByTC($keyTC, $bln, $thn);
-                            $rekap_siswa->bi_rekap_buku = $this->getPenjualanBukuByTC($keyTC, $bln, $thn);
-                            $rekap_siswa->save(1);
-                            $update++;
+                        if (!is_null($rekap_siswa->bi_rekap_kode_tc)) {
+                            $rekap_siswa->delete($rekap_siswa->bi_rekap_siswa_id);
+                            echo Generic::getTCNamebyID($rekap_siswa->bi_rekap_kode_tc) . " kedelete untuk bulan " . $waktu  . "<br>";
                         }
+
+                        $rekap_siswa = new RekapSiswaIBOModel();
+
+                        $tc = new SempoaOrg();
+                        $tc->getByID($keyTC);
+                        $rekap_siswa->bi_rekap_tc_id = $keyTC;
+                        $rekap_siswa->bi_rekap_ibo_id = $keyIBO;
+                        $rekap_siswa->bi_rekap_kpo_id = $keyKPO;
+                        $rekap_siswa->bi_rekap_ak_id = $keyak;
+                        $rekap_siswa->bi_rekap_siswa_waktu = $waktu;
+                        $rekap_siswa->bi_rekap_kode_tc = $tc->org_kode;
+                        $rekap_siswa->bi_rekap_nama_tc = $tc->nama;
+                        $rekap_siswa->bi_rekap_nama_director = $tc->nama_pemilik;
+                        $rekap_siswa->bi_rekap_bl = $jmlhMuridBL;
+                        $rekap_siswa->bi_rekap_baru = $jmlhMuridBaru;
+                        $rekap_siswa->bi_rekap_aktiv = $jmlhMuridAktiv;
+                        $rekap_siswa->bi_rekap_cuti = $jmlhMuridCuti;
+                        $rekap_siswa->bi_rekap_keluar = $jmlhMuridKeluar;
+                        $rekap_siswa->bi_rekap_lulus = $jmlhMuridLulus;
+                        $rekap_siswa->bi_rekap_kupon = $this->getPenjualanKuponByTC($keyTC, $bln, $thn);
+                        $rekap_siswa->bi_rekap_jumlah_guru = $this->getGuruAktivByTC($keyTC, $bln, $thn);
+                        $rekap_siswa->bi_rekap_bln = $bln;
+                        $rekap_siswa->bi_rekap_tahun = $thn;
+                        $rekap_siswa->bi_rekap_buku = $this->getPenjualanBukuByTC($keyTC, $bln, $thn);
+                        $rekap_siswa->save();
+                        echo Generic::getTCNamebyID($rekap_siswa->bi_rekap_kode_tc) . " create untuk bulan " . $waktu  . "<br>";
+                        $createBaru++;
+
+
+//                        if (is_null($rekap_siswa->bi_rekap_kode_tc)) {
+//                            $rekap_siswa = new RekapSiswaIBOModel();
+//
+//                            $tc = new SempoaOrg();
+//                            $tc->getByID($keyTC);
+//                            $rekap_siswa->bi_rekap_tc_id = $keyTC;
+//                            $rekap_siswa->bi_rekap_ibo_id = $keyIBO;
+//                            $rekap_siswa->bi_rekap_kpo_id = $keyKPO;
+//                            $rekap_siswa->bi_rekap_ak_id = $keyak;
+//                            $rekap_siswa->bi_rekap_siswa_waktu = $waktu;
+//                            $rekap_siswa->bi_rekap_kode_tc = $tc->org_kode;
+//                            $rekap_siswa->bi_rekap_nama_tc = $tc->nama;
+//                            $rekap_siswa->bi_rekap_nama_director = $tc->nama_pemilik;
+//                            $rekap_siswa->bi_rekap_bl = $jmlhMuridBL;
+//                            $rekap_siswa->bi_rekap_baru = $jmlhMuridBaru;
+//                            $rekap_siswa->bi_rekap_aktiv = $jmlhMuridAktiv;
+//                            $rekap_siswa->bi_rekap_cuti = $jmlhMuridCuti;
+//                            $rekap_siswa->bi_rekap_keluar = $jmlhMuridKeluar;
+//                            $rekap_siswa->bi_rekap_lulus = $jmlhMuridLulus;
+//                            $rekap_siswa->bi_rekap_kupon = $this->getPenjualanKuponByTC($keyTC, $bln, $thn);
+//                            $rekap_siswa->bi_rekap_jumlah_guru = $this->getGuruAktivByTC($keyTC, $bln, $thn);
+//                            $rekap_siswa->bi_rekap_bln = $bln;
+//                            $rekap_siswa->bi_rekap_tahun = $thn;
+//                            $rekap_siswa->bi_rekap_buku = $this->getPenjualanBukuByTC($keyTC, $bln, $thn);
+//                            $rekap_siswa->save();
+//                            $createBaru++;
+//                        } else {
+//                            $rekap_siswa->bi_rekap_bl = $jmlhMuridBL;
+//                            $rekap_siswa->bi_rekap_baru = $jmlhMuridBaru;
+//                            $rekap_siswa->bi_rekap_aktiv = $jmlhMuridAktiv;
+//                            $rekap_siswa->bi_rekap_cuti = $jmlhMuridCuti;
+//                            $rekap_siswa->bi_rekap_keluar = $jmlhMuridKeluar;
+//                            $rekap_siswa->bi_rekap_lulus = $jmlhMuridLulus;
+//                            $rekap_siswa->bi_rekap_kupon = $this->getPenjualanKuponByTC($keyTC, $bln, $thn);
+//                            $rekap_siswa->bi_rekap_jumlah_guru = $this->getGuruAktivByTC($keyTC, $bln, $thn);
+//                            $rekap_siswa->bi_rekap_buku = $this->getPenjualanBukuByTC($keyTC, $bln, $thn);
+//                            $rekap_siswa->save(1);
+//                            $update++;
+//                        }
                     }
                 }
             }
@@ -272,51 +306,83 @@ class CronJob extends WebService
                         $objRekapKupon = new BIRekapKuponModel();
                         $objRekapKupon->getWhereOne("bi_kupon_ak_id=$ak_id AND bi_kupon_kpo_id=$kpo_id AND bi_kupon_ibo_id=$ibo_id AND bi_kupon_tc_id=$tc_id AND bi_kupon_bln=$bln AND bi_kupon_thn=$thn");
 
-                        if (is_null($objRekapKupon->bi_kupon_id)) {
-                            $objRekapKupon = new BIRekapKuponModel();
-                            $objRekapKupon->bi_kupon_ak_id = $ak_id;
-                            $objRekapKupon->bi_kupon_kpo_id = $kpo_id;
-                            $objRekapKupon->bi_kupon_ibo_id = $ibo_id;
-                            $objRekapKupon->bi_kupon_tc_id = $tc_id;
-                            $objRekapKupon->bi_kupon_bln = $bln;
-                            $objRekapKupon->bi_kupon_thn = $thn;
-                            $objRekapKupon->bi_kupon_waktu = $bln . "-" . $thn;
-                            $jumlahKupon = 0;
-                            $kupon = new KuponBundle();
-                            $jumlahKupon = $kupon->getJumlahKuponByTC($bln, $thn, $tc_id);
-
-                            $kuponSatuan = new KuponSatuan();
-                            $jmlhIuaran = $kuponSatuan->getJumlahKuponTerpakaiByTC($bln, $thn, $tc_id);
-                            $biRekapModel = new BIRekapKuponModel();
-                            $jmlhStock = $biRekapModel->getDatenPrevMonth($bln, $thn, $ak_id, $kpo_id, $ibo_id, $tc_id);
-
-                            $objRekapKupon->bi_kupon_stock = $jmlhStock;
-                            $objRekapKupon->bi_kupon_kupon_masuk = $jumlahKupon;
-                            $objRekapKupon->bi_kupon_trs_bln = $jmlhIuaran;
-                            $objRekapKupon->bi_kupon_stock_akhir = ($jmlhStock + $jumlahKupon) - $jmlhIuaran;
-                            $murid = new MuridModel();
-                            $objRekapKupon->bi_kupon_murid_aktiv = $murid->getMuridAktiv($tc_id);
-                            $objRekapKupon->save();
-                            $createBaru++;
-                        } else {
-                            $kupon = new KuponBundle();
-                            $jumlahKupon = $kupon->getJumlahKuponByTC($bln, $thn, $tc_id);
-
-                            $kuponSatuan = new KuponSatuan();
-                            $jmlhIuaran = $kuponSatuan->getJumlahKuponTerpakaiByTC($bln, $thn, $tc_id);
-                            $biRekapModel = new BIRekapKuponModel();
-                            $jmlhStock = $biRekapModel->getDatenPrevMonth($bln, $thn, $ak_id, $kpo_id, $ibo_id, $tc_id);
-
-                            $objRekapKupon->bi_kupon_stock = $jmlhStock;
-                            $objRekapKupon->bi_kupon_kupon_masuk = $jumlahKupon;
-                            $objRekapKupon->bi_kupon_trs_bln = $jmlhIuaran;
-                            $objRekapKupon->bi_kupon_stock_akhir = ($jmlhStock + $jumlahKupon) - $jmlhIuaran;
-                            $murid = new MuridModel();
-                            $objRekapKupon->bi_kupon_murid_aktiv = $murid->getMuridAktiv($tc_id);
-                            $objRekapKupon->save(1);
-                            $update++;
-
+                        if (!is_null($objRekapKupon->bi_kupon_id)) {
+                            $objRekapKupon->delete($objRekapKupon->bi_kupon_id);
+                            echo Generic::getTCNamebyID($tc_id) . " kedelete untuk bulan " . $bln . $thn  . "<br>";
                         }
+
+                        $objRekapKupon = new BIRekapKuponModel();
+                        $objRekapKupon->bi_kupon_ak_id = $ak_id;
+                        $objRekapKupon->bi_kupon_kpo_id = $kpo_id;
+                        $objRekapKupon->bi_kupon_ibo_id = $ibo_id;
+                        $objRekapKupon->bi_kupon_tc_id = $tc_id;
+                        $objRekapKupon->bi_kupon_bln = $bln;
+                        $objRekapKupon->bi_kupon_thn = $thn;
+                        $objRekapKupon->bi_kupon_waktu = $bln . "-" . $thn;
+                        $jumlahKupon = 0;
+                        $kupon = new KuponBundle();
+                        $jumlahKupon = $kupon->getJumlahKuponByTC($bln, $thn, $tc_id);
+
+                        $kuponSatuan = new KuponSatuan();
+                        $jmlhIuaran = $kuponSatuan->getJumlahKuponTerpakaiByTC($bln, $thn, $tc_id);
+                        $biRekapModel = new BIRekapKuponModel();
+                        $jmlhStock = $biRekapModel->getDatenPrevMonth($bln, $thn, $ak_id, $kpo_id, $ibo_id, $tc_id);
+
+                        $objRekapKupon->bi_kupon_stock = $jmlhStock;
+                        $objRekapKupon->bi_kupon_kupon_masuk = $jumlahKupon;
+                        $objRekapKupon->bi_kupon_trs_bln = $jmlhIuaran;
+                        $objRekapKupon->bi_kupon_stock_akhir = ($jmlhStock + $jumlahKupon) - $jmlhIuaran;
+                        $murid = new MuridModel();
+                        $objRekapKupon->bi_kupon_murid_aktiv = $murid->getMuridAktiv($tc_id);
+                        $objRekapKupon->save();
+                        $createBaru++;
+                        echo Generic::getTCNamebyID($tc_id) . " keCreate untuk bulan " . $bln . $thn  . "<br>";
+
+//                        if (is_null($objRekapKupon->bi_kupon_id)) {
+//                            $objRekapKupon = new BIRekapKuponModel();
+//                            $objRekapKupon->bi_kupon_ak_id = $ak_id;
+//                            $objRekapKupon->bi_kupon_kpo_id = $kpo_id;
+//                            $objRekapKupon->bi_kupon_ibo_id = $ibo_id;
+//                            $objRekapKupon->bi_kupon_tc_id = $tc_id;
+//                            $objRekapKupon->bi_kupon_bln = $bln;
+//                            $objRekapKupon->bi_kupon_thn = $thn;
+//                            $objRekapKupon->bi_kupon_waktu = $bln . "-" . $thn;
+//                            $jumlahKupon = 0;
+//                            $kupon = new KuponBundle();
+//                            $jumlahKupon = $kupon->getJumlahKuponByTC($bln, $thn, $tc_id);
+//
+//                            $kuponSatuan = new KuponSatuan();
+//                            $jmlhIuaran = $kuponSatuan->getJumlahKuponTerpakaiByTC($bln, $thn, $tc_id);
+//                            $biRekapModel = new BIRekapKuponModel();
+//                            $jmlhStock = $biRekapModel->getDatenPrevMonth($bln, $thn, $ak_id, $kpo_id, $ibo_id, $tc_id);
+//
+//                            $objRekapKupon->bi_kupon_stock = $jmlhStock;
+//                            $objRekapKupon->bi_kupon_kupon_masuk = $jumlahKupon;
+//                            $objRekapKupon->bi_kupon_trs_bln = $jmlhIuaran;
+//                            $objRekapKupon->bi_kupon_stock_akhir = ($jmlhStock + $jumlahKupon) - $jmlhIuaran;
+//                            $murid = new MuridModel();
+//                            $objRekapKupon->bi_kupon_murid_aktiv = $murid->getMuridAktiv($tc_id);
+//                            $objRekapKupon->save();
+//                            $createBaru++;
+//                        } else {
+//                            $kupon = new KuponBundle();
+//                            $jumlahKupon = $kupon->getJumlahKuponByTC($bln, $thn, $tc_id);
+//
+//                            $kuponSatuan = new KuponSatuan();
+//                            $jmlhIuaran = $kuponSatuan->getJumlahKuponTerpakaiByTC($bln, $thn, $tc_id);
+//                            $biRekapModel = new BIRekapKuponModel();
+//                            $jmlhStock = $biRekapModel->getDatenPrevMonth($bln, $thn, $ak_id, $kpo_id, $ibo_id, $tc_id);
+//
+//                            $objRekapKupon->bi_kupon_stock = $jmlhStock;
+//                            $objRekapKupon->bi_kupon_kupon_masuk = $jumlahKupon;
+//                            $objRekapKupon->bi_kupon_trs_bln = $jmlhIuaran;
+//                            $objRekapKupon->bi_kupon_stock_akhir = ($jmlhStock + $jumlahKupon) - $jmlhIuaran;
+//                            $murid = new MuridModel();
+//                            $objRekapKupon->bi_kupon_murid_aktiv = $murid->getMuridAktiv($tc_id);
+//                            $objRekapKupon->save(1);
+//                            $update++;
+//
+//                        }
                     }
                 }
             }

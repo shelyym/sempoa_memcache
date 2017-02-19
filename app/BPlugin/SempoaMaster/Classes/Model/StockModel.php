@@ -26,4 +26,13 @@ class StockModel extends SempoaModel {
     public $jumlah_stock;
     public $jumlah_stock_hold;
 
+    function retourStock($id_barang, $org_id){
+        $stock = new StockModel();
+        $stock->getWhereOne("id_barang=$id_barang  AND org_id=$org_id");
+        if(!is_null($stock->stock_id)){
+            $stock->jumlah_stock = $stock->jumlah_stock + 1;
+            $stock->save(1);
+        }
+    }
+
 }

@@ -17,14 +17,15 @@ class NilaiModel extends Model {
     var $table_name = "sempoa__nilai";
     var $main_id = "nilai_id";
     //Default Coloms for read
-    public $default_read_coloms = "nilai_id,nilai_murid_id,nilai_level,nilai_result,nilai_create_date,nilai_org_id";
+    public $default_read_coloms = "nilai_id,nilai_murid_id,nilai_level,nilai_result,nilai_create_date,nilai_org_id,nilai_delete";
 //allowed colom in CRUD filter
-    public $coloumlist = "nilai_id,nilai_murid_id,nilai_level,nilai_result,nilai_create_date,nilai_org_id";
+    public $coloumlist = "nilai_id,nilai_murid_id,nilai_level,nilai_result,nilai_create_date,nilai_org_id,nilai_delete";
     public $nilai_id;
     public $nilai_murid_id;
     public $nilai_level;
     public $nilai_result;
     public $nilai_create_date;
     public $nilai_org_id;
+    public $nilai_delete;
 
 }
