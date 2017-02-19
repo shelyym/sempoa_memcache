@@ -24,4 +24,14 @@ class MuridJourney extends Model{
     public $journey_end_date;
     public $journey_tc_id;
 
+
+    public function createJourney($murid_id, $journey_level_mulai,$journey_mulai_date,$journey_tc_id){
+        $this->journey_murid_id = $murid_id;
+        $this->journey_level_mulai = $journey_level_mulai;
+        $this->journey_mulai_date = $journey_mulai_date;
+        $this->journey_tc_id = $journey_tc_id;
+        $this->save();
+
+    }
+
 } 
