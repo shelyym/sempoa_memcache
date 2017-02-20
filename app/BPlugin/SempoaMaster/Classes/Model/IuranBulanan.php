@@ -16,6 +16,7 @@ class IuranBulanan extends Model{
 
 //allowed colom in CRUD filter
     public $coloumlist = "bln_id,bln_murid_id,bln_date,bln_date_pembayaran,bln_mon,bln_tahun,bln_status,bln_kupon_id,bln_tc_id,bln_ibo_id,bln_kpo_id,bln_ak_id,bln_cara_bayar,bln_no_urut_in,bln_no_invoice,bln_create_date";
+    public $test;
     public $bln_id;
     public $bln_murid_id;
     public $bln_date_pembayaran;

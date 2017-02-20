@@ -738,12 +738,10 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
 
         $fp = new PaymentFirstTimeLog();
-        $fp->getWhereOne("murid_id=$murid_id");
-        pr($fp->murid_biaya_serial);
+        $fp->getWhereOne($murid_id);
+//        pr($fp->murid_biaya_serial);
         $arrRetourBiaya = unserialize($fp->murid_biaya_serial);
-pr($arrRetourBiaya);
 
-        die();
 
         foreach($arrRetourBiaya as $val){
             foreach($val as $key=>$valhlp){
@@ -816,5 +814,71 @@ pr($arrRetourBiaya);
 // --- reading the stored string ---
         $name = $firebase->get(DEFAULT_PATH . '/efindi');
         pr($name);
+    }
+
+
+    function insertPKeyIuranBulanan(){
+        $iuranBulanan = new IuranBulanan();
+        $arr = $iuranBulanan->getAll();
+//        pr($arr);
+//        $iuranBulanan
+        $count =0;
+        foreach($arr as $val){
+            $ib = new IuranBulanan();
+            $ib->getWhereOne("bln_murid_id=$val->bln_murid_id AND bln_mon =$val->bln_mon AND bln_tahun=$val->bln_tahun");
+            $ib->test = $ib->bln_murid_id . "_" . $ib->bln_mon . "_" . $ib->bln_tahun;
+//            $ib->bln_id = $count++;
+            pr( $val->bln_id . " - " . $ib->bln_id);
+            $ib->save(1);
+//            $val->bln_id = $val->bln_murid_id . "_" . $val->bln_mon . "_" . $val->bln_tahun;
+//            $val->save(1);
+//            $count++;
+
+        }
+        echo "terganti :" . $count;
+    }
+
+    function deleteDoubleIuranBulanan(){
+    $iuranBulanan = new IuranBulanan();
+    $arr = $iuranBulanan->getAll();
+
+    foreach($arr as $val){
+        $ib = new IuranBulanan();
+        $arrIuranBulanan = $ib->getWhere("bln_murid_id=$val->bln_murid_id AND bln_mon =2  AND bln_tahun=$val->bln_tahun  AND bln_murid_id != 0 ORDER BY bln_id ASC");
+        if(count($arrIuranBulanan)>=2){
+            pr($arrIuranBulanan);
+            foreach($arrIuranBulanan as $iuran){
+                if($iuran->bln_status == 0){
+                    $ibhlp = new IuranBulanan();
+                    $ibhlp->getWhereOne("bln_id=$iuran->bln_id AND bln_status=0 ");
+                    if(!is_null($ibhlp->bln_id)){
+                        $ibhlp->delete($iuran->bln_id);
+                    }
+
+                }
+            }
+        }
+
+    }
+}
+
+    function deleteDoubleIuranBulanan1(){
+        $iuranBulanan = new IuranBulanan();
+        $arr = $iuranBulanan->getAll();
+
+        foreach($arr as $val){
+            $ib = new IuranBulanan();
+            $arrIuranBulanan = $ib->getWhere("bln_murid_id=$val->bln_murid_id AND bln_status=1 AND bln_mon =1  AND bln_tahun=$val->bln_tahun  AND bln_murid_id != 0 ORDER BY bln_id DESC ");
+            if(count($arrIuranBulanan)>=2){
+                pr($arrIuranBulanan);
+                $ibhlp = new IuranBulanan();
+                $ibhlp->getByID($arrIuranBulanan[0]->bln_id);
+                $ibhlp->delete($arrIuranBulanan[0]->bln_id);
+
+
+
+            }
+
+        }
     }
 }
