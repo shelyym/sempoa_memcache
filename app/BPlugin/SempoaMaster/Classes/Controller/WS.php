@@ -721,8 +721,8 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
     function cobaSeria(){
 
-        $murid_id = 6417;
-        $id_level = 3;
+        $murid_id = 6476;
+        $id_level = 1;
 
         $murid = new MuridModel();
         $murid->getByID($murid_id);
@@ -738,10 +738,12 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
 
         $fp = new PaymentFirstTimeLog();
-        $fp->getWhereOne($murid_id);
-//        pr($fp->murid_biaya_serial);
+        $fp->getWhereOne("murid_id=$murid_id");
+        pr($fp->murid_biaya_serial);
         $arrRetourBiaya = unserialize($fp->murid_biaya_serial);
+pr($arrRetourBiaya);
 
+        die();
 
         foreach($arrRetourBiaya as $val){
             foreach($val as $key=>$valhlp){

@@ -282,7 +282,9 @@ class MuridModel extends SempoaModel
 
             } else {
                 $statusMurid = new StatusHisMuridModel();
-//                $statusMurid->updateHistoryMurid($id, $objMurid->status);
+                $statusMurid->updateHistoryMurid($id);
+                $newHistory = new StatusHisMuridModel();
+                $newHistory->createHistory($id);
             }
         } // sdh melakukan pembayaran pertama
         else {

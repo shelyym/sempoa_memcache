@@ -314,6 +314,7 @@ class MuridWebHelper extends WebService
                             $.post("<?= _SPPATH; ?>MuridWebHelper/process_firstpayment",
                                 post,
                                 function (data) {
+                                    console.log(data);
                                     if (data.status_code) {
                                         alert(data.status_message);
 
@@ -425,29 +426,52 @@ class MuridWebHelper extends WebService
         $first = new PaymentFirstTimeLog();
         $first->getByID($murid_id);
         $json['$first'] = $first;
-//        $first->getWhereOne("murid_id=$murid_id AND first_undo!=1");
-        if ($first->murid_pay_value > 0) {
-            $json['status_code'] = 0;
-            $json['status_message'] = "Sudah melakukan pembayaran pertama";
-            echo json_encode($json);
-            die();
-        } else {
-            $first->load = 0;
+
+
+        if(is_null($first->murid_id)){
+            $first = new PaymentFirstTimeLog();
+            $first->murid_id = $murid_id;
+            $first->murid_pay_date = leap_mysqldate();
+            $first->murid_cara_bayar = $jenis_pmbr;
+            $first->murid_pay_value = $total;
+            $first->murid_ak_id = $myGrandGrandParentID;
+            $first->murid_kpo_id = $myGrandParentID;
+            $first->murid_ibo_id = $myParentID;
+            $first->murid_tc_id = $myOrgID;
+            $thn_skrg = date("Y");
+            $bln_skrg = date("n");
+            $first->bln_no_urut_inv = $first->getLastNoUrutInvoice($thn_skrg, $bln_skrg, AccessRight::getMyOrgID());
+            $first->bln_no_invoice = "FP/" . $thn_skrg . "/" . $bln_skrg . "/" . $first->bln_no_urut_inv;
+            $first->murid_biaya_serial = serialize($arrSerial);
+            $succ = $first->save();
         }
-        $first->murid_id = $murid_id;
-        $first->murid_pay_date = leap_mysqldate();
-        $first->murid_cara_bayar = $jenis_pmbr;
-        $first->murid_pay_value = $total;
-        $first->murid_ak_id = $myGrandGrandParentID;
-        $first->murid_kpo_id = $myGrandParentID;
-        $first->murid_ibo_id = $myParentID;
-        $first->murid_tc_id = $myOrgID;
-        $thn_skrg = date("Y");
-        $bln_skrg = date("n");
-        $first->bln_no_urut_inv = $first->getLastNoUrutInvoice($thn_skrg, $bln_skrg, AccessRight::getMyOrgID());
-        $first->bln_no_invoice = "FP/" . $thn_skrg . "/" . $bln_skrg . "/" . $first->bln_no_urut_inv;
-        $first->murid_biaya_serial = serialize($arrSerial);
-        $succ = $first->save();
+
+        else{
+            if ($first->murid_pay_value > 0) {
+                $json['murid_pay_value'] =$first->murid_pay_value ;
+                $json['status_code'] = 0;
+                $json['status_message'] = "Sudah melakukan pembayaran pertama";
+                echo json_encode($json);
+                die();
+            }
+            else{
+                $first->murid_pay_date = leap_mysqldate();
+                $first->murid_cara_bayar = $jenis_pmbr;
+                $first->murid_pay_value = $total;
+                $first->murid_ak_id = $myGrandGrandParentID;
+                $first->murid_kpo_id = $myGrandParentID;
+                $first->murid_ibo_id = $myParentID;
+                $first->murid_tc_id = $myOrgID;
+                $thn_skrg = date("Y");
+                $bln_skrg = date("n");
+                $first->bln_no_urut_inv = $first->getLastNoUrutInvoice($thn_skrg, $bln_skrg, AccessRight::getMyOrgID());
+                $first->bln_no_invoice = "FP/" . $thn_skrg . "/" . $bln_skrg . "/" . $first->bln_no_urut_inv;
+                $first->murid_biaya_serial = serialize($arrSerial);
+                $succ = $first->save(1);
+            }
+        }
+
+        $json['succ'] = $first;
         if ($succ) {
             $murid = new MuridModel();
             $murid->getByID($murid_id);
@@ -578,7 +602,7 @@ class MuridWebHelper extends WebService
 
 
         $fp = new PaymentFirstTimeLog();
-        $fp->getWhereOne($murid_id);
+        $fp->getWhereOne("murid_id=$murid_id");
         if (is_null($fp->murid_id)) {
             $json['status_code'] = 0;
             $json['status_message'] = "Data Murid tidak ditemukan!";
@@ -590,8 +614,9 @@ class MuridWebHelper extends WebService
         $murid->save(1);
 
         $arrRetourBiaya = unserialize($fp->murid_biaya_serial);
-//        $json['obj'] = $arrRetourBiaya;
+        $json['obj'] = $arrRetourBiaya;
         $fp->murid_pay_value = "";
+        $fp->murid_biaya_serial = "";
         $fp->save(1);
         foreach ($arrRetourBiaya as $val) {
             foreach ($val as $key => $valhlp) {
@@ -631,19 +656,18 @@ class MuridWebHelper extends WebService
                     Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_PERLENGKAPAN_TC, KEY::$BIAYA_PERLENGKAPAN_FOUNDATION, "Perlengkapan: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
 
                 }
-
                 if (($key == "nomor")) {
                     $kuponSatuan = new KuponSatuan();
                     $kuponSatuan->retourKupon($val['nomor']);
+                    $json['nokupon'] = $val['nomor'];
                     $arrjenisBiayaSPP = Generic::getJenisBiayaType();
                     $jenisBiayaSPP = $arrjenisBiayaSPP[$id_level];
                     $m = new DateTime($fp->murid_pay_date);
                     Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BULANAN_TC, $jenisBiayaSPP, "Iuran Bulanan: Siswa: " . Generic::getMuridNamebyID($murid_id) . ", Bulan: " . $m->format("m-Y") . " dgn Kode Kupon: " . $val['nomor'], -1, 0, "Utama");
 
                 }
-
-
             }
+
         }
 
 
@@ -1033,10 +1057,11 @@ class MuridWebHelper extends WebService
         </div>
         <script>
 
-            $('#undo_first_payment_<?=$murid->id_murid . $t; ?>').click(function () {
+            $('#undo_first_payment_<?=$murid->id_murid; ?>').click(function () {
                 if (confirm("Anda yakin akan mengUNDO transaksi?")) {
                     $.get("<?= _SPPATH; ?>MuridWebHelper/undo_process_firstpayment?murid_id=<?= $murid->id_murid; ?>" + "&level_murid=<?= $murid->id_level_masuk; ?>", function (data) {
                         alert(data.status_message);
+                        console.log(data);
                         if (data.status_code) {
 
                             lwrefresh(selected_page);
@@ -2083,8 +2108,7 @@ class MuridWebHelper extends WebService
                                         </td>
                                     </tr>
                                     <script>
-                                        // hilangkan t utk mengaktivkan
-                                        $('#undo_<?= $mk->bln_id . $t; ?>').click(function () {
+                                        $('#undo_<?= $mk->bln_id; ?>').click(function () {
                                             var bln_id = <?= $mk->bln_id; ?>;
                                             var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
                                             alert(kupon);
