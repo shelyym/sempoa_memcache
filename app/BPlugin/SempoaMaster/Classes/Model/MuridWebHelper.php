@@ -491,6 +491,7 @@ class MuridWebHelper extends WebService
             $iu->bln_ak_id = $myGrandGrandParentID;
             $iu->bln_cara_bayar = $jenis_pmbr;
             $iu->bln_date_pembayaran = leap_mysqldate();
+            $iu->bln_id = $murid_id . "_" . $bln . "_" . $thn;
             $succ2 = $iu->save();
             if ($succ2) {
 
@@ -1057,7 +1058,7 @@ class MuridWebHelper extends WebService
         </div>
         <script>
 
-            $('#undo_first_payment_<?=$murid->id_murid; ?>').click(function () {
+            $('#undo_first_payment_<?=$murid->id_murid. $t; ?>').click(function () {
                 if (confirm("Anda yakin akan mengUNDO transaksi?")) {
                     $.get("<?= _SPPATH; ?>MuridWebHelper/undo_process_firstpayment?murid_id=<?= $murid->id_murid; ?>" + "&level_murid=<?= $murid->id_level_masuk; ?>", function (data) {
                         alert(data.status_message);
@@ -1843,6 +1844,9 @@ class MuridWebHelper extends WebService
         $limit = KEY::$LIMIT_PROFILE;
         $begin = ($page - 1) * $limit;
         $id = addslashes($_GET['id']);
+        $murid = new MuridModel();
+        $murid->getByID($id);
+//        $tc_id = AccessRight::getMyOrgID();
         $tc_id = AccessRight::getMyOrgID();
         $mk = new IuranBulanan();
         $arrMK = $mk->getWhere("bln_murid_id='$id' ORDER BY bln_tahun DESC,bln_mon DESC LIMIT $begin,$limit");
@@ -1851,8 +1855,7 @@ class MuridWebHelper extends WebService
         $arrSTatus = array("<b>Unpaid</b>", "Paid");
         $kuponSatuan = new KuponSatuan();
         $arrkupon = $kuponSatuan->getWhere("kupon_owner_id = '$tc_id' AND kupon_status = 0 ORDER BY kupon_id ASC");
-        $murid = new MuridModel();
-        $murid->getByID($id);
+
         $now = new DateTime($murid->tanggal_masuk);
         $month = $now->format('m');
         $year = $now->format('Y');
@@ -1866,7 +1869,7 @@ class MuridWebHelper extends WebService
             <h1>
                 <div class="pull-right">
                     <?
-                    if (($murid->status == KEY::$STATUSMURIDAKTIV)) {
+                    if (($murid->status == KEY::$STATUSMURIDAKTIV) AND (AccessRight::getMyOrgType() ==KEY::$TC)) {
                         ?>
                         <button class="btn btn-default" id="create_invoice_bulanan_<?= $t; ?>">Buat Invoice Iuran
                             Bulanan
@@ -2108,8 +2111,8 @@ class MuridWebHelper extends WebService
                                         </td>
                                     </tr>
                                     <script>
-                                        $('#undo_<?= $mk->bln_id; ?>').click(function () {
-                                            var bln_id = <?= $mk->bln_id; ?>;
+                                        $('#undo_<?= $mk->bln_id .  $t; ?>').click(function () {
+                                            var bln_id = '<?= $mk->bln_id; ?>';
                                             var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
                                             alert(kupon);
                                             if (kupon != null) {
@@ -2145,7 +2148,7 @@ class MuridWebHelper extends WebService
                                         <? }
                                         ?>
                                         $('#payNow_<?= $mk->bln_id; ?>').click(function () {
-                                            var bln_id = <?= $mk->bln_id; ?>;
+                                            var bln_id = '<?= $mk->bln_id; ?>';
                                             var jpb = $('#jenis_pmbr_invoice_spp_<?= $mk->bln_id ?>').val();
                                             var kupon = $('#kupon_name_t_<?= $mk->bln_id; ?>').val();
                                             if (kupon != null) {
@@ -2348,7 +2351,7 @@ class MuridWebHelper extends WebService
 
                                     <script>
 
-                                        $('#undo_<?= $val->bln_id; ?>').click(function () {
+                                        $('#undo_<?= $val->bln_id .$t; ?>').click(function () {
                                         });
 
                                         <?
@@ -2592,8 +2595,8 @@ class MuridWebHelper extends WebService
             <script>
 
 
-                $('#undo_<?= $mk->bln_id; ?>').click(function () {
-                    var bln_id = <?= $mk->bln_id; ?>;
+                $('#undo_<?= $mk->bln_id . $t; ?>').click(function () {
+                    var bln_id = '<?= $mk->bln_id; ?>';
                     var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
                     if (kupon != null) {
                         if (confirm("yakin?"))
@@ -2623,7 +2626,7 @@ class MuridWebHelper extends WebService
                 <? }
                 ?>
                 $('#payNow_<?= $mk->bln_id; ?>').click(function () {
-                    var bln_id = <?= $mk->bln_id; ?>;
+                    var bln_id = '<?= $mk->bln_id; ?>';
                     var kupon = $('#kupon_name_t_<?= $mk->bln_id; ?>').val();
                     var jpb = $('#jenis_pmbr_invoice_spp_<?= $mk->bln_id ?>').val();
                     $.post("<?= _SPPATH; ?>LaporanWebHelper/update_iuran_bulanan", {
@@ -4947,7 +4950,6 @@ class MuridWebHelper extends WebService
                 $bln = $bln + 1;
             }
         }
-
         $murid = new MuridModel();
         $murid->getByID($id);
         $iuranbulanan = new IuranBulanan();
@@ -4960,6 +4962,7 @@ class MuridWebHelper extends WebService
         $iuranbulanan->bln_ibo_id = $murid->murid_ibo_id;
         $iuranbulanan->bln_tc_id = $murid->murid_tc_id;
         $iuranbulanan->bln_create_date = leap_mysqldate();
+        $iuranbulanan->bln_id = $id . "_" . $bln ."_" . $thn;
         if ($iuranbulanan->save()) {
             $json['status_code'] = 1;
             $json['status_message'] = "Invoice sudah tercetak";
