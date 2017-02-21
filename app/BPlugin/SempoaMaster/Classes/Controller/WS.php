@@ -881,4 +881,31 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
         }
     }
+
+
+    function insertUrutanInvoice(){
+
+        $murid = new MuridModel();
+        $arrMurid = $murid->getAll("*","id");
+        $arrID = array();
+        foreach($arrMurid as $mur){
+            $arrID[] = $mur->id_murid;
+
+        }
+
+        foreach($arrMurid as $val){
+
+            foreach($arrID as $val){
+                $iuranBulanan = new IuranBulanan();
+                $count=1;
+                $arrIuran = $iuranBulanan->getWhere("bln_murid_id=$val Order by bln_tahun, bln_mon ASC ");
+                foreach($arrIuran as $iu){
+                    $iu->bln_urutan_invoice_murid = $count++;
+                    $iu->save(1);
+                }
+            }
+
+        }
+
+    }
 }
