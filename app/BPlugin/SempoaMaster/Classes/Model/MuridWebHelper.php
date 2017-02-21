@@ -1058,7 +1058,7 @@ class MuridWebHelper extends WebService
         </div>
         <script>
 
-            $('#undo_first_payment_<?=$murid->id_murid. $t; ?>').click(function () {
+            $('#undo_first_payment_<?=$murid->id_murid . $t; ?>').click(function () {
                 if (confirm("Anda yakin akan mengUNDO transaksi?")) {
                     $.get("<?= _SPPATH; ?>MuridWebHelper/undo_process_firstpayment?murid_id=<?= $murid->id_murid; ?>" + "&level_murid=<?= $murid->id_level_masuk; ?>", function (data) {
                         alert(data.status_message);
@@ -2098,7 +2098,7 @@ class MuridWebHelper extends WebService
                                                 $your_date = strtotime($mk->bln_date_pembayaran);
                                                 $datediff = $now - $your_date;
                                                 $datediff = floor($datediff / (60 * 60 * 24));
-                                                if ($datediff <= 14) {
+                                                if ($datediff <= 7) {
                                                     ?>
                                                     <span id="undo_<?= $mk->bln_id; ?>" class="fa fa-undo"
                                                           aria-hidden="true"></span>
@@ -2111,12 +2111,12 @@ class MuridWebHelper extends WebService
                                         </td>
                                     </tr>
                                     <script>
-                                        $('#undo_<?= $mk->bln_id .  $t; ?>').click(function () {
+                                        $('#undo_<?= $mk->bln_id; ?>').click(function () {
                                             var bln_id = '<?= $mk->bln_id; ?>';
                                             var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
-                                            alert(kupon);
+//                                            alert(kupon);
                                             if (kupon != null) {
-                                                if (confirm("yakin?"))
+                                                if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?"))
                                                     $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_bulanan", {
                                                         lvl_murid:<?=$murid->id_level_sekarang;?>,
                                                         bln_id: bln_id,
@@ -4935,7 +4935,7 @@ class MuridWebHelper extends WebService
     {
         $id = addslashes($_GET['id']);
         $iuranbulanan = new IuranBulanan();
-        $iuranbulanan->getWhereOne("bln_murid_id=$id ORDER by bln_id DESC");
+        $iuranbulanan->getWhereOne("bln_murid_id=$id ORDER by  bln_mon, bln_thn DESC");
 
         if (is_null($iuranbulanan->bln_id)) {
             $bln = date("n");

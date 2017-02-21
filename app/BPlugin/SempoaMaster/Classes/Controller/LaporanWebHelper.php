@@ -521,7 +521,7 @@ class LaporanWebHelper extends WebService {
         die();
         // update level siswa
     }
-
+// tidak dibutuhkan lagi
     public function undo_iuran_buku() {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
