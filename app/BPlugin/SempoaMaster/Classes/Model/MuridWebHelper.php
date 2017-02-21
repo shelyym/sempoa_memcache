@@ -4935,7 +4935,7 @@ class MuridWebHelper extends WebService
     {
         $id = addslashes($_GET['id']);
         $iuranbulanan = new IuranBulanan();
-        $iuranbulanan->getWhereOne("bln_murid_id=$id ORDER by  bln_mon, bln_thn DESC");
+        $iuranbulanan->getWhereOne("bln_murid_id=$id ORDER by  bln_id  DESC");
 
         if (is_null($iuranbulanan->bln_id)) {
             $bln = date("n");
