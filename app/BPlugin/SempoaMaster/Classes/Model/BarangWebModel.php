@@ -76,7 +76,7 @@ class BarangWebModel extends SempoaModel {
     }
 
     public function getPerlengkapanJunior($kpo_id){
-        $this->getWhereOne("kpo_id=$kpo_id AND jenis_biaya = 2 AND level=1");
+        $this->getWhereOne("kpo_id=$kpo_id AND jenis_biaya = 2 AND (level=1 OR level=2)");
         return $this->id_barang_harga;
     }
     

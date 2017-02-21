@@ -426,7 +426,7 @@ class MuridWebHelper extends WebService
         $first = new PaymentFirstTimeLog();
         $first->getByID($murid_id);
         $json['$first'] = $first;
-
+        $succ = 0;
 
         if(is_null($first->murid_id)){
             $first = new PaymentFirstTimeLog();
@@ -468,16 +468,29 @@ class MuridWebHelper extends WebService
                 $first->bln_no_invoice = "FP/" . $thn_skrg . "/" . $bln_skrg . "/" . $first->bln_no_urut_inv;
                 $first->murid_biaya_serial = serialize($arrSerial);
                 $succ = $first->save(1);
+                $json['masuk'] = $succ;
             }
         }
 
-        $json['succ'] = $first;
-        if ($succ) {
+        $json['succ'] = $succ;
+        if ($succ >0) {
+            $json['masuk2'] = $succ;
+        }
+        if ($succ>0) {
+            $json['masuk3'] = $succ;
             $murid = new MuridModel();
             $murid->getByID($murid_id);
             $murid->pay_firsttime = 1;
             //bayar pakai kupon
             $iu = new IuranBulanan();
+            $thn_skrg = date("Y");
+            $bln_skrg = date("n");
+            $id_hlp = $murid_id . "_" . $bln_skrg. "_" . $thn_skrg;
+            $iu->getByID($id_hlp);
+            if(is_null($iu->bln_id)){
+                $iu->bln_id = $id_hlp;
+            }
+
             $iu->bln_tc_id = AccessRight::getMyOrgID();
             $iu->bln_murid_id = $murid_id;
             $iu->bln_date = $pilih_kapan;
@@ -494,7 +507,7 @@ class MuridWebHelper extends WebService
             $iu->bln_id = $murid_id . "_" . $bln . "_" . $thn;
             $succ2 = $iu->save();
             if ($succ2) {
-
+                $json['masuksucc2'] = $succ2;
                 $ksatuan = new KuponSatuan();
                 $ksatuan->getByID($pilih_kupon);
                 $ksatuan->kupon_pemakaian_date = leap_mysqldate();
@@ -649,9 +662,9 @@ class MuridWebHelper extends WebService
 
                 }
 
-                if (($key == "jenis_biaya") AND ($valhlp == "Perlengkapan Fondation")) {
+                if (($key == "jenis_biaya") AND ($valhlp == "Perlengkapan Fondation ")) {
                     $myBuku = new BarangWebModel();
-                    $id_perlengkapan = $myBuku->getPerlengkapanJunior($myGrandParentID);
+                    $id_perlengkapan = $myBuku->getPerlengkapanFoundation($myGrandParentID);
                     $stockBarang = new StockModel();
                     $stockBarang->retourStock($id_perlengkapan, $myID);
                     Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_PERLENGKAPAN_TC, KEY::$BIAYA_PERLENGKAPAN_FOUNDATION, "Perlengkapan: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
@@ -680,7 +693,7 @@ class MuridWebHelper extends WebService
             $nilaiMurid->save(1);
         }
         $json['status_code'] = 1;
-        $json['status_message'] = "Firstpayment berhasil di Undo";
+        $json['status_message'] = "Transaksi Firstpayment berhasil dibatalkan!";
 
 
         echo json_encode($json);
@@ -1058,8 +1071,8 @@ class MuridWebHelper extends WebService
         </div>
         <script>
 
-            $('#undo_first_payment_<?=$murid->id_murid . $t; ?>').click(function () {
-                if (confirm("Anda yakin akan mengUNDO transaksi?")) {
+            $('#undo_first_payment_<?=$murid->id_murid; ?>').click(function () {
+                if (confirm("Anda yakin akan membatalkan transaksi Firstpayment?")) {
                     $.get("<?= _SPPATH; ?>MuridWebHelper/undo_process_firstpayment?murid_id=<?= $murid->id_murid; ?>" + "&level_murid=<?= $murid->id_level_masuk; ?>", function (data) {
                         alert(data.status_message);
                         console.log(data);
@@ -2351,7 +2364,7 @@ class MuridWebHelper extends WebService
 
                                     <script>
 
-                                        $('#undo_<?= $val->bln_id .$t; ?>').click(function () {
+                                        $('#undo_<?= $val->bln_id . $t; ?>').click(function () {
                                         });
 
                                         <?
@@ -2595,7 +2608,7 @@ class MuridWebHelper extends WebService
             <script>
 
 
-                $('#undo_<?= $mk->bln_id . $t; ?>').click(function () {
+                $('#undo_<?= $mk->bln_id ; ?>').click(function () {
                     var bln_id = '<?= $mk->bln_id; ?>';
                     var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
                     if (kupon != null) {

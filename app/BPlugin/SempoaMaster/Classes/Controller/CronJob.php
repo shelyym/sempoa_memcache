@@ -40,10 +40,15 @@ class CronJob extends WebService
         $total = 0;
         foreach ($arrMurid as $mur) {
 //
+
+
             $iur = new IuranBulanan();
-            $cnt = $iur->getJumlah("bln_murid_id = '{$mur->id_murid}' AND bln_mon = '$bln' AND bln_tahun = '$thn'");
+            $idKey = $mur->id_murid . "_" . $bln .  "_" .$thn;
+//            $cnt = $iur->getJumlah("bln_murid_id = '{$mur->id_murid}' AND bln_mon = '$bln' AND bln_tahun = '$thn'");
+            $cnt = $iur->getJumlah("bln_id = '$idKey'");
             if ($cnt > 0)
                 continue;
+            $iur->bln_id = $idKey;
             $iur->bln_murid_id = $mur->id_murid;
             $iur->bln_date = $bln . "-" . $thn;
             $iur->bln_mon = $bln;
@@ -53,6 +58,16 @@ class CronJob extends WebService
             $iur->bln_ibo_id = $mur->murid_ibo_id;
             $iur->bln_ak_id = $mur->murid_ak_id;
             $iur->bln_create_date = leap_mysqldate();
+
+            $iuranbulanan = new IuranBulanan();
+            $iuranbulanan->getWhereOne("bln_murid_id='$idKey' ORDER by  bln_urutan_invoice_murid  DESC");
+            if(is_null($iuranbulanan->bln_id)){
+                $iur->bln_urutan_invoice_murid = 1;
+            }
+            else{
+                $iur->bln_urutan_invoice_murid =  $iuranbulanan->bln_urutan_invoice_murid +1;
+            }
+
             if ($iur->save()) {
                 $total++;
             }

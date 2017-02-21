@@ -721,13 +721,11 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
     function cobaSeria(){
 
-        $murid_id = 6476;
+        $murid_id = 6479;
         $id_level = 1;
 
         $murid = new MuridModel();
         $murid->getByID($murid_id);
-
-
         $myID = $murid->murid_tc_id;
         $myOrgID = $murid->murid_tc_id;
         $myParentID = Generic::getMyParentID($myOrgID);
@@ -738,10 +736,10 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
 
         $fp = new PaymentFirstTimeLog();
-        $fp->getWhereOne($murid_id);
-//        pr($fp->murid_biaya_serial);
+        $fp->getWhereOne("murid_id=$murid_id");
+        pr($fp->murid_biaya_serial);
         $arrRetourBiaya = unserialize($fp->murid_biaya_serial);
-
+    pr($arrRetourBiaya);
 
         foreach($arrRetourBiaya as $val){
             foreach($val as $key=>$valhlp){
@@ -774,9 +772,10 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
 
                 }
 
-                if (($key== "jenis_biaya") AND ($valhlp == "Perlengkapan Fondation")){
+                if (($key== "jenis_biaya") AND ($valhlp == "Perlengkapan Fondation ")){
                     $myBuku = new BarangWebModel();
-                    $id_perlengkapan = $myBuku->getPerlengkapanJunior($myGrandParentID);
+                    $id_perlengkapan = $myBuku->getPerlengkapanFoundation($myGrandParentID);
+                    pr($id_perlengkapan);
                     $stockBarang = new StockModel();
                     $stockBarang->retourStock($id_perlengkapan,$myID);
                     Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_PERLENGKAPAN_TC, KEY::$BIAYA_PERLENGKAPAN_FOUNDATION, "Perlengkapan: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
@@ -797,8 +796,8 @@ FROM {$tc->table_name} HAVING distance < 25 ORDER by distance";
             }
         }
 
-        $murid->pay_firsttime = 0;
-        $murid->save(1);
+//        $murid->pay_firsttime = 0;
+//        $murid->save(1);
 
     }
 
