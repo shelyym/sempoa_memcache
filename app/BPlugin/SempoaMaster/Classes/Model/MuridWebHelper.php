@@ -4936,7 +4936,7 @@ class MuridWebHelper extends WebService
         $id = addslashes($_GET['id']);
         $iuranbulanan = new IuranBulanan();
         $iuranbulanan->getWhereOne("bln_murid_id=$id ORDER by  bln_urutan_invoice_murid  DESC");
-        $no = 1;
+//        $no = 1;
         if (is_null($iuranbulanan->bln_id)) {
             $bln = date("n");
             $thn = date("Y");
@@ -4944,7 +4944,7 @@ class MuridWebHelper extends WebService
         } else {
             $bln = $iuranbulanan->bln_mon;
             $thn = $iuranbulanan->bln_tahun;
-            $no = $iuranbulanan->bln_urutan_invoice_murid;
+//            $no = $iuranbulanan->bln_urutan_invoice_murid;
             if ($bln == 12) {
                 $bln = 1;
                 $thn = $thn + 1;
@@ -4965,7 +4965,7 @@ class MuridWebHelper extends WebService
         $iuranbulanan->bln_tc_id = $murid->murid_tc_id;
         $iuranbulanan->bln_create_date = leap_mysqldate();
         $iuranbulanan->bln_id = $id . "_" . $bln ."_" . $thn;
-        $iuranbulanan->bln_urutan_invoice_murid = $no;
+//        $iuranbulanan->bln_urutan_invoice_murid = $no+1;
         if ($iuranbulanan->save()) {
             $json['status_code'] = 1;
             $json['status_message'] = "Invoice sudah tercetak";
@@ -5007,6 +5007,7 @@ class MuridWebHelper extends WebService
         $mj->getWhereOne("journey_murid_id=$id_murid AND journey_level_mulai=$id_lvl_hlp");
         if(!is_null($mj->journey_id)){
             $mj->journey_level_mulai = $id_level;
+            $mj->journey_mulai_date = leap_mysqldate();
             $mj->save(1);
             $json['status_code'] = 1;
             $json['status_message'] = "Level Murid berhasil di set ke Level Kurikulum Baru";
