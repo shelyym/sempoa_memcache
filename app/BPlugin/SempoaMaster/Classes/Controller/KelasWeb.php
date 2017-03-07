@@ -515,7 +515,6 @@ class KelasWeb extends WebService
                         $guru->getByID($e->guru_id);
                         $lvl = new SempoaLevel();
                         $lvl->getByID($guru->id_level_training_guru);
-                        pr($guru);
 
                         $mk = new MuridKelasMatrix();
                         ?>

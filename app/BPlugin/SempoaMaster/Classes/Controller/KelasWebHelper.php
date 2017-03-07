@@ -30,7 +30,7 @@ class KelasWebHelper extends WebService
 
         $kelas = new KelasWebModel();
         $kelas->getByID($kelas_id);
-
+pr($kelas);
 
         $mk = new MuridKelasMatrix();
         $arrMuriddiKelas = $mk->getWhere(" kelas_id = '$kelas_id' AND active_status = 1");
