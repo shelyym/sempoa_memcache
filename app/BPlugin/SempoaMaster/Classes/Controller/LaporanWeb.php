@@ -222,7 +222,7 @@ class LaporanWeb extends WebService
 //                                echo $iuranBulanan->bln_id . " saas";
                                 $belumbayar++;
                                 ?>
-                                <button id='pay_now_<?= $iuranBulanan->bln_id; ?>' class="btn btn-default">Pay Now
+                                <button id='pay_now_<?= $mk->id_murid; ?>' class="btn btn-default">Pay Now
                                 </button>
                                 <?
                             }
@@ -230,11 +230,8 @@ class LaporanWeb extends WebService
                         </td>
                         <td><?= $arrSTatus[$iuranBulanan->bln_status]; ?></td>
                     </tr>
-
                     <script>
-
-
-                        $('#pay_now_<?= $iuranBulanan->bln_id; ?>').click(function () {
+                        $('#pay_now_<?= $mk->id_murid; ?>').click(function () {
                             openLw('murid_Invoices_<?= $mk->id_murid; ?>', '<?= _SPPATH; ?>MuridWebHelper/murid_invoices?id=<?= $mk->id_murid; ?>', 'fade');
                         })
                     </script>
