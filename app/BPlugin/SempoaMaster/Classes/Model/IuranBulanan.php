@@ -50,4 +50,29 @@ class IuranBulanan extends Model{
         $urut =  $nourut->bln_no_urut_inv + 1;
         return $urut;
     }
+
+
+    public function createIuranBulanan($murid_id,$pilih_kapan,$pilih_kupon, $ibo_id, $kpo_id, $ak_id, $tc_id, $jenis_pmbr){
+
+        $thn_skrg = date("Y");
+        $bln_skrg = date("n");
+        $id_hlp = $murid_id . "_" . $bln_skrg. "_" . $thn_skrg;
+
+        $this->bln_tc_id = $tc_id;
+        $this->bln_murid_id = $murid_id;
+        $this->bln_date = $pilih_kapan;
+
+        $this->bln_mon = $bln_skrg;
+        $this->bln_tahun = $thn_skrg;
+        $this->bln_kupon_id = $pilih_kupon;
+        $this->bln_status = 1;
+        $this->bln_ibo_id = $ibo_id;
+        $this->bln_kpo_id = $kpo_id;
+        $this->bln_ak_id = $ak_id;
+        $this->bln_cara_bayar = $jenis_pmbr;
+        $this->bln = leap_mysqldate();
+        $this->bln_id = $murid_id . "_" . $bln_skrg . "_" . $thn_skrg;
+        $succ2 = $this->save();
+        return $succ2;
+    }
 } 

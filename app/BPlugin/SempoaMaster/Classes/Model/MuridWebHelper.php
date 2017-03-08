@@ -483,31 +483,34 @@ class MuridWebHelper extends WebService
             $murid->pay_firsttime = 1;
             //bayar pakai kupon
             $iu = new IuranBulanan();
-            $thn_skrg = date("Y");
-            $bln_skrg = date("n");
-            $id_hlp = $murid_id . "_" . $bln_skrg. "_" . $thn_skrg;
-            $iu->getByID($id_hlp);
-            if(is_null($iu->bln_id)){
-                $iu->bln_id = $id_hlp;
-            }
 
-            $iu->bln_tc_id = AccessRight::getMyOrgID();
-            $iu->bln_murid_id = $murid_id;
-            $iu->bln_date = $pilih_kapan;
-            list($bln, $thn) = explode("-", $pilih_kapan);
-            $iu->bln_mon = $bln;
-            $iu->bln_tahun = $thn;
-            $iu->bln_kupon_id = $pilih_kupon;
-            $iu->bln_status = 1;
-            $iu->bln_ibo_id = $myParentID;
-            $iu->bln_kpo_id = $myGrandParentID;
-            $iu->bln_ak_id = $myGrandGrandParentID;
-            $iu->bln_cara_bayar = $jenis_pmbr;
-            $iu->bln_date_pembayaran = leap_mysqldate();
-            $iu->bln_id = $murid_id . "_" . $bln . "_" . $thn;
-            $succ2 = $iu->save();
+            $succ2 = $iu->createIuranBulanan($murid_id,$pilih_kapan,$pilih_kupon,$myParentID,$myGrandParentID,$myGrandGrandParentID,AccessRight::getMyOrgID(),$jenis_pmbr);
+//            $thn_skrg = date("Y");
+//            $bln_skrg = date("n");
+//            $id_hlp = $murid_id . "_" . $bln_skrg. "_" . $thn_skrg;
+//            $iu->getByID($id_hlp);
+//            if(is_null($iu->bln_id)){
+//                $iu->bln_id = $id_hlp;
+//                $json['masukk'] = "masuk";
+//            }
+//
+//            $iu->bln_tc_id = AccessRight::getMyOrgID();
+//            $iu->bln_murid_id = $murid_id;
+//            $iu->bln_date = $pilih_kapan;
+//            list($bln, $thn) = explode("-", $pilih_kapan);
+//            $iu->bln_mon = $bln;
+//            $iu->bln_tahun = $thn;
+//            $iu->bln_kupon_id = $pilih_kupon;
+//            $iu->bln_status = 1;
+//            $iu->bln_ibo_id = $myParentID;
+//            $iu->bln_kpo_id = $myGrandParentID;
+//            $iu->bln_ak_id = $myGrandGrandParentID;
+//            $iu->bln_cara_bayar = $jenis_pmbr;
+//            $iu->bln = leap_mysqldate();
+//            $iu->bln_id = $murid_id . "_" . $bln . "_" . $thn;
+//            $succ2 = $iu->save();
+
             if ($succ2) {
-                $json['masuksucc2'] = $succ2;
                 $ksatuan = new KuponSatuan();
                 $ksatuan->getByID($pilih_kupon);
                 $ksatuan->kupon_pemakaian_date = leap_mysqldate();
