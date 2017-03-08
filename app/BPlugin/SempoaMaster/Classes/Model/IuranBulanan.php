@@ -61,7 +61,6 @@ class IuranBulanan extends Model{
         $this->bln_tc_id = $tc_id;
         $this->bln_murid_id = $murid_id;
         $this->bln_date = $pilih_kapan;
-
         $this->bln_mon = $bln_skrg;
         $this->bln_tahun = $thn_skrg;
         $this->bln_kupon_id = $pilih_kupon;

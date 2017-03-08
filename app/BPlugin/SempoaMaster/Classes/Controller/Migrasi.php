@@ -796,7 +796,8 @@ class Migrasi extends WebService
         echo "tercreate " . $count . " level ";
     }
 
-    function MigraOwnerIDKuponSatuan(){
+    function MigraOwnerIDKuponSatuan()
+    {
         global $db;
 
         $sql = "SELECT satuan.kupon_id, bundle.tc_id FROM transaksi__kupon_satuan satuan INNER JOIN transaksi__kupon_bundle bundle on satuan.kupon_bundle_id = bundle.bundle_id WHERE satuan.kupon_status = 1 AND satuan.kupon_owner_id=3";
@@ -804,7 +805,7 @@ class Migrasi extends WebService
 //pr($sql);
 //        die();
         $count = 0;
-        foreach($arr as $val){
+        foreach ($arr as $val) {
             $kupon = new KuponSatuan();
             $kupon->getWhereOne("kupon_id=$val->kupon_id");
             $kupon->bck_owner_id = $kupon->kupon_owner_id;
@@ -818,4 +819,63 @@ class Migrasi extends WebService
 
     }
 
+
+    public function createIuranBulananFirstPayment()
+    {
+        $fp = new PaymentFirstTimeLog();
+        $arr = $fp->getWhere("Date(murid_pay_date) BETWEEN '2017-02-23' AND '2017-03-07' ORDER by murid_pay_date DESC");
+        $arrdouble = array();
+        foreach ($arr as $val) {
+            pr($val->murid_id);
+
+            $ser = unserialize($val->murid_biaya_serial);
+            $bln_date_pembayaran = $val->murid_pay_date;
+            $datePembayaran = new DateTime($bln_date_pembayaran);
+
+            $pilih_kapan = $ser['kupon']['kapan'];
+            $bln_kupon_id = $ser['kupon']['nomor'];
+
+            $tc_id = $val->murid_tc_id;
+            $ibo_id = $val->murid_ibo_id;
+            $kpo_id = $val->murid_kpo_id;
+            $ak_id = $val->murid_ak_id;
+            $jenis_pmbr = $val->murid_cara_bayar;
+            $bln_create_date = $val->murid_pay_date;
+            pr($bln_create_date);
+//            $bln_create_date->save();
+            // check di Iuran bulanan sdh ada belum
+
+            $murid_id = $val->murid_id;
+            $bln_skrg = $datePembayaran->format("n");
+            $thn_skrg = $datePembayaran->format("Y");
+
+
+            // cari di iuran bulanan
+            $si = new IuranBulanan();
+            $arr = $si->getWhere("bln_murid_id='$murid_id' AND bln_date = '$pilih_kapan'");
+            if (count($arr) >= 1) {
+                $arrdouble[] = "murid ID: " . $murid_id . ", Nama: " . Generic::getMuridNamebyID($murid_id) . ", TC: " . Generic::getTCNamebyID($tc_id);
+            }
+
+            $iuranBulanan = new IuranBulanan();
+            $iuranBulanan->bln_tc_id = $tc_id;
+            $iuranBulanan->bln_murid_id = $murid_id;
+            $iuranBulanan->bln_date = $pilih_kapan;
+            $iuranBulanan->bln_mon = $bln_skrg;
+            $iuranBulanan->bln_tahun = $thn_skrg;
+            $iuranBulanan->bln_kupon_id = $bln_kupon_id;
+            $iuranBulanan->bln_status = 1;
+            $iuranBulanan->bln_ibo_id = $ibo_id;
+            $iuranBulanan->bln_kpo_id = $kpo_id;
+            $iuranBulanan->bln_ak_id = $ak_id;
+            $iuranBulanan->bln_cara_bayar = $jenis_pmbr;
+            $iuranBulanan->bln_date_pembayaran = $val->murid_pay_date;
+            $iuranBulanan->bln_id = $murid_id . "_" . $bln_skrg . "_" . $thn_skrg;
+            $iuranBulanan->bln_create_date = $val->murid_pay_date;
+            $iuranBulanan->save();
+
+
+        }
+        pr($arrdouble);
+    }
 }
