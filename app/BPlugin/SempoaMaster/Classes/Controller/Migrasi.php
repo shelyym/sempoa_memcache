@@ -826,7 +826,7 @@ class Migrasi extends WebService
         $arr = $fp->getWhere("Date(murid_pay_date) BETWEEN '2017-02-23' AND '2017-03-07' ORDER by murid_pay_date DESC");
         $arrdouble = array();
         foreach ($arr as $val) {
-            pr($val->murid_id);
+            pr($val->murid_id . ", " .  Generic::getTCNamebyID($val->murid_tc_id));
 
             $ser = unserialize($val->murid_biaya_serial);
             $bln_date_pembayaran = $val->murid_pay_date;
@@ -849,14 +849,9 @@ class Migrasi extends WebService
             $bln_skrg = $datePembayaran->format("n");
             $thn_skrg = $datePembayaran->format("Y");
 
-
+            $i =1;
             // cari di iuran bulanan
             $si = new IuranBulanan();
-            $arr = $si->getWhere("bln_murid_id='$murid_id' AND bln_date = '$pilih_kapan'");
-            if (count($arr) >= 1) {
-                $arrdouble[] = "murid ID: " . $murid_id . ", Nama: " . Generic::getMuridNamebyID($murid_id) . ", TC: " . Generic::getTCNamebyID($tc_id);
-            }
-
             $iuranBulanan = new IuranBulanan();
             $iuranBulanan->bln_tc_id = $tc_id;
             $iuranBulanan->bln_murid_id = $murid_id;
@@ -870,7 +865,17 @@ class Migrasi extends WebService
             $iuranBulanan->bln_ak_id = $ak_id;
             $iuranBulanan->bln_cara_bayar = $jenis_pmbr;
             $iuranBulanan->bln_date_pembayaran = $val->murid_pay_date;
-            $iuranBulanan->bln_id = $murid_id . "_" . $bln_skrg . "_" . $thn_skrg;
+
+            $arr = $si->getWhere("bln_murid_id='$murid_id' AND bln_date = '$pilih_kapan'");
+            if (count($arr) >= 1) {
+                $arrdouble[] = "murid ID: " . $murid_id . ", Nama: " . Generic::getMuridNamebyID($murid_id) . ", TC: " . Generic::getTCNamebyID($tc_id);
+                $iuranBulanan->bln_id = $murid_id . "_" . $bln_skrg . "_" . $thn_skrg. "_" . $i;
+                $i++;
+            } else {
+                $iuranBulanan->bln_id = $murid_id . "_" . $bln_skrg . "_" . $thn_skrg;
+            }
+
+
             $iuranBulanan->bln_create_date = $val->murid_pay_date;
             $iuranBulanan->save();
 
