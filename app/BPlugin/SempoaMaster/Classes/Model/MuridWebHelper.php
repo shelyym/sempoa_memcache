@@ -111,9 +111,6 @@ class MuridWebHelper extends WebService
                                     $id_buku = $buku_active->id_barang_harga;
                                     echo Generic::getLevelNameByID($murid->id_level_masuk);
                                 }
-
-//                                pr($stockBarang);
-
                             }
                             ?>
                             <?
@@ -135,29 +132,6 @@ class MuridWebHelper extends WebService
                                     echo "<b> Stock Habis!</b>";
                                 }
 
-
-//                            $myNextLevel = 1;
-//                            $arrMyBuku = $myBuku->getWhere("level=' $myNextLevel'  AND jenis_biaya = 2 AND kpo_id = $myGrandParentID $LIMIT 0,1");
-//                            pr($arrMyBuku);
-//                            $stockBarang = new StockModel();
-//                            $buku_active = array_pop($arrMyBuku);
-//                            pr($buku_active->id_barang_harga);
-//                            $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$org'");
-//                            pr($stockBarang);
-//                            if ($stockBarang->stock_id == "") {
-//                                $lanjut = $lanjut & false;
-//
-//                                echo "<b> Stock Habis!</b>";
-//                            } else {
-//                                if ($stockBarang->jumlah_stock < 0) {
-//                                    $lanjut = $lanjut & false;
-//                                    echo "<b> Stock Habis!</b>";
-//                                } else {
-//                                    $id_perlengkapan = $buku_active->id_barang_harga;
-//                                    $lanjut = $lanjut & true;
-//                                    echo "<b> Stock Tersedia!! </b>" . $stockBarang->jumlah_stock;
-//                                }
-//                            }
                             }
                             ?>
                             <?
@@ -179,28 +153,6 @@ class MuridWebHelper extends WebService
                                     echo "<b> Stock Habis!</b>";
                                 }
 
-
-//                            $myBuku = new BarangWebModel();
-//                            $myNextLevel = 3;
-//                            $arrMyBuku = $myBuku->getWhere("level=' $myNextLevel'  AND jenis_biaya = 2 AND kpo_id = $myGrandParentID  LIMIT 0,1");
-//                            $stockBarang = new StockModel();
-//                            $buku_active = array_pop($arrMyBuku);
-////                            pr($buku_active->id_barang_harga);
-//                            $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$org'");
-//                            if ($stockBarang->stock_id == "") {
-//                                $lanjut = $lanjut & false;
-//
-//                                echo "<b> Stock Habis!</b>";
-//                            } else {
-//                                if ($stockBarang->jumlah_stock < 0) {
-//                                    $lanjut = $lanjut & false;
-//                                    echo "<b> Stock Habis!</b>";
-//                                } else {
-//                                    $id_perlengkapan = $buku_active->id_barang_harga;
-//                                    $lanjut = $lanjut & true;
-//                                    echo "<b> Stock Tersedia!! </b>" . $stockBarang->jumlah_stock;
-//                                }
-//                            }
                             }
                             ?>
                             <? if (($id_biaya == $jenisBiayaSPP)) {
@@ -241,16 +193,29 @@ class MuridWebHelper extends WebService
 
                                 <select id="pilih_kapan">
                                     <?
-                                    for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
+                                    for ($x = date("Y"); $x < date("Y") + 2; $x++) {
                                         foreach ($arrBulan as $bln) {
                                             $sel = "";
                                             if ($bln == date("n") && $x == date("Y")) {
                                                 $sel = "selected";
                                             }
                                             ?>
-                                            <option value="<?= $bln; ?>-<?= $x; ?>" <?= $sel; ?>><?= $bln; ?>
-                                                -<?= $x; ?></option>
                                             <?
+                                            if ($x == date("Y")) {
+                                                if ($bln >= date("n")) {
+                                                    ?>
+                                                    <option value="<?= $bln; ?>-<?= $x; ?>" <?= $sel; ?>><?= $bln; ?>
+                                                        -<?= $x; ?></option>
+                                                    <?
+                                                }
+                                            } else {
+                                                ?>
+                                                <option value="<?= $bln; ?>-<?= $x; ?>" <?= $sel; ?>><?= $bln; ?>
+                                                    -<?= $x; ?></option>
+                                                <?
+                                            }
+
+
                                         }
                                     }
                                     ?>
@@ -428,7 +393,7 @@ class MuridWebHelper extends WebService
         $json['$first'] = $first;
         $succ = 0;
 
-        if(is_null($first->murid_id)){
+        if (is_null($first->murid_id)) {
             $first = new PaymentFirstTimeLog();
             $first->murid_id = $murid_id;
             $first->murid_pay_date = leap_mysqldate();
@@ -444,17 +409,14 @@ class MuridWebHelper extends WebService
             $first->bln_no_invoice = "FP/" . $thn_skrg . "/" . $bln_skrg . "/" . $first->bln_no_urut_inv;
             $first->murid_biaya_serial = serialize($arrSerial);
             $succ = $first->save();
-        }
-
-        else{
+        } else {
             if ($first->murid_pay_value > 0) {
-                $json['murid_pay_value'] =$first->murid_pay_value ;
+                $json['murid_pay_value'] = $first->murid_pay_value;
                 $json['status_code'] = 0;
                 $json['status_message'] = "Sudah melakukan pembayaran pertama";
                 echo json_encode($json);
                 die();
-            }
-            else{
+            } else {
                 $first->murid_pay_date = leap_mysqldate();
                 $first->murid_cara_bayar = $jenis_pmbr;
                 $first->murid_pay_value = $total;
@@ -473,10 +435,10 @@ class MuridWebHelper extends WebService
         }
 
         $json['succ'] = $succ;
-        if ($succ >0) {
+        if ($succ > 0) {
             $json['masuk2'] = $succ;
         }
-        if ($succ>0) {
+        if ($succ > 0) {
             $json['masuk3'] = $succ;
             $murid = new MuridModel();
             $murid->getByID($murid_id);
@@ -484,7 +446,7 @@ class MuridWebHelper extends WebService
             //bayar pakai kupon
             $iu = new IuranBulanan();
 
-            $succ2 = $iu->createIuranBulanan($murid_id,$pilih_kapan,$pilih_kupon,$myParentID,$myGrandParentID,$myGrandGrandParentID,AccessRight::getMyOrgID(),$jenis_pmbr);
+            $succ2 = $iu->createIuranBulananFirstPayment($murid_id, $pilih_kapan, $pilih_kupon, $myParentID, $myGrandParentID, $myGrandGrandParentID, AccessRight::getMyOrgID(), $jenis_pmbr);
 //            $thn_skrg = date("Y");
 //            $bln_skrg = date("n");
 //            $id_hlp = $murid_id . "_" . $bln_skrg. "_" . $thn_skrg;
@@ -627,7 +589,7 @@ class MuridWebHelper extends WebService
             die();
         }
         $murid->pay_firsttime = 0;
-        $murid->status =  0;
+        $murid->status = 0;
         $murid->save(1);
 
         $arrRetourBiaya = unserialize($fp->murid_biaya_serial);
@@ -688,7 +650,6 @@ class MuridWebHelper extends WebService
         }
 
 
-
         $nilaiMurid = new NilaiModel();
         $nilaiMurid->getWhereOne("nilai_murid_id=$murid_id AND nilai_level=$id_level");
         if (!is_null($nilaiMurid->nilai_id)) {
@@ -745,7 +706,6 @@ class MuridWebHelper extends WebService
             }
         }
         $html = $html . "</select>\"";
-
 
 
         $htmlLevel = "\"<select id='select_lvl_$murid->id_murid'>";
@@ -914,14 +874,15 @@ class MuridWebHelper extends WebService
                             </tr>
 
                             <?
-                            if(AccessRight::getMyOrgType() == KEY::$IBO){
+                            if (AccessRight::getMyOrgType() == KEY::$IBO) {
                                 ?>
                                 <tr>
                                     <td>
                                         <b>Adjust Level ke Kurikulum Baru</b>
                                     </td>
-                                    <td id="adjust_level_kurikulum_<?= $murid->id_murid."_" . $t; ?>" colspan="2" style="font-weight: bold;">
-                                        <?= Generic::getLevelNameByID($murid->id_level_sekarang);  ?>
+                                    <td id="adjust_level_kurikulum_<?= $murid->id_murid . "_" . $t; ?>" colspan="2"
+                                        style="font-weight: bold;">
+                                        <?= Generic::getLevelNameByID($murid->id_level_sekarang); ?>
                                     </td>
                                 </tr>
                                 <?
@@ -930,8 +891,6 @@ class MuridWebHelper extends WebService
 
 
                             ?>
-
-
 
 
                         <? } ?>
@@ -1118,7 +1077,7 @@ class MuridWebHelper extends WebService
 
             });
 
-            $('#adjust_level_kurikulum_<?= $murid->id_murid."_" . $t; ?>').dblclick(function () {
+            $('#adjust_level_kurikulum_<?= $murid->id_murid . "_" . $t; ?>').dblclick(function () {
                 $('#adjust_level_kurikulum_<?= $murid->id_murid . "_" . $t; ?>').html(<?= $htmlLevel ?>);
 
                 $('#select_lvl_<?=$murid->id_murid; ?>').change(function () {
@@ -1885,7 +1844,7 @@ class MuridWebHelper extends WebService
             <h1>
                 <div class="pull-right">
                     <?
-                    if (($murid->status == KEY::$STATUSMURIDAKTIV) AND (AccessRight::getMyOrgType() ==KEY::$TC)) {
+                    if (($murid->status == KEY::$STATUSMURIDAKTIV) AND (AccessRight::getMyOrgType() == KEY::$TC)) {
                         ?>
                         <button class="btn btn-default" id="create_invoice_bulanan_<?= $t; ?>">Buat Invoice Iuran
                             Bulanan
@@ -2611,7 +2570,7 @@ class MuridWebHelper extends WebService
             <script>
 
 
-                $('#undo_<?= $mk->bln_id ; ?>').click(function () {
+                $('#undo_<?= $mk->bln_id; ?>').click(function () {
                     var bln_id = '<?= $mk->bln_id; ?>';
                     var kupon = $('#no_kupon_<?= $mk->bln_id; ?>').text();
                     if (kupon != null) {
@@ -4949,40 +4908,77 @@ class MuridWebHelper extends WebService
 
     public function create_invoice()
     {
+
         $id = addslashes($_GET['id']);
-        $iuranbulanan = new IuranBulanan();
-        $iuranbulanan->getWhereOne("bln_murid_id=$id ORDER by  bln_urutan_invoice_murid  DESC");
-//        $no = 1;
-        if (is_null($iuranbulanan->bln_id)) {
+        $ib = new IuranBulanan();
+        $ib->getWhereOne("bln_murid_id=$id ORDER BY bln_tahun DESC");
+        if (is_null($ib->bln_id)) {
             $bln = date("n");
             $thn = date("Y");
-
         } else {
-            $bln = $iuranbulanan->bln_mon;
-            $thn = $iuranbulanan->bln_tahun;
-//            $no = $iuranbulanan->bln_urutan_invoice_murid;
+            $thn = $ib->bln_tahun;
+            $ib->getWhereOne("bln_murid_id=$id AND bln_tahun=$thn ORDER BY bln_mon DESC");
+            $bln = $ib->bln_mon;
+            $bln_skrg = date("n");
+            $thn_skrg = date("Y");
+            if($thn_skrg > $thn){
+                $bln = $bln_skrg -1;
+            }
+            else{
+                if($bln_skrg - $bln  > 1){
+                    $bln = $bln_skrg - 1;
+                }
+            }
+        }
+
+
+
+
+
+
+        $iuranbulanan = new IuranBulanan();
+        $iuranbulanan->getWhereOne("bln_murid_id=$id  AND bln_mon=$bln AND  bln_tahun=$thn");
+        $weiter = true;
+        if (is_null($iuranbulanan->bln_id)) {
+            $weiter = false;
             if ($bln == 12) {
                 $bln = 1;
                 $thn = $thn + 1;
             } else {
                 $bln = $bln + 1;
+                $json['bln'] = $bln . " " . $thn;
             }
         }
+
+
+        while ($weiter) {
+            $id_hlp = $id . "_" . $bln . "_" . $thn;
+            $iuranbulanan = new IuranBulanan();
+            $iuranbulanan->getWhereOne("bln_murid_id=$id  AND bln_mon=$bln AND  bln_tahun=$thn  AND bln_id='$id_hlp'");
+            $json['bln'] = $bln . " " . $thn;
+            if (is_null($iuranbulanan->bln_id)) {
+                $weiter = false;
+            } else {
+                if ($bln == 12) {
+                    $bln = 1;
+                    $thn = $thn + 1;
+                } else {
+
+
+                    $bln = $bln + 1;
+
+                }
+            }
+        }
+
         $murid = new MuridModel();
         $murid->getByID($id);
+
         $iuranbulanan = new IuranBulanan();
-        $iuranbulanan->bln_murid_id = $id;
-        $iuranbulanan->bln_mon = $bln;
-        $iuranbulanan->bln_tahun = $thn;
-        $iuranbulanan->bln_date = $bln . "-" . $thn;
-        $iuranbulanan->bln_ak_id = $murid->murid_ak_id;
-        $iuranbulanan->bln_kpo_id = $murid->murid_kpo_id;
-        $iuranbulanan->bln_ibo_id = $murid->murid_ibo_id;
-        $iuranbulanan->bln_tc_id = $murid->murid_tc_id;
-        $iuranbulanan->bln_create_date = leap_mysqldate();
-        $iuranbulanan->bln_id = $id . "_" . $bln ."_" . $thn;
-//        $iuranbulanan->bln_urutan_invoice_murid = $no+1;
-        if ($iuranbulanan->save()) {
+        $pilih_kapan = $bln . "-" . $thn;
+        $idInvoice = $iuranbulanan->createIuranBulananManual($id, $pilih_kapan, $bln, $thn, $murid->murid_ak_id, $murid->murid_kpo_id, $murid->murid_ibo_id, $murid->murid_tc_id);
+
+        if ($idInvoice > 0) {
             $json['status_code'] = 1;
             $json['status_message'] = "Invoice sudah tercetak";
 
@@ -4998,7 +4994,8 @@ class MuridWebHelper extends WebService
 
     }
 
-    function changeLevelKurikulum(){
+    function changeLevelKurikulum()
+    {
         // id_murid
         // Level_murid
         $id_murid = $_GET['id_murid'];
@@ -5007,7 +5004,7 @@ class MuridWebHelper extends WebService
         $murid = new MuridModel();
         $murid->getByID($id_murid);
 
-        if(is_null($murid->id_murid)){
+        if (is_null($murid->id_murid)) {
             $json['status_code'] = 0;
             $json['status_message'] = "Murid tidak ditemukan";
             echo json_encode($json);
@@ -5021,7 +5018,7 @@ class MuridWebHelper extends WebService
 
         $mj = new MuridJourney();
         $mj->getWhereOne("journey_murid_id=$id_murid AND journey_level_mulai=$id_lvl_hlp");
-        if(!is_null($mj->journey_id)){
+        if (!is_null($mj->journey_id)) {
             $mj->journey_level_mulai = $id_level;
             $mj->journey_mulai_date = leap_mysqldate();
             $mj->save(1);

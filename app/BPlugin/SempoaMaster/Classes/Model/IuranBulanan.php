@@ -52,10 +52,29 @@ class IuranBulanan extends Model{
     }
 
 
-    public function createIuranBulanan($murid_id,$pilih_kapan,$pilih_kupon, $ibo_id, $kpo_id, $ak_id, $tc_id, $jenis_pmbr){
+    // utk create invoice secara Manual
+    public function createIuranBulananManual($murid_id,$pilih_kapan,$bln,$thn,$ak_id,$kpo_id,$ibo_id,$tc_id){
+        $this->bln_id = $murid_id . "_" . $bln . "_" . $thn;
+        $this->bln_tc_id = $tc_id;
+        $this->bln_murid_id = $murid_id;
+        $this->bln_date = $pilih_kapan;
+        $this->bln_mon = $bln;
+        $this->bln_tahun = $thn;
+        $this->bln_status = 0;
+        $this->bln_ibo_id = $ibo_id;
+        $this->bln_kpo_id = $kpo_id;
+        $this->bln_ak_id = $ak_id;
+        $idInvoice = $this->save();
+        return $idInvoice;
+    }
 
-        $thn_skrg = date("Y");
-        $bln_skrg = date("n");
+
+    // Untuk Create Invoice di FirstPayment
+    public function createIuranBulananFirstPayment($murid_id,$pilih_kapan,$pilih_kupon, $ibo_id, $kpo_id, $ak_id, $tc_id, $jenis_pmbr){
+
+        $arrKapan = explode("-",$pilih_kapan);
+        $thn_skrg = $arrKapan[1];
+        $bln_skrg = $arrKapan[0];
         $id_hlp = $murid_id . "_" . $bln_skrg. "_" . $thn_skrg;
 
         $this->bln_tc_id = $tc_id;
@@ -69,7 +88,7 @@ class IuranBulanan extends Model{
         $this->bln_kpo_id = $kpo_id;
         $this->bln_ak_id = $ak_id;
         $this->bln_cara_bayar = $jenis_pmbr;
-        $this->bln = leap_mysqldate();
+        $this->bln_date_pembayaran = leap_mysqldate();
         $this->bln_id = $murid_id . "_" . $bln_skrg . "_" . $thn_skrg;
         $succ2 = $this->save();
         return $succ2;

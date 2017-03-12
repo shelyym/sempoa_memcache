@@ -72,8 +72,8 @@ class StatusHisMuridModel extends Model {
         $this->status_ibo_id = $objMurid->murid_ibo_id;
         $this->status_tc_id = $objMurid->murid_tc_id;
         $this->save();
-        $logMurid = new LogStatusMurid();
-        $logMurid->createLogMurid($id_murid);
+//        $logMurid = new LogStatusMurid();
+//        $logMurid->createLogMurid($id_murid);
     }
 
     public function updateHistory($id_murid) {
@@ -105,8 +105,8 @@ class StatusHisMuridModel extends Model {
         $status->getWhereOne("status_murid_id='$id_murid'  ORDER BY status_tanggal_mulai DESC");
         $status->status_tanggal_akhir = leap_mysqldate();
         $status->save(1);
-        $logMurid = new LogStatusMurid();
-        $logMurid->createLogMurid($id_murid);
+//        $logMurid = new LogStatusMurid();
+//        $logMurid->createLogMurid($id_murid);
     }
 
 }

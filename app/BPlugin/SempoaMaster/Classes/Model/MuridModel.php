@@ -192,8 +192,8 @@ class MuridModel extends SempoaModel
 //        }
 
         if (!isset($this->id_murid)) {
-            $logMurid = new LogStatusMurid();
-            $logMurid->createLogMurid($this->id_murid);
+//            $logMurid = new LogStatusMurid();
+//            $logMurid->createLogMurid($this->id_murid);
 
         }
 
@@ -228,25 +228,6 @@ class MuridModel extends SempoaModel
 
                 $obj->status = $arrStatusMurid[$obj->status];
             }
-//            if (isset($obj->news_updatedate)) {
-//                $obj->news_updatedate = date("d-m-Y", strtotime($obj->news_updatedate));
-//            }
-//            if (isset($obj->news_validity_begin)) {
-//                $obj->news_validity_begin = date("d-m-Y", strtotime($obj->news_validity_begin));
-//            }
-//            if (isset($obj->news_validity_end)) {
-//                $obj->news_validity_end = date("d-m-Y", strtotime($obj->news_validity_end));
-//            }
-//            if (isset($obj->news_author)) {
-//                $acc = new Account();
-//                $acc->getByID($obj->news_author);
-//                $obj->news_author = $acc->admin_nama_depan;
-//            }
-//            if (isset($obj->news_channel_id)) {
-//                $acc = new NewsChannel();
-//                $acc->getByID($obj->news_channel_id);
-//                $obj->news_channel_id = $acc->channel_name;
-//            }
 
 
             if ($obj->pay_firsttime == '0') {
@@ -278,13 +259,16 @@ class MuridModel extends SempoaModel
             if (is_null($objStatus->status_id)) {
                 $statusMurid = new StatusHisMuridModel();
                 $statusMurid->createHistory($id);
-
+                $logMurid = new LogStatusMurid();
+                $logMurid->createLogMurid($id);
 
             } else {
                 $statusMurid = new StatusHisMuridModel();
                 $statusMurid->updateHistoryMurid($id);
                 $newHistory = new StatusHisMuridModel();
                 $newHistory->createHistory($id);
+                $logMurid = new LogStatusMurid();
+                $logMurid->createLogMurid($id);
             }
         } // sdh melakukan pembayaran pertama
         else {
@@ -295,6 +279,8 @@ class MuridModel extends SempoaModel
                 $update->updateHistoryMurid($id);
                 $newHistory = new StatusHisMuridModel();
                 $newHistory->createHistory($id);
+                $logMurid = new LogStatusMurid();
+                $logMurid->createLogMurid($id);
             }
         }
 

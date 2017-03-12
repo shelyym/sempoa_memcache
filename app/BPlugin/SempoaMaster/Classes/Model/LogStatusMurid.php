@@ -108,6 +108,13 @@ class LogStatusMurid extends Model {
         return $count;
     }
 
+    public function getCountSiswaCutiGroup($id_siswa,$status, $bln, $thn, $org_id){
+        $logMurid = new LogStatusMurid();
+        $arr = $logMurid->getWhere("log_id_murid=$id_siswa AND log_status='$status' AND log_tc_id='$org_id' AND log_bln=$bln AND log_thn=$thn GROUP BY log_status");
+
+        pr(count($arr));
+    }
+
     /*
      * status K = keluar
      * status A = Aktiv
@@ -140,4 +147,7 @@ class LogStatusMurid extends Model {
         return $count;
     }
 
+    public function istLogExistiert($murid_id, $statusMurid, $bln, $thn){
+
+    }
 }

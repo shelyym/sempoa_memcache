@@ -156,7 +156,7 @@ class CronJob extends WebService
 
                         if (!is_null($rekap_siswa->bi_rekap_kode_tc)) {
                             $rekap_siswa->delete($rekap_siswa->bi_rekap_siswa_id);
-                            echo Generic::getTCNamebyID($rekap_siswa->bi_rekap_kode_tc) . " kedelete untuk bulan " . $waktu  . "<br>";
+                            echo "TC: " . $rekap_siswa->bi_rekap_kode_tc . " " . Generic::getTCNamebyID($rekap_siswa->bi_rekap_kode_tc) . " kedelete untuk bulan " . $waktu  . " nama Murid: " . Generic::getMuridNamebyID($rekap_siswa->bi_rekap_siswa_id)."<br>";
                         }
 
                         $rekap_siswa = new RekapSiswaIBOModel();
@@ -280,7 +280,7 @@ class CronJob extends WebService
                                 $jumlahKupon = $kupon->getJumlahKuponByTC($bln, $thn, $tc_id);
 
                                 $kuponSatuan = new KuponSatuan();
-                                $jmlhIuaran = $kuponSatuan->getJumlahKuponTerpakaiByTC($bln, $thn, $tc_id);
+                                $jmlhIuaran = $kuponSatuan->getJumlahKupgitonTerpakaiByTC($bln, $thn, $tc_id);
                                 $biRekapModel = new BIRekapKuponModel();
                                 $jmlhStock = $biRekapModel->getDatenPrevMonth($bln, $thn, $ak_id, $kpo_id, $ibo_id, $tc_id);
 
@@ -524,5 +524,12 @@ class CronJob extends WebService
         }
        echo "Sebanyak " . $jumlahMurid . " ganti status dari Cuti ke keluar";
 
+    }
+
+
+
+    function cobaCuti(){
+        $log = new LogStatusMurid();
+        $log->getCountSiswaCutiGroup(1901,'K',3,2017,26);
     }
 }
