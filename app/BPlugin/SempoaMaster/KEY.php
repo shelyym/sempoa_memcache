@@ -11,7 +11,8 @@
  *
  * @author efindiongso
  */
-class KEY {
+class KEY
+{
 
     //put your code here
     public static $AK = "ak";
@@ -50,7 +51,7 @@ class KEY {
     public static $STATUSABSEN = 0;
     public static $STATUSLULUS = 1;
     public static $STATUSTIDAKLULUS = 2;
-    public static $STATUSSAKIT =3;
+    public static $STATUSSAKIT = 3;
 
     public static $STATUSINDEXALL = 99;
     public static $STATUSALL = "All";
@@ -69,7 +70,10 @@ class KEY {
     public static $WARNA_MERAH = "#FF8A65";
     public static $WARNA_ABU = "#DEDEDE";
 
+// UNDO First Payment
 
+    public static $MAX_UNDO_FIRST_PAYMENT = 30;
+    public static $MAX_UNDO_SPP = 30;
     /*
      * Load
      */

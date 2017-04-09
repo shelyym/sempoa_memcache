@@ -944,7 +944,7 @@ class MuridWebHelper extends WebService
                                         $your_date = strtotime($fp->murid_pay_date);
                                         $datediff = Generic::diffTwoDaysInDay($now, $your_date);
 //                                        echo $murid->id_murid . " - " . $fp->murid_pay_date . " - " . Generic::getMuridNamebyID($fp->murid_id) . " - ".$datediff;
-                                        if ($datediff <= 14) {
+                                        if ($datediff <= KEY::$MAX_UNDO_FIRST_PAYMENT) {
                                             ?>
                                             <span id="undo_first_payment_<?= $murid->id_murid; ?>" class="fa fa-undo"
                                                   aria-hidden="true"></span>
@@ -2073,7 +2073,7 @@ class MuridWebHelper extends WebService
                                                 $your_date = strtotime($mk->bln_date_pembayaran);
                                                 $datediff = $now - $your_date;
                                                 $datediff = floor($datediff / (60 * 60 * 24));
-                                                if ($datediff <= 7) {
+                                                if ($datediff <= KEY::$MAX_UNDO_SPP) {
                                                     ?>
                                                     <span id="undo_<?= $mk->bln_id; ?>" class="fa fa-undo"
                                                           aria-hidden="true"></span>
@@ -2552,7 +2552,7 @@ class MuridWebHelper extends WebService
                         $your_date = strtotime($mk->bln_date_pembayaran);
                         $datediff = $now - $your_date;
                         $datediff = floor($datediff / (60 * 60 * 24));
-                        if ($datediff <= 14) {
+                        if ($datediff <= KEY::$MAX_UNDO_SPP) {
                             ?>
                             <span id="undo_<?= $mk->bln_id; ?>" class="fa fa-undo"
                                   aria-hidden="true"></span>
