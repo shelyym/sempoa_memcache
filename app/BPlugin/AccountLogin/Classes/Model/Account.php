@@ -78,7 +78,53 @@ class Account extends Model {
     var $crud_webservice_allowed = "admin_username,admin_password,admin_lastupdate,admin_reg_date,admin_aktiv,admin_allowed_ip,admin_email,admin_role,admin_type,admin_hash,admin_marketer,admin_phone,admin_isAgent,admin_npwp,admin_ktp,admin_bank,admin_bank_acc,admin_bank_kcu,admin_total_paid_sales,admin_total_free_sales,admin_bank_acc_name,admin_webpassword";
 	public $save_hook = array ();
 
-	public function save ($onDuplicateKey = 0)
+	public function save($onDuplicateKey = 0)
+	{
+		$var = parent::save($onDuplicateKey);
+		//pr($this);
+		if ($var) {
+			$acc = new Account();
+
+			$load = (isset($this->load) ? addslashes($this->load) : 0);
+			if (!$load)
+				$acc->getByID($var);
+			else {
+				$mainValue = $this->admin_id;
+				$acc = $this;
+			}
+
+			$role2Acc = new Role2Account();
+			$arr = $role2Acc->getWhere("role_admin_id = '{$acc->admin_id}'");
+			//pr($arr);
+			if (count($arr) > 0) {
+				//sudah ada role2acc nya
+				$role2Acc = $arr[0];
+				$role2Acc->load = 1;
+				//$role2Acc->role_admin_id = $var;
+				$role2Acc->role_id = $acc->admin_role;
+				//$role2Acc->account_username = $acc->admin_username;
+			} else {
+				//belum ada role2acc nya
+				//$role2Acc = $arr[0];
+				//$role2Acc->load = 1;
+				$role2Acc->role_admin_id = $var;
+				$role2Acc->role_id = $acc->admin_role;
+				$role2Acc->account_username = $acc->admin_username;
+			}
+
+
+			//process 	Hook just in case
+			Hook::processHook($this->save_hook);
+
+			$bool = $role2Acc->save();
+
+			//return $var;
+		}
+
+		return $var;
+	}
+
+	public function save_salah ($onDuplicateKey = 0)
 	{
 		$var = parent::save($onDuplicateKey);
                 //pr($this);

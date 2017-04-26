@@ -4911,7 +4911,65 @@ class MuridWebHelper extends WebService
 
         $id = addslashes($_GET['id']);
         $ib = new IuranBulanan();
+        $bln = date("n");
+        $thn = date("Y");
+
+        $weiter = true;
+
+
+
+
+        while ($weiter) {
+            $id_hlp = $id . "_" . $bln . "_" . $thn;
+            $iuranbulanan = new IuranBulanan();
+            $iuranbulanan->getWhereOne("bln_murid_id=$id  AND bln_mon=$bln AND  bln_tahun=$thn  AND bln_id='$id_hlp'");
+//            $json['bln'] = $bln . " " . $thn;
+            if (is_null($iuranbulanan->bln_id)) {
+                $weiter = false;
+            } else {
+                if ($bln == 12) {
+                    $bln = 1;
+                    $thn = $thn + 1;
+                } else {
+                    $bln = $bln + 1;
+
+                }
+            }
+        }
+
+
+        $murid = new MuridModel();
+        $murid->getByID($id);
+
+        $iuranbulanan = new IuranBulanan();
+        $pilih_kapan = $bln . "-" . $thn;
+
+        $idInvoice = $iuranbulanan->createIuranBulananManual($id, $pilih_kapan, $bln, $thn, $murid->murid_ak_id, $murid->murid_kpo_id, $murid->murid_ibo_id, $murid->murid_tc_id);
+
+
+        if ($idInvoice > 0) {
+            $json['status_code'] = 1;
+            $json['status_message'] = "Invoice sudah tercetak";
+
+        } else {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Invoice gagal tercetak";
+
+        }
+
+        echo json_encode($json);
+        die();
+
+    }
+
+    // tgl 26.04 krn tc harapan indah ibrahim
+    public function create_invoice_backup()
+    {
+
+        $id = addslashes($_GET['id']);
+        $ib = new IuranBulanan();
         $ib->getWhereOne("bln_murid_id=$id ORDER BY bln_tahun DESC");
+
         if (is_null($ib->bln_id)) {
             $bln = date("n");
             $thn = date("Y");
@@ -4935,9 +4993,11 @@ class MuridWebHelper extends WebService
 
 
 
-
         $iuranbulanan = new IuranBulanan();
         $iuranbulanan->getWhereOne("bln_murid_id=$id  AND bln_mon=$bln AND  bln_tahun=$thn");
+
+
+
         $weiter = true;
         if (is_null($iuranbulanan->bln_id)) {
             $weiter = false;
@@ -4945,7 +5005,8 @@ class MuridWebHelper extends WebService
                 $bln = 1;
                 $thn = $thn + 1;
             } else {
-                $bln = $bln + 1;
+//                $bln = $bln + 1;
+                $bln = $bln;
                 $json['bln'] = $bln . " " . $thn;
             }
         }
@@ -4976,6 +5037,7 @@ class MuridWebHelper extends WebService
 
         $iuranbulanan = new IuranBulanan();
         $pilih_kapan = $bln . "-" . $thn;
+
         $idInvoice = $iuranbulanan->createIuranBulananManual($id, $pilih_kapan, $bln, $thn, $murid->murid_ak_id, $murid->murid_kpo_id, $murid->murid_ibo_id, $murid->murid_tc_id);
 
         if ($idInvoice > 0) {
@@ -4993,7 +5055,6 @@ class MuridWebHelper extends WebService
 
 
     }
-
     function changeLevelKurikulum()
     {
         // id_murid

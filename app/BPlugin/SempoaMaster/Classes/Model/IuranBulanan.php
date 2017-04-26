@@ -64,6 +64,7 @@ class IuranBulanan extends Model{
         $this->bln_ibo_id = $ibo_id;
         $this->bln_kpo_id = $kpo_id;
         $this->bln_ak_id = $ak_id;
+        $this->bln_create_date = leap_mysqldate();
         $idInvoice = $this->save();
         return $idInvoice;
     }
