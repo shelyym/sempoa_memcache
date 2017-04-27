@@ -1340,6 +1340,9 @@ class BarangWebHelper extends WebService
         $t = time();
         foreach ($arrPO as $po) {
 //                            pr($po->po_status);
+            /*
+             *
+
             $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
             if ($po->po_status == KEY::$STATUS_NEW)
                 $warna = KEY::$WARNA_BIRU;
@@ -1355,6 +1358,28 @@ class BarangWebHelper extends WebService
             foreach ($arrPOItems as $items) {
                 $total_satu_po += $items->harga * $items->qty;
             }
+
+ */
+
+            $pembeli = new Account();
+            $pembeli->getByID($po->po_user_id_pengirim);
+            $arrPOItems = $objPOItems->getWhere("po_id = $po->po_id");
+            if ($po->po_status == KEY::$STATUS_NEW)
+                $warna = KEY::$WARNA_BIRU;
+            elseif ($po->po_status == KEY::$STATUS_PAID)
+                $warna = KEY::$WARNA_HIJAU;
+            elseif ($po->po_status == KEY::$STATUS_CANCEL)
+                $warna = KEY::$WARNA_MERAH;
+            $arrname = $acc->getWhere("admin_org_id = '$po->po_pengirim'");
+            //hitung total hrg manually roy 14 sep 2016
+            $total_satu_po = 0;
+            foreach ($arrPOItems as $items) {
+                $total_satu_po += $items->harga * $items->qty;
+            }
+            ?>
+
+
+
             ?>
             <tr class='<?= $po->po_id ?> atas_<?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
 
@@ -1366,7 +1391,7 @@ class BarangWebHelper extends WebService
                     <span class="caret" style="cursor: pointer;"></span>
                 </td>
                 <td><?= $po->po_tanggal ?></td>
-                <td><?= $arrname[0]->admin_nama_depan; ?></td>
+                <td><?= Generic::getTCNamebyID($po->po_pengirim) . "/ " . $pembeli->admin_nama_depan; ?></td>
                 <td id='status_po_<?= $po->po_id; ?>'><?
                     if ($po->po_status == 0) {
                         echo "New";
@@ -1888,6 +1913,7 @@ class BarangWebHelper extends WebService
 //        $arrPO = $db->query($q, 2);
         $q = "SELECT * FROM {$objPO->table_name} po  WHERE  po.po_penerima='$myOrgID' ORDER BY po.po_tanggal DESC LIMIT $begin,$limit ";
         $arrPO = $db->query($q, 2);
+//        pr($arrPO);
         $jumlahTotal = $objPO->getJumlah("po_penerima='$myOrgID'");
         $jumlahHalamanTotal = ceil($jumlahTotal / $limit);
         $t = time();
@@ -2103,6 +2129,7 @@ class BarangWebHelper extends WebService
                 var total_page_status = <?= $jumlahHalamanTotal; ?>;
                 $('#loadmore_status_<?= $t; ?>').click(function () {
                     if (page_status < total_page_status) {
+
                         page_status++;
                         $.get("<?= _SPPATH; ?>BarangWebHelper/lihat_pesanan_load?page=" + page_status, function (data) {
                             $("#body").append(data);
