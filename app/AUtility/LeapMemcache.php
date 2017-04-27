@@ -22,6 +22,7 @@ class LeapMemcache {
 
         $this->cacheAvailable = $cacheAvailable;
         $this->memcache = $memcache;
+        $this->cacheAvailable=false;
     }
 
     public static function addInboxUsingAccID($client_camp_id,$acc_id,$cardNr,$message,$url,$useGateway=1){
