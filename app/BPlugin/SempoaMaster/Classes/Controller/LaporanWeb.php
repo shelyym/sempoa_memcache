@@ -89,8 +89,8 @@ class LaporanWeb extends WebService
     //TC
     public function create_operasional_pembayaran_iuran_bulanan_tc()
     {
-        ini_set('display_errors', '1');
-error_reporting(E_ALL);
+//        ini_set('display_errors', '1');
+//error_reporting(E_ALL);
         $myorg = AccessRight::getMyOrgID();
 //        pr($myorg);
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
