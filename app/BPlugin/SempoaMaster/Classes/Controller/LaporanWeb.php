@@ -93,6 +93,7 @@ class LaporanWeb extends WebService
 //error_reporting(E_ALL);
         $myorg = AccessRight::getMyOrgID();
 //        pr($myorg);
+        echo "1<br>";
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
@@ -106,7 +107,9 @@ class LaporanWeb extends WebService
         $arrSTatus = array();
         foreach ($arrs as $st) {
             $arrSTatus[$st->id_status_murid] = $st->status;
+
         }
+        echo "2<br>";
         $arrBulan = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
         // Kupon
@@ -116,6 +119,7 @@ class LaporanWeb extends WebService
 //        $checkKupon = 0;
         $arrSTatus = array("<b>Unpaid</b>", "Paid");
         $t = time();
+        echo "3<br>";
         ?>
 
         <section class="content-header">
