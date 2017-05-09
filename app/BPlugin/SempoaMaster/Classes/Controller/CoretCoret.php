@@ -29,4 +29,36 @@ class CoretCoret extends WebService
         $arr = explode("-", $a);
         pr($arr);
     }
+
+    public function viewRole(){
+
+        pr($_SESSION);
+        $lvl = "ibo";
+        $webclass = "UserWeb3";
+        $obj = new SempoaRole();
+        $id = AccessRight::getMyOrgID();
+        $obj->read_filter_array = array("role_org_id"=>AccessRight::getMyOrgID());
+        $obj->hideColoums = array("role_org_id","role_level");
+        $obj->role_level = strtolower($lvl);
+        $obj->cname = $webclass;
+        $obj->fktname = "update_user_grup_".$lvl;
+        $obj->removeAutoCrudClick = array("role_edit_ar");
+
+        pr($obj);
+    }
+
+    public function testLaporanWeb(){
+
+
+        global $memcache;
+        $mc = $memcache->memcache;
+        $cacheAvailable = $memcache->cacheAvailable;
+        echo "Memcached <br>";
+        pr($mc);
+        pr($cacheAvailable);
+
+        $a = new LaporanWeb();
+        $a->create_operasional_pembayaran_iuran_bulanan_tc();
+
+    }
 }
