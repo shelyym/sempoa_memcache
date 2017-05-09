@@ -90,11 +90,11 @@ class LaporanWeb extends WebService
     public function create_operasional_pembayaran_iuran_bulanan_tc()
     {
         $myorg = AccessRight::getMyOrgID();
-        pr($myorg);
+//        pr($myorg);
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
-        pr("Tc: " . $tc_id);
+//        pr("Tc: " . $tc_id);
         $murid = new MuridModel();
         // Status cuti dikeluarkan
         $arrMurid = $murid->getWhere("(status = 1) AND murid_tc_id = '$tc_id' ORDER BY nama_siswa ASC");
