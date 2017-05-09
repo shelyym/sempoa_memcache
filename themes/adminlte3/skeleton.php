@@ -776,7 +776,12 @@
             <!-- AdminLTE for demo purposes -->
             <script src="<?= _SPPATH . _THEMEPATH; ?>/dist/js/demo.js"></script>
 
-
+<style>
+    .icon-item {
+        cursor: pointer;
+        font-size: 15px;
+    }
+</style>
 
 
             <!-- add new -->
