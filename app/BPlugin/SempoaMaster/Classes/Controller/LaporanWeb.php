@@ -109,7 +109,7 @@ class LaporanWeb extends WebService
 
         // Kupon
         $kupon = new KuponSatuan();
-        $arrkupon = $kupon->getWhere("kupon_owner_id = '$myorg' AND kupon_status = 0 ORDER BY kupon_id ASC");
+        $arrkupon = $kupon->getWhere("kupon_owner_id = '$tc_id' AND kupon_status = 0 ORDER BY kupon_id ASC");
         $checkKupon = count($arrkupon);
 //        $checkKupon = 0;
         $arrSTatus = array("<b>Unpaid</b>", "Paid");
@@ -157,7 +157,7 @@ class LaporanWeb extends WebService
                 $('#submit_bln_<?= $t; ?>').click(function () {
                     var bln = $('#bulan_<?= $t; ?>').val();
                     var thn = $('#tahun_<?= $t; ?>').val();
-                    var tc_id = '<?= $myorg ?>';
+                    var tc_id = '<?= $tc_id ?>';
                     openLw('create_operasional_pembayaran_iuran_bulanan_tc', '<?=_SPPATH;?>LaporanWeb/create_operasional_pembayaran_iuran_bulanan_tc'+'?now='+$.now()+'&bln='+bln+ "&thn=" + thn + "&tc_id=" + tc_id, 'fade');
                 });
             </script>
@@ -195,7 +195,7 @@ class LaporanWeb extends WebService
                 foreach ($arrMurid as $mk) {
 
                     $iuranBulanan = new IuranBulanan();
-                    $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$myorg'");
+                    $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
                     ?>
 
                     <tr id='payment_<?= $iuranBulanan->bln_id; ?>' class="<?if ($iuranBulanan->bln_status) {?>sudahbayar <?}else{?> belumbayar<?}?>">
