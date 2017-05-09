@@ -54,7 +54,6 @@ class CoretCoret extends WebService
         $mc = $memcache->memcache;
         $cacheAvailable = $memcache->cacheAvailable;
         echo "Memcached <br>";
-        pr($mc);
         pr($cacheAvailable);
 
         $a = new LaporanWeb();
