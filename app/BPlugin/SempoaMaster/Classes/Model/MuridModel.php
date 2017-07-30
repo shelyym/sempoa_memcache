@@ -39,6 +39,7 @@ class MuridModel extends SempoaModel
     public $nomor_pendaftaran;
     public $kode_guru;
     public $status;
+    public $murid_kurikulum;
     public $murid_ak_id;
     public $murid_kpo_id;
     public $murid_ibo_id;

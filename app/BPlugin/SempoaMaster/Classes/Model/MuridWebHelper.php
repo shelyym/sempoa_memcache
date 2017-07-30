@@ -873,6 +873,21 @@ class MuridWebHelper extends WebService
                                 </td>
                             </tr>
 
+                            <tr>
+                                <td>
+                                    Kurikulum
+                                </td>
+                                <td colspan="2">
+                                    <button id="murid_ganti_kur_<?= $id; ?>"
+                                            class="btn btn-default"><? if ($murid->murid_kurikulum == KEY::$KURIKULUM_BARU) {
+                                            echo "Baru";
+                                        } else {
+                                            echo "Lama";
+                                        }
+                                        ?>
+                                    </button>
+                                </td>
+                            </tr>
                             <?
                             if (AccessRight::getMyOrgType() == KEY::$IBO) {
                                 ?>
@@ -1033,6 +1048,20 @@ class MuridWebHelper extends WebService
         </div>
         <script>
 
+            $("#murid_ganti_kur_<?= $id; ?>").click(function () {
+                if (confirm("Anda yakin akan mengantikan Kurikulum?")) {
+                    $.get("<?= _SPPATH; ?>MuridWebHelper/murid_ganti_kur?id=<?= $id; ?>", function (data) {
+                        alert(data.status_message);
+                        console.log(data);
+                        if (data.status_code) {
+
+                            lwrefresh(selected_page);
+                        }
+//                        console.log(data.murid);
+
+                    }, 'json');
+                }
+            });
             $('#undo_first_payment_<?=$murid->id_murid; ?>').click(function () {
                 if (confirm("Anda yakin akan membatalkan transaksi Firstpayment?")) {
                     $.get("<?= _SPPATH; ?>MuridWebHelper/undo_process_firstpayment?murid_id=<?= $murid->id_murid; ?>" + "&level_murid=<?= $murid->id_level_masuk; ?>", function (data) {
@@ -3939,6 +3968,36 @@ class MuridWebHelper extends WebService
         <?
     }
 
+    function murid_ganti_kur()
+    {
+        $id_murid = addslashes($_GET['id']);
+        $murid = new MuridModel();
+        $murid->getByID($id_murid);
+        $json = array();
+        if (!is_null($murid->id_murid)) {
+            if ($murid->murid_kurikulum == 0) {
+                $murid->murid_kurikulum = 1;
+
+            } else {
+                $murid->murid_kurikulum = 0;
+
+            }
+
+            $murid->save(1);
+            $json['status_code'] = 1;
+            $json['status_message'] = "Kurikulum berhasil diubah";
+
+        } else {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Kurikulum gagla diubah";
+
+        }
+
+        echo json_encode($json);
+        die();
+
+    }
+
     function printSPP()
     {
         $kuponSatuan = new KuponSatuan();
@@ -4917,8 +4976,6 @@ class MuridWebHelper extends WebService
         $weiter = true;
 
 
-
-
         while ($weiter) {
             $id_hlp = $id . "_" . $bln . "_" . $thn;
             $iuranbulanan = new IuranBulanan();
@@ -4979,23 +5036,18 @@ class MuridWebHelper extends WebService
             $bln = $ib->bln_mon;
             $bln_skrg = date("n");
             $thn_skrg = date("Y");
-            if($thn_skrg > $thn){
-                $bln = $bln_skrg -1;
-            }
-            else{
-                if($bln_skrg - $bln  > 1){
+            if ($thn_skrg > $thn) {
+                $bln = $bln_skrg - 1;
+            } else {
+                if ($bln_skrg - $bln > 1) {
                     $bln = $bln_skrg - 1;
                 }
             }
         }
 
 
-
-
-
         $iuranbulanan = new IuranBulanan();
         $iuranbulanan->getWhereOne("bln_murid_id=$id  AND bln_mon=$bln AND  bln_tahun=$thn");
-
 
 
         $weiter = true;
@@ -5055,6 +5107,7 @@ class MuridWebHelper extends WebService
 
 
     }
+
     function changeLevelKurikulum()
     {
         // id_murid

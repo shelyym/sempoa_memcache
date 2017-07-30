@@ -301,4 +301,13 @@ class KEY
     public static $TITLEDAFTARKELAS = "Daftar Kelas";
     public static $TITLEPERMINTAANSERTIFIKAT = "Permintaan Sertifikat";
     public static $TITLESERTIFIKATTERCETAK = "Sertifikat Tercetak";
+
+    // Kurikulum
+
+    public static $KURIKULUM_BARU = 0;
+    public static $KURIKULUM_LAMA = 1;
+
+    public static $KURIKULUM_BARU_TEXT = "Baru";
+    public static $KURIKULUM_LAMA_TEXT = "Lama";
+
 }
