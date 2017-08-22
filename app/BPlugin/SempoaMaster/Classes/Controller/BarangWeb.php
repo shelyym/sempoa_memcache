@@ -40,6 +40,32 @@ class BarangWeb extends WebService {
         
     }
 
+
+    public function read_buku_lama() {
+        $myOrgID = (AccessRight::getMyOrgID());
+        $obj = new BarangWebModel();
+        $crud = new CrudCustomSempoa();
+        $crud->ar_add = AccessRight::hasRight("create_buku_lama");
+        $crud->ar_edit = AccessRight::hasRight("update_buku_lama");
+        $crud->ar_delete = AccessRight::hasRight("delete_buku_lama");
+        $crud->run_custom($obj, "BarangWeb", "read_buku_lama", " kpo_id LIKE '%$myOrgID%' AND jenis_biaya=1 AND jenis_kurikulum=1 ");
+    }
+
+    public function create_buku_lama() {
+        $_GET['cmd'] = 'edit';
+        $this->read_buku_lama();
+    }
+
+    public function update_buku_lama() {
+
+    }
+
+    public function delete_buku_lama() {
+
+    }
+
+
+
     // IBO
     public function get_jenis_dan_harga_barang_my_ibo() {
         SettingWeb2Helper::table_harga_Buku_anak2();

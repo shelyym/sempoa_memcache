@@ -96,21 +96,44 @@ class MuridWebHelper extends WebService
                             if ($id_biaya == 4) {
                                 //TODO check stok buku
 //                            echo "<b>Check stok buku ya..</b>";
+
+                                $arrBukuYgDiperlukan = Generic::getIdBarangByLevel($murid->id_level_masuk, 0);
                                 $myBuku = new BarangWebModel();
                                 $arrMyBuku = $myBuku->getWhere("level=$murid->id_level_sekarang  AND jenis_biaya = 1 AND kpo_id = $myGrandParentID LIMIT 0,1");
                                 $stockBarang = new StockModel();
                                 $buku_active = array_pop($arrMyBuku);
-//                            pr($buku_active);
                                 $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$org'");
 
-                                if ($stockBarang->jumlah_stock <= 0) {
-                                    $lanjut = $lanjut & false;
-                                    echo "<b> Stock Habis!</b>";
-                                } else {
-                                    $lanjut = $lanjut & true;
-                                    $id_buku = $buku_active->id_barang_harga;
-                                    echo Generic::getLevelNameByID($murid->id_level_masuk);
+
+                                foreach ($arrBukuYgDiperlukan as $val) {
+                                    $stockBarang->getWhereOne("id_barang='$val' AND org_id='$org'");
+//                                    pr($stockBarang);
+                                    if ($stockBarang->jumlah_stock <= 0) {
+                                        $lanjut = $lanjut & false;
+                                        echo "<b> Stock Habis!</b>";
+                                    } else {
+                                        $lanjut = $lanjut & true;
+
+
+                                    }
                                 }
+
+                                if ($lanjut) {
+                                    echo Generic::getLevelNameByID($murid->id_level_masuk);
+                                    $id_buku = implode(",", $arrBukuYgDiperlukan);
+                                }
+
+//                                if ($stockBarang->jumlah_stock <= 0) {
+//                                    $lanjut = $lanjut & false;
+//                                    echo "<b> Stock Habis!</b>";
+//                                } else {
+//                                    $lanjut = $lanjut & true;
+//                                    $id_buku = $buku_active->id_barang_harga;
+//                                    echo Generic::getLevelNameByID($murid->id_level_masuk);
+//                                }
+//pr($arrBukuYgDiperlukan);
+//die();
+
                             }
                             ?>
                             <?
@@ -312,6 +335,7 @@ class MuridWebHelper extends WebService
         $id_perlengkapan = addslashes($_POST['id_perlengkapan']);
         $id_buku = addslashes($_POST['id_buku']);
 
+
         $myOrgID = AccessRight::getMyOrgID();
         $myParentID = Generic::getMyParentID($myOrgID);
         // KPO
@@ -493,10 +517,23 @@ class MuridWebHelper extends WebService
 
                 // StockBarang
 
-                $stockBarangBuku = new StockModel();
-                $stockBarangBuku->getWhereOne("id_barang = '$id_buku' AND org_id='$org'");
-                $stockBarangBuku->jumlah_stock = $stockBarangBuku->jumlah_stock - 1;
-                $stockBarangBuku->save();
+                $arrIDBuku = explode(",", $id_buku);
+                foreach ($arrIDBuku as $val) {
+                    $stockBarangBuku = new StockModel();
+                    $stockBarangBuku->getWhereOne("id_barang = '$val' AND org_id='$org'");
+                    $stockBarangBuku->jumlah_stock = $stockBarangBuku->jumlah_stock - 1;
+                    $stockBarangBuku->save();
+
+                    $setNoBuku = new StockBuku();
+
+
+                    $setNoBuku->getBarangIDbyPk($val);
+
+
+                }
+                $setNoBuku = new StockBuku();
+                $resBuNo = $setNoBuku->getBukuYgdReservMurid($murid->id_level_sekarang, $murid->murid_tc_id, $murid_id, 0);
+                $setNoBuku->setStatusBuku($resBuNo, $murid_id);
 
                 $stockBarang = new StockModel();
                 $stockBarang->getWhereOne("id_barang = $id_perlengkapan AND org_id=$org");
@@ -521,6 +558,9 @@ class MuridWebHelper extends WebService
                 $objIuranBuku->bln_status = 1;
                 $objIuranBuku->bln_cara_bayar = $jenis_pmbr;
                 $objIuranBuku->save();
+
+
+                // Stock Buku No
 
 
                 $myID = AccessRight::getMyOrgID();
@@ -611,6 +651,8 @@ class MuridWebHelper extends WebService
                     $buku_active = array_pop($arrMyBuku);
                     $stockBarang->getWhereOne("id_barang='$buku_active->id_barang_harga' AND org_id='$myID'");
                     $id_buku = $buku_active->id_barang_harga;
+
+
                     $stockBarang->retourStock($id_buku, $myID);
                     Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BUKU_TC, KEY::$BIAYA_IURAN_BUKU, "Iuran Buku: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
 
@@ -888,6 +930,24 @@ class MuridWebHelper extends WebService
                                     </button>
                                 </td>
                             </tr>
+
+
+                            <tr>
+                                <td>
+                                    History Buku
+                                </td>
+                                <td colspan="2">
+                                    <?
+                                    $stockBuku = new StockBuku();
+                                    $arrBuku = $stockBuku->getBukuNoByStudentID($murid->id_murid);
+                                    foreach($arrBuku as $val){
+                                        echo $val->stock_buku_no .  "=>" . Generic::getLevelNameByID($val->stock_grup_level). "<br>";
+                                    }
+                                    ?>
+                                </td>
+                            </tr>
+
+
                             <?
                             if (AccessRight::getMyOrgType() == KEY::$IBO) {
                                 ?>
@@ -1049,6 +1109,7 @@ class MuridWebHelper extends WebService
         <script>
 
             $("#murid_ganti_kur_<?= $id; ?>").click(function () {
+
                 if (confirm("Anda yakin akan mengantikan Kurikulum?")) {
                     $.get("<?= _SPPATH; ?>MuridWebHelper/murid_ganti_kur?id=<?= $id; ?>", function (data) {
                         alert(data.status_message);
@@ -1127,21 +1188,80 @@ class MuridWebHelper extends WebService
 
 
             $('#naiklevel_<?= $murid->id_murid; ?>').click(function () {
+
+
+                <?
+                $arrKur = Generic::getJenisKurikulum();
+                ?>
+
                 if (confirm("Anda yakin akan menaikan kelas ke level selanjutnya?")) {
-                    var id_murid = <?= $murid->id_murid; ?>;
+
+                    var kur =<?= $murid->murid_kurikulum; ?>;
                     var id_level =<?= $murid->id_level_sekarang; ?>;
-                    $.get("<?= _SPPATH; ?>MuridWebHelper/naik_kelas?id_murid=" + id_murid + "&id_level=" + id_level, function (data2) {
-                        console.log(data2);
-                        if (data2.status_code) {
-                            alert(data2.status_message);
+                    var id_murid = <?= $murid->id_murid; ?>;
+
+                    if (kur == 0) {
+                        $.get("<?= _SPPATH; ?>MuridWebHelper/naik_kelas?id_murid=" + id_murid + "&id_level=" + id_level + "&kur=" + kur, function (data2) {
+                            console.log(data2);
+                            if (data2.status_code) {
+                                alert(data2.status_message);
 //                            lwrefresh("murid_Invoices_<?//= $murid->id_murid; ?>//");
-                            openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
-                        } else {
-                            alert(data2.status_message);
-                            openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                                openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                            } else {
+                                alert(data2.status_message);
+                                openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+
+                            }
+                        }, 'json');
+
+                    }
+
+                    else {
+
+                        // kur = 1
+                        // Kurikulum lama dan buku lama
+                        if (confirm("Sekarang Murid ini masih memakai Kurikulum <?=$arrKur[$murid->murid_kurikulum];?>.\n\nApakah Anda akan membeli buku kurikulum lama? \n(Jika Anda memilih Cancel, berarti Anda memilih buku Kurikulum baru dan kurikulum akan disesuaikan)")) {
+
+                            if (confirm("Anda akan membeli buku lama?")) {
+                                $.get("<?= _SPPATH; ?>MuridWebHelper/naik_kelas?id_murid=" + id_murid + "&id_level=" + id_level + "&kur=" + kur, function (data2) {
+                                    console.log(data2);
+                                    if (data2.status_code) {
+                                        alert(data2.status_message);
+//                            lwrefresh("murid_Invoices_<?//= $murid->id_murid; ?>//");
+                                        openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                                    } else {
+                                        alert(data2.status_message);
+                                        openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+
+                                    }
+                                }, 'json');
+
+                            }
+
 
                         }
-                    }, 'json');
+                        else {
+                            // Cancel ganti ke kurikulum baru
+                            if (confirm("Anda akan membeli buku baru dan kurikulum Anda akan diganti ke kurikulum baru?")) {
+                                $.get("<?= _SPPATH; ?>MuridWebHelper/naik_kelas?id_murid=" + id_murid + "&id_level=" + id_level + "&kur=" + kur + "&gantiKur=1", function (data2) {
+                                    console.log(data2);
+                                    if (data2.status_code) {
+                                        alert(data2.status_message);
+//                            lwrefresh("murid_Invoices_<?//= $murid->id_murid; ?>//");
+                                        openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                                    } else {
+                                        alert(data2.status_message);
+                                        openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+
+                                    }
+                                }, 'json');
+
+                            }
+
+                        }
+                    }
+
+
                 }
             });
         </script>
@@ -2235,6 +2355,9 @@ class MuridWebHelper extends WebService
                                     Status
                                 </th>
                                 <th>
+                                    No Buku
+                                </th>
+                                <th>
                                     Jenis Pembayaran
                                 </th>
                                 <?
@@ -2282,6 +2405,9 @@ class MuridWebHelper extends WebService
                                             }
                                         }
                                         ?></td>
+                                    <td>
+
+                                    </td>
                                     <td><?
                                         if ($val->bln_status)
                                             echo $arrPembayaran[$val->bln_cara_bayar];
@@ -2370,6 +2496,7 @@ class MuridWebHelper extends WebService
                                         }
                                         ?>
                                         $('#pay_now_bulanan_<?= $val->bln_id; ?>').click(function () {
+//                                            alert("asas");
                                             var jpb = $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').val();
                                             var bln_id = <?= $val->bln_id; ?>;
                                             $.post("<?= _SPPATH; ?>LaporanWebHelper/pay_iuran_buku_roy", {
@@ -3097,11 +3224,44 @@ class MuridWebHelper extends WebService
     {
         $id_murid = addslashes($_GET['id_murid']);
         $id_level = addslashes($_GET['id_level']);
+        $kur = addslashes($_GET['kur']);
+        $gantiKur = addslashes($_GET['gantiKur']);
+
         $json = array();
-        $next_level = Generic::getMyNextLevel($id_level);
-        $objIuranBuku = new IuranBuku();
-        $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$next_level->id_level'");
-//        pr($cnt);
+
+        // Check Kurikulum
+        if ($kur == KEY::$KURIKULUM_LAMA) {
+            $objIuranBuku = new IuranBuku();
+
+
+            // Ganti Kurikulum lama ke Kurikulum Baru
+            if ($gantiKur == 1) {
+                $next_level = Generic::getMyNextLevel($id_level);
+                $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$next_level->id_level'");
+            }
+
+            // Tidak ganti kurikulum
+            // Ikut level Kurikulum baru
+            // Buku level lama
+            else {
+                $next_level = Generic::getMyNextLevel($id_level);
+                $id_level_lama = Generic::convertLevelBaruKeLama($id_level);
+                $id_next_level_lama = Generic::getMyNextLevelLama($id_level_lama);
+//                pr($id_level_lama . " " . $id_next_level_lama->id_level_lama);
+                // hitung buku lama
+                $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$next_level->id_level'");
+
+            }
+
+
+        } // Kurikulum Baru
+        else {
+            $next_level = Generic::getMyNextLevel($id_level);
+            $objIuranBuku = new IuranBuku();
+            $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$next_level->id_level'");
+        }
+
+
         if ($cnt > 0) {
 //             continue;
             $json['status_code'] = 0;
@@ -3109,10 +3269,9 @@ class MuridWebHelper extends WebService
             echo json_encode($json);
             die();
         } else {
+
             $objMurid = new MuridModel();
             $objMurid->getByID($id_murid);
-//            $objMurid->id_level_sekarang = $id_level;
-//            $objMurid->save(1);
             $bln = date("n");
             $thn = date("Y");
             $objIuranBuku->bln_murid_id = $objMurid->id_murid;
@@ -3124,12 +3283,30 @@ class MuridWebHelper extends WebService
             $objIuranBuku->bln_kpo_id = $objMurid->murid_kpo_id;
             $objIuranBuku->bln_ibo_id = $objMurid->murid_ibo_id;
             $objIuranBuku->bln_ak_id = $objMurid->murid_ak_id;
-            $objIuranBuku->bln_buku_level = $next_level->id_level;
+
+            // Kurikulum lama
+
+            if ($kur == KEY::$KURIKULUM_LAMA) {
+                //berarti Anda memilih buku Kurikulum baru dan kurikulum akan disesuaikan
+                if ($gantiKur == 1) {
+                    $objIuranBuku->bln_buku_level = $next_level->id_level;
+                } else {
+
+                    $objIuranBuku->bln_buku_level = $next_level->id_level;
+                }
+
+            } else {
+                $objIuranBuku->bln_buku_level = $next_level->id_level;
+            }
+
+            $objIuranBuku->bln_kur = $kur;
+            if ($kur == 1) {
+                $objIuranBuku->bln_ganti_kur = $gantiKur;
+            }
+
             $succ = $objIuranBuku->save();
             if ($succ) {
-
                 // Create Nilai
-
                 $nilaiMurid = new NilaiModel();
                 $arrNilai = $nilaiMurid->getWhere("nilai_murid_id ='$id_murid' AND nilai_level='$objMurid->id_level_sekarang'");
                 if (count($arrNilai) == 0) {

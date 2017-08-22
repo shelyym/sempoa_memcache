@@ -204,6 +204,10 @@ class LaporanWeb extends WebService
 
                         $iuranBulanan = new IuranBulanan();
                         $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
+                        pr($iuranBulanan);
+                        if($mk->id_murid == '3202'){
+                            pr($mk->id_murid . " - " . $bln);
+                        }
                         ?>
 
                         <tr id='payment_<?= $iuranBulanan->bln_id; ?>'

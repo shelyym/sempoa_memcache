@@ -580,11 +580,42 @@ class BarangWebHelper extends WebService
                 $myOrg_id = AccessRight::getMyOrgID();
                 $objPOItem = new POItemModel();
                 $arrPOItems = $objPOItem->getWhere("po_id='$po_id'");
-                $json['po'] = $arrPOItems;
+//                $json['po'] = $arrPOItems;
 
 
                 if (count($arrPOItems > 0)) {
                     if ($id_status == 1) {
+
+                        // Check Jumlah no Buku
+
+                        $objPO_buku = new POModel();
+                        global $db;
+                        $q = "SELECT * FROM {$objPO->table_name} po  WHERE   po.po_id= $po_id";
+                        $arrPO_buku = $db->query($q, 2);
+                        $peminta = $arrPO_buku[0]->po_pengirim;
+                        $objPOItem_buku = new POItemModel();
+                        $arrPOItems_buku = $objPOItem_buku->getWhere("po_id='$po_id'");
+                        $json['po_buku'] = $arrPOItems_buku;
+                        foreach ($arrPOItems as $val) {
+                            $res[$val->id_barang]['barang'] = $val->id_barang;
+                            $res[$val->id_barang]['qty'] = $val->qty;
+                            $res[$val->id_barang]['peminta'] = $peminta;
+                            $res[$val->id_barang]['pemilik'] = $val->org_id;
+                            $res[$val->id_barang]['po_id'] = $val->po_id;
+                        }
+
+
+                        foreach ($res as $val) {
+                            $anzahlBuku = self::getNoBuku($val['barang'], $val['qty'], $val['pemilik'], AccessRight::getMyOrgType());
+                            if ($anzahlBuku >= $val['qty']) {
+                                self::setNoBuku($val['barang'], $val['qty'], $val['pemilik'], $val['peminta'], AccessRight::getMyOrgType(), $val['po_id']);
+                            } else {
+
+                            }
+
+                        }
+
+
                         //update stock KPO
                         foreach ($arrPOItems as $val) {
                             $arrStock = $objStock->getWhere("org_id='$myOrg_id' AND id_barang='$val->id_barang' ");
@@ -664,16 +695,8 @@ class BarangWebHelper extends WebService
 
                             $jenis_object = $arrJenisBarangHlp[$val->id_barang];
                             if (AccessRight::getMyOrgType() == KEY::$TC) {
-//                                if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
-//                                    Generic::createLaporanDebet($po_penerima, KEY::$DEBET_BARANG_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
-//                                    Generic::createLaporanKredit($po_pengirim, KEY::$KREDIT_BARANG_TC, $val->id_barang, $peminta, $val->qty, 0, "");
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
-//                                    Generic::createLaporanDebet($po_penerima, KEY::$DEBET_BUKU_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
-//                                    Generic::createLaporanKredit($po_pengirim, KEY::$KREDIT_BUKU_TC, $val->id_barang, $peminta, $val->qty, 0, "");
-//                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
-//                                    Generic::createLaporanDebet($po_penerima, KEY::$DEBET_PERLENGKAPAN_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
-//                                    Generic::createLaporanKredit($po_pengirim, KEY::$KREDIT_PERLENGKAPAN_TC, $val->id_barang, $peminta, $val->qty, 0, "");
-//                                }
+
+
                             } elseif (AccessRight::getMyOrgType() == KEY::$IBO) {
                                 if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
                                     Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BARANG_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
@@ -744,6 +767,79 @@ class BarangWebHelper extends WebService
         echo json_encode($json);
         die();
     }
+
+
+    /*
+     * Check Jumlah Buku
+     */
+
+
+    public function getNoBuku($id_barang, $qty, $org_id_pemilik, $org_type)
+    {
+
+        $stockBuku = new StockBuku();
+        if ($org_type == KEY::$KPO) {
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+
+            return count($arrStockBuku);
+        } elseif ($org_type == KEY::$IBO) {
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_ibo=1 AND stock_buku_ibo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            return count($arrStockBuku);
+        } elseif ($org_type == KEY::$TC) {
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_tc=1 AND stock_buku_tc = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            return count($arrStockBuku);
+        }
+
+    }
+
+
+    /*
+     *  Set No buku yang kepake
+     */
+
+    public function setNoBuku($id_barang, $qty, $org_id_pemilik, $org_id_peminta, $org_type, $po_id)
+    {
+
+        $stockBuku = new StockBuku();
+        if ($org_type == KEY::$KPO) {
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            foreach ($arrStockBuku as $val) {
+                $val->stock_buku_status_kpo = 0;
+                $val->stock_status_ibo = 1;
+                $val->stock_buku_tgl_keluar_kpo = leap_mysqldate();
+                $val->stock_buku_tgl_masuk_ibo = leap_mysqldate();
+                $val->stock_buku_ibo = $org_id_peminta;
+                $val->stock_po_pesanan_ibo = $po_id;
+                $val->save(1);
+            }
+        } elseif ($org_type == KEY::$IBO) {
+
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_ibo=1 AND stock_buku_ibo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            foreach ($arrStockBuku as $val) {
+                $val->stock_status_ibo = 0;
+                $val->stock_status_tc = 1;
+                $val->stock_buku_tgl_keluar_ibo = leap_mysqldate();
+                $val->stock_buku_tgl_masuk_tc = leap_mysqldate();
+                $val->stock_buku_tc = $org_id_peminta;
+                $val->stock_po_pesanan_tc = $po_id;
+                $val->save(1);
+            }
+
+
+        } elseif ($org_type == KEY::$TC) {
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_tc=1 AND stock_buku_kpo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            foreach ($arrStockBuku as $val) {
+                $val->stock_buku_status_kpo = 0;
+                $val->stock_buku_status_ibo = 1;
+                $val->stock_buku_tgl_keluar_kpo = leap_mysqldate();
+                $val->stock_buku_tgl_masuk_ibo = leap_mysqldate();
+                $val->stock_buku_ibo = $org_id_peminta;
+                $val->save(1);
+            }
+        }
+
+    }
+
 
     public static function form_pemesanan($parent_id)
     {
@@ -1379,7 +1475,6 @@ class BarangWebHelper extends WebService
             ?>
 
 
-
             ?>
             <tr class='<?= $po->po_id ?> atas_<?= $po->po_id ?>' style="background-color: <?= $warna; ?>;">
 
@@ -1920,7 +2015,14 @@ class BarangWebHelper extends WebService
         ?>
         <section class="content-header">
             <h1>
-                Pemesanan Barang dan Buku TC ke <?= Generic::getTCNamebyID($myOrgID); ?>
+                <? if (AccessRight::getMyOrgType() == "kpo") {
+                    $orgType = "IBO";
+                } else {
+                    $orgType = "TC";
+                }
+
+                ?>
+                Pemesanan Barang dan Buku <?= $orgType; ?> ke <?= Generic::getTCNamebyID($myOrgID) ?>
             </h1>
 
         </section>
@@ -1944,10 +2046,11 @@ class BarangWebHelper extends WebService
                     <tr>
                         <th><b>No PO</b></th>
                         <th><b>Tanggal</b></th>
-                        <th><b>TC/ Pemesan</b></th>
+                        <th><b><?= $orgType; ?>/ Pemesan</b></th>
                         <th><b>Status</b></th>
                         <th class="palingdalam" style="visibility:hidden;display: none"><b>Qty</b></th>
                         <th class="palingdalam" style="visibility:hidden;display: none"><b>Barang</b></th>
+                        <th class="palingdalam" style="visibility:hidden;display: none"><b>No. Buku</b></th>
                         <th class="palingdalam" style="visibility:hidden;display: none"><b>Harga</b></th>
                         <th class="palingdalam" style="visibility:hidden;display: none"><b>Total Harga</b></th>
                         <th><b>Grand Total</b></th>
@@ -1995,6 +2098,9 @@ class BarangWebHelper extends WebService
 
                             <td class='<?= $po->po_id; ?> palingdalam' style="visibility:hidden;display: none"></td>
                             <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+
+                            <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
+
                             <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
                             <td class='<?= $po->po_id ?> palingdalam' style="visibility:hidden;display: none"></td>
                             <td><?= "IDR " . idr($total_satu_po); ?></td>
@@ -2011,6 +2117,8 @@ class BarangWebHelper extends WebService
                             </td>
                             <td class='<?= $po->po_id ?>'><?= $items->qty ?></td>
                             <td class='<?= $po->po_id ?> '><?= Generic::getNamaBarangByIDBarang($items->id_barang); ?></td>
+
+                            <td class='<?= $po->po_id ?>'><?= self::getAwalAkhirNoBuku($po->po_id, AccessRight::getMyOrgType(),$items->id_barang) ?></td>
 
                             <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga); ?></td>
                             <td class='<?= $po->po_id ?>'><?= "IDR " . idr($items->harga * $items->qty) ?></td>
@@ -2291,4 +2399,28 @@ class BarangWebHelper extends WebService
         }
     }
 
+
+    public function getAwalAkhirNoBuku($po_id, $orgType, $barang_id)
+    {
+
+        $stockBuku = new StockBuku();
+        if ($orgType == KEY::$KPO) {
+
+            $arrStock = $stockBuku->getWhere("stock_po_pesanan_ibo=$po_id AND stock_id_buku = $barang_id ORDER BY stock_buku_id ASC");
+        } elseif ($orgType == KEY::$IBO) {
+            $arrStock = $stockBuku->getWhere("stock_po_pesanan_tc=$po_id AND stock_id_buku = $barang_id  ORDER BY stock_buku_id ASC");
+        } elseif ($orgType == KEY::$TC) {
+            $arrStock = $stockBuku->getWhere("stock_invoice_murid=$po_id AND stock_id_buku = $barang_id  ORDER BY stock_buku_id ASC");
+        }
+        if (count($arrStock) == 1) {
+            return $arrStock[0]->stock_buku_no;
+        }
+        elseif (count($arrStock) == 0) {
+            return "";
+        }
+        else {
+//            pr($arrStock[0]->stock_buku_no . " - " . $arrStock[count($arrStock)-1]->stock_buku_no);
+            return $arrStock[0]->stock_buku_no . " - " . $arrStock[count($arrStock)-1]->stock_buku_no;
+        }
+    }
 }

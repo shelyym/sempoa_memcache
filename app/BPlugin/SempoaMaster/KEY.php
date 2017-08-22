@@ -310,4 +310,14 @@ class KEY
     public static $KURIKULUM_BARU_TEXT = "Baru";
     public static $KURIKULUM_LAMA_TEXT = "Lama";
 
+    public static $TEXT_LEVEL = "Level";
+    public static $TEXT_KURIKULUM = "Kurikulum";
+
+    public static $BUKU_AVAILABLE = 1;
+    public static $BUKU_NON_AVAILABLE = 0;
+
+    public static $BUKU_AVAILABLE_TEXT = "Available";
+    public static $BUKU_NON_AVAILABLE_TEXT = "Non Available";
+
+
 }

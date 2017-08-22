@@ -10,39 +10,47 @@
  *
  * @author efindiongso
  */
-class Generic {
+class Generic
+{
 
-    public static function getStatus() {
+    public static function getStatus()
+    {
         $arrSTatus = array("<b>Unpaid</b>", "Paid");
         return $arrSTatus;
     }
 
-    public static function getStatusTrainer() {
+    public static function getStatusTrainer()
+    {
         $arrSTatus = array("<b>Unpaid</b>", "Paid", "<b>Discount 100%</b>");
         return $arrSTatus;
     }
 
-    public static function getKeteranganTraining() {
-        $arrSTatus = array("<i>Select</i>","<b>Lulus</b>", "<b>Tidak Lulus</b>", "<b>Sakit</b>", "<b>Absen</b>");
+    public static function getKeteranganTraining()
+    {
+        $arrSTatus = array("<i>Select</i>", "<b>Lulus</b>", "<b>Tidak Lulus</b>", "<b>Sakit</b>", "<b>Absen</b>");
         return $arrSTatus;
     }
 
-    public static function firstPaymentJunior() {
+    public static function firstPaymentJunior()
+    {
         $arrIDs = array(1, 4, 7, 2);
         return $arrIDs;
     }
 
-    public static function firstPaymentJunior2() {
+    public static function firstPaymentJunior2()
+    {
         $arrIDs = array(1, 4, 7, 11);
         return $arrIDs;
     }
 
-    public static function firstPaymentFoundation() {
+    public static function firstPaymentFoundation()
+    {
         $arrIDs = array(1, 4, 8, 11);
         return $arrIDs;
     }
 
-    public static function getPerlengkapanLevel() {
+    public static function getPerlengkapanLevel()
+    {
         $objBarang = new BarangWebModel();
         $arrPerlengkapan = $objBarang->getWhere("jenis_biaya=2");
         $arr = array();
@@ -52,7 +60,8 @@ class Generic {
         return $arr;
     }
 
-    public static function getJenisPembayaran() {
+    public static function getJenisPembayaran()
+    {
         $objPembayaran = new PembayaranWeb2Model();
         $arr = $objPembayaran->getAll();
         foreach ($arr as $pb) {
@@ -62,24 +71,28 @@ class Generic {
         return $arrPembayaran;
     }
 
-    public static function getJenisBiaya() {
+    public static function getJenisBiaya()
+    {
         $arrBiaya = array("Barang", "Buku", "Perlengkapan");
         return $arrBiaya;
     }
 
-    public static function getChildren($parent_id) {
+    public static function getChildren($parent_id)
+    {
         $obj = new SempoaOrg();
         $arr = $obj->getWhere("org_parent_id='$parent_id'");
         return $arr;
     }
 
-    public static function getMyOrg($orgid) {
+    public static function getMyOrg($orgid)
+    {
         $obj = new SempoaOrg();
         $arr = $obj->getWhere("org_id='$orgid'");
         return $arr;
     }
 
-    public static function getMyParentID($myOrgID) {
+    public static function getMyParentID($myOrgID)
+    {
         $obj = new SempoaOrg();
         $arr = $obj->getWhere("org_id='$myOrgID'");
         if (count($arr) > 0) {
@@ -88,7 +101,8 @@ class Generic {
             return "";
     }
 
-    public static function getAllAK() {
+    public static function getAllAK()
+    {
         $ak = new SempoaOrg();
         $arrAK = $ak->getWhere("org_type='ak'");
         $allAK = array();
@@ -98,7 +112,8 @@ class Generic {
         return $allAK;
     }
 
-    public static function getAllMyKPO($ak_id) {
+    public static function getAllMyKPO($ak_id)
+    {
         $obj = new SempoaOrg();
         $arr = $obj->getWhere("org_type='kpo' AND org_parent_id = '$ak_id'");
         if (count($arr) > 0) {
@@ -110,7 +125,8 @@ class Generic {
         return $arrKPO;
     }
 
-    public static function getAllIBO() {
+    public static function getAllIBO()
+    {
         $ibo = new SempoaOrg();
         $arrIbo = $ibo->getWhere("org_type='ibo'");
         $allIbo = array();
@@ -120,7 +136,8 @@ class Generic {
         return $allIbo;
     }
 
-    public static function getAllMyIBO($KPOid) {
+    public static function getAllMyIBO($KPOid)
+    {
         $obj = new SempoaOrg();
         $arr = $obj->getWhere("org_type='ibo' AND org_parent_id = '$KPOid'");
         if (count($arr) > 0) {
@@ -132,7 +149,8 @@ class Generic {
         return $arrIBO;
     }
 
-    public static function getAllMyTC($IBOid) {
+    public static function getAllMyTC($IBOid)
+    {
         $obj = new SempoaOrg();
 //        pr($IBOid);
         $arr = $obj->getWhere("org_type='tc' AND org_parent_id='$IBOid'");
@@ -146,7 +164,8 @@ class Generic {
         return $arrTC;
     }
 
-    public static function getGroup($id, $all = '0') {
+    public static function getGroup($id, $all = '0')
+    {
         $obj = new GroupsModel();
         $arr = $obj->getWhere("parent_id='$id'");
         if (count($arr) > 0) {
@@ -158,7 +177,8 @@ class Generic {
         return $arrGroup;
     }
 
-    public static function fgetAllGroupMember($id_group) {
+    public static function fgetAllGroupMember($id_group)
+    {
         $obj = new GroupsModel();
         $arr = $obj->getWhere("id_group='$id_group'");
 
@@ -173,13 +193,15 @@ class Generic {
         }
     }
 
-    public static function getOrgNamebyID($id) {
+    public static function getOrgNamebyID($id)
+    {
         $obj = new SempoaOrg();
         $obj->getByID($id);
         return $obj->nama;
     }
 
-    public static function getMyGroupID($myOrgID) {
+    public static function getMyGroupID($myOrgID)
+    {
         $ibo_id = Generic::getMyParentID($myOrgID);
         $arrGroup = self::getGroup($ibo_id);
         foreach ($arrGroup as $key => $val) {
@@ -193,7 +215,8 @@ class Generic {
         }
     }
 
-    public static function fgetGroupMember($id_group) {
+    public static function fgetGroupMember($id_group)
+    {
         $obj = new GroupsModel();
         $arr = $obj->getWhere("id_group='$id_group'");
 
@@ -206,12 +229,14 @@ class Generic {
         return "";
     }
 
-    public function getSession() {
+    public function getSession()
+    {
         pr($_SESSION);
     }
 
     //put your code here
-    public static function getClassSetting() {
+    public static function getClassSetting()
+    {
         $classSetting = new SettingWeb5Model();
         $arr = $classSetting->getAll();
         foreach ($arr as $val) {
@@ -220,7 +245,8 @@ class Generic {
         return $arrIsi;
     }
 
-    public static function getClassSettingByKPOID($kpo_id) {
+    public static function getClassSettingByKPOID($kpo_id)
+    {
         $classSetting = new SettingWeb5Model();
         $arr = $classSetting->getWhere("kpo_id='$kpo_id'");
         foreach ($arr as $val) {
@@ -234,7 +260,8 @@ class Generic {
      * @return semua guru dari current tc_id
      */
 
-    public static function getAllGuruByTcID($tc_id) {
+    public static function getAllGuruByTcID($tc_id)
+    {
         $objGuru = new SempoaGuruModel();
         $arrObjGuru = $objGuru->getWhere("guru_tc_id='$tc_id'");
         self::checkCountArray($arrObjGuru);
@@ -247,19 +274,22 @@ class Generic {
      * @return, id dari tc pertama
      */
 
-    public function getFirstTCID($IBOid) {
+    public function getFirstTCID($IBOid)
+    {
         $arrFirstTC = self::getAllMyTC($IBOid);
         self::checkCountArray($arrFirstTC);
         return key($arrFirstTC);
     }
 
-    public static function checkCountArray($arr) {
+    public static function checkCountArray($arr)
+    {
         if (count($arr) == 0) {
             die("Array is null");
         }
     }
 
-    public static function getAllLevelTraining() {
+    public static function getAllLevelTraining()
+    {
         $objLevelTraining = new TrainerWebModel();
         $arrLevelTraining = $objLevelTraining->getAll();
         Generic::checkCountArray($arrLevelTraining);
@@ -270,7 +300,8 @@ class Generic {
         return $arrLevel;
     }
 
-    public static function getAllLevelTrainingByKPOId($kpo_id) {
+    public static function getAllLevelTrainingByKPOId($kpo_id)
+    {
         $objLevelTraining = new GuruWebModel();
         $arrLevelTraining = $objLevelTraining->getWhere("kpo_id='$kpo_id'");
         foreach ($arrLevelTraining as $val) {
@@ -279,7 +310,8 @@ class Generic {
         return $arrLevel;
     }
 
-    public static function getAllStatusGuru() {
+    public static function getAllStatusGuru()
+    {
         $objStatus = new GuruWeb4Model();
         $arrStatus = $objStatus->getAll();
         Generic::checkCountArray($arrStatus);
@@ -290,7 +322,8 @@ class Generic {
         return $arrStatusErg;
     }
 
-    public static function getAllStatusGuruByKPOId($kpo_id) {
+    public static function getAllStatusGuruByKPOId($kpo_id)
+    {
         $objStatus = new GuruWeb4Model();
         $arrStatus = $objStatus->getWhere("kpo_id='$kpo_id'");
         Generic::checkCountArray($arrStatus);
@@ -301,7 +334,8 @@ class Generic {
         return $arrStatusErg;
     }
 
-    public static function getAllStatusMurid() {
+    public static function getAllStatusMurid()
+    {
 
         $objStatus = new MuridWeb2Model();
         $arrStatus = $objStatus->getAll();
@@ -313,7 +347,8 @@ class Generic {
         return $arrStatusErg;
     }
 
-    public static function getAllStatusMuridByKPO($kpo_id) {
+    public static function getAllStatusMuridByKPO($kpo_id)
+    {
 
         $objStatus = new MuridWeb2Model();
         $arrStatus = $objStatus->getWhere("kpo_id='$kpo_id'");
@@ -326,7 +361,8 @@ class Generic {
         return $arrStatusErg;
     }
 
-    public static function getAllAgama() {
+    public static function getAllAgama()
+    {
         $arrAgama[''] = "";
         $arrAgama['b'] = "Buddha";
         $arrAgama['h'] = "Hindu";
@@ -336,7 +372,8 @@ class Generic {
         return $arrAgama;
     }
 
-    public static function getArrValueByIndex($index, $arr) {
+    public static function getArrValueByIndex($index, $arr)
+    {
         foreach ($arr as $key => $val) {
             if ($index == $key) {
                 return $val;
@@ -344,7 +381,8 @@ class Generic {
         }
     }
 
-    public static function getWeekDay() {
+    public static function getWeekDay()
+    {
         $arrWeekday[1] = "Monday";
         $arrWeekday[2] = "Tuesday";
         $arrWeekday[3] = "Wednesday";
@@ -355,7 +393,8 @@ class Generic {
         return $arrWeekday;
     }
 
-    public static function WeekMap() {
+    public static function WeekMap()
+    {
         $dowMap = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
         return $dowMap;
     }
@@ -364,7 +403,8 @@ class Generic {
      * 
      */
 
-    public static function getTypeGroup() {
+    public static function getTypeGroup()
+    {
         $arrType[0] = KEY::$AK;
         $arrType[1] = KEY::$KPO;
         $arrType[2] = KEY::$IBO;
@@ -373,7 +413,8 @@ class Generic {
         return $arrType;
     }
 
-    public static function getTypeGroupinInt($arrGroup, $search) {
+    public static function getTypeGroupinInt($arrGroup, $search)
+    {
         foreach ($arrGroup as $key => $val) {
 //            pr($val);
             if ($val == $search) {
@@ -388,7 +429,8 @@ class Generic {
      * 
      */
 
-    public static function getRuanganByTC($tc_id) {
+    public static function getRuanganByTC($tc_id)
+    {
         $objRuangan = new RuanganModel();
         $arrObjRuangan = $objRuangan->getWhere("tc_id = '$tc_id'");
         Generic::checkCountArray($arrObjRuangan);
@@ -402,7 +444,8 @@ class Generic {
      * 
      */
 
-    public static function isCurrentAccountAK() {
+    public static function isCurrentAccountAK()
+    {
         if (AccessRight::getMyOrgType() == KEY::$AK) {
             return true;
         } else {
@@ -410,7 +453,8 @@ class Generic {
         }
     }
 
-    public static function isCurrentAccountKPO() {
+    public static function isCurrentAccountKPO()
+    {
         if (AccessRight::getMyOrgType() == KEY::$KPO) {
             return true;
         } else {
@@ -418,7 +462,8 @@ class Generic {
         }
     }
 
-    public static function isCurrentAccountIBO() {
+    public static function isCurrentAccountIBO()
+    {
         if (AccessRight::getMyOrgType() == KEY::$IBO) {
             return true;
         } else {
@@ -426,7 +471,8 @@ class Generic {
         }
     }
 
-    public static function isCurrentAccountTC() {
+    public static function isCurrentAccountTC()
+    {
         if (AccessRight::getMyOrgType() == KEY::$TC) {
             return true;
         } else {
@@ -434,7 +480,8 @@ class Generic {
         }
     }
 
-    public static function fCreateKode($who, $org_id) {
+    public static function fCreateKode($who, $org_id)
+    {
         $year = strval(date("Y"));
         $year = substr($year, 2);
         $org_code = self::getOrgCode($org_id);
@@ -447,10 +494,9 @@ class Generic {
             if ($last_code == "") {
                 $last_code = $kode_tahun . strval($org_code) . "001";
             } else {
-                if(substr($last_code,0, -8)  != $year){
+                if (substr($last_code, 0, -8) != $year) {
                     $last_code = $kode_tahun . strval($org_code) . "001";
-                }
-                else{
+                } else {
                     $last_code = $last_code + 1;
                 }
 
@@ -460,10 +506,9 @@ class Generic {
             if ($last_code == "") {
                 $last_code = $kode_tahun . strval($org_code) . "01";
             } else {
-                if(substr($last_code,0, -7)  != $year){
+                if (substr($last_code, 0, -7) != $year) {
                     $last_code = $kode_tahun . strval($org_code) . "01";
-                }
-                else{
+                } else {
                     $last_code = $last_code + 1;
                 }
 
@@ -473,10 +518,9 @@ class Generic {
             if ($last_code == "") {
                 $last_code = $kode_tahun . strval($org_code) . "01";
             } else {
-                if(substr($last_code,0, -4)  != $year){
+                if (substr($last_code, 0, -4) != $year) {
                     $last_code = $kode_tahun . strval($org_code) . "01";
-                }
-                else{
+                } else {
                     $last_code = $last_code + 1;
                 }
             }
@@ -485,7 +529,8 @@ class Generic {
         return $last_code;
     }
 
-    public static function fCreateKodeSiswa() {
+    public static function fCreateKodeSiswa()
+    {
         $year = strval(date("Y"));
         $year = substr($year, 2);
         $myTCNo = AccessRight::getMyOrgID();
@@ -502,10 +547,9 @@ class Generic {
 //            $kode_siswa = $year . strval($myIBONo) . strval($myTCNo) . "001";
             $kode_siswa = $year . strval($TCID) . "001";
         } else {
-            if(substr($kode_siswa,0, -8)  != $year){
+            if (substr($kode_siswa, 0, -8) != $year) {
                 $kode_siswa = $year . strval($TCID) . "001";
-            }
-            else{
+            } else {
                 $kode_siswa = $kode_siswa + 1;
             }
 
@@ -513,13 +557,15 @@ class Generic {
         return $kode_siswa;
     }
 
-    public static function getOrgCode($id) {
+    public static function getOrgCode($id)
+    {
         $org = new SempoaOrg();
         $org->getByID($id);
         return strval($org->org_kode);
     }
 
-    public static function getLastKodeSiswa($tc_id) {
+    public static function getLastKodeSiswa($tc_id)
+    {
         $objMurid = new MuridModel();
         global $db;
         $q = "SELECT * FROM {$objMurid->table_name} WHERE murid_tc_id='$tc_id' ORDER BY id_murid DESC Limit 1";
@@ -533,7 +579,8 @@ class Generic {
         }
     }
 
-    public static function getLastKodeGuru($tc_id) {
+    public static function getLastKodeGuru($tc_id)
+    {
         $objGuru = new SempoaGuruModel();
         global $db;
         $q = "SELECT * FROM {$objGuru->table_name} WHERE guru_tc_id='$tc_id' ORDER BY guru_id DESC Limit 1";
@@ -548,7 +595,8 @@ class Generic {
         }
     }
 
-    public static function getLastKodeTrainer($ibo_id) {
+    public static function getLastKodeTrainer($ibo_id)
+    {
         $objTrainer = new TrainerModel();
         global $db;
         $q = "SELECT * FROM {$objTrainer->table_name} WHERE tr_ibo_id='$ibo_id' ORDER BY id_trainer DESC Limit 1";
@@ -563,7 +611,8 @@ class Generic {
         }
     }
 
-    public static function getAllsMyIBO($id_KPO) {
+    public static function getAllsMyIBO($id_KPO)
+    {
         $objOrg = new SempoaOrg();
         $arrOrg = $objOrg->getWhere("org_parent_id=$id_KPO AND org_type='ibo'");
         Generic::checkCountArray($arrOrg);
@@ -574,7 +623,8 @@ class Generic {
         return $arrAllIBO;
     }
 
-    public static function getAllsMyTC($id_IBO) {
+    public static function getAllsMyTC($id_IBO)
+    {
         $objOrg = new SempoaOrg();
         $arrOrg = $objOrg->getWhere("org_parent_id=$id_IBO AND org_type='tc'");
         Generic::checkCountArray($arrOrg);
@@ -585,12 +635,14 @@ class Generic {
         return $arrAllTC;
     }
 
-    public static function getAllBiaya() {
+    public static function getAllBiaya()
+    {
         $obj = new JenisPembayaranModel();
         return $obj->getAll();
     }
 
-    public static function getAllJenisBiaya($kpo_id) {
+    public static function getAllJenisBiaya($kpo_id)
+    {
         $obj = new SettingJenisBiayaModel();
         $arrObj = $obj->getWhere("kpo_id='$kpo_id'");
         $arrColumn = explode(",", $obj->coloumlist);
@@ -605,7 +657,8 @@ class Generic {
         return $sem;
     }
 
-    public static function getLastIDBiaya($kpo_id) {
+    public static function getLastIDBiaya($kpo_id)
+    {
         $obj = new SettingJenisBiayaModel();
         global $db;
         $q = "SELECT * FROM {$obj->table_name} WHERE kpo_id='$kpo_id' ORDER BY id_jenis_biaya DESC Limit 1";
@@ -620,7 +673,8 @@ class Generic {
         }
     }
 
-    public static function getMyRoot() {
+    public static function getMyRoot()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $myParentID = Generic::getMyParentID($myOrgID);
         $myGrandParentID = Generic::getMyParentID($myParentID);
@@ -631,7 +685,8 @@ class Generic {
         pr('myGrandGrandParentID: ' . $myGrandGrandParentID);
     }
 
-    public static function getAllLevelMurid($id) {
+    public static function getAllLevelMurid($id)
+    {
         $obj = new SettingWeb5Model();
         $arrObj = $obj->getWhere("kpo_id='$id'");
         $arrColumn = explode(",", $obj->coloumlist);
@@ -643,7 +698,8 @@ class Generic {
         return $sem;
     }
 
-    public static function getAllLevel() {
+    public static function getAllLevel()
+    {
         $obj = new SempoaLevel();
         $arrObj = $obj->getAll();
         $arrColumn = explode(",", $obj->coloumlist);
@@ -655,7 +711,8 @@ class Generic {
         return $sem;
     }
 
-    public static function getLastIDTable($pKey, $obj) {
+    public static function getLastIDTable($pKey, $obj)
+    {
         global $db;
         $q = "SELECT * FROM {$obj->table_name} ORDER BY $pKey DESC Limit 1";
         $arr = $db->query($q, 2);
@@ -668,7 +725,8 @@ class Generic {
         }
     }
 
-    public static function fCheckMasterRow($refID, $jenis_biaya, $ak_id, $kpo_id, $ibo_id, $table) {
+    public static function fCheckMasterRow($refID, $jenis_biaya, $ak_id, $kpo_id, $ibo_id, $table)
+    {
 
         global $db;
         $q = "SELECT * FROM $table WHERE (refID='$refID' AND refID != 0) AND jenis_biaya='$jenis_biaya' AND ak_id='$ak_id' AND kpo_id ='$kpo_id' AND ibo_id=$ibo_id";
@@ -685,7 +743,8 @@ class Generic {
         }
     }
 
-    public static function fCheckMasterRowTC($refID, $jenis_biaya, $ak_id, $kpo_id, $ibo_id, $tc_id, $table) {
+    public static function fCheckMasterRowTC($refID, $jenis_biaya, $ak_id, $kpo_id, $ibo_id, $tc_id, $table)
+    {
 
         global $db;
         $q = "SELECT * FROM $table WHERE (refID='$refID' AND refID != 0) AND jenis_biaya='$jenis_biaya' AND ak_id='$ak_id' AND kpo_id ='$kpo_id' AND ibo_id='$ibo_id' AND  tc_id='$tc_id'";
@@ -702,7 +761,8 @@ class Generic {
         }
     }
 
-    public static function removeIBO($refID, $table) {
+    public static function removeIBO($refID, $table)
+    {
         global $db;
         $q = "SELECT * FROM $table WHERE (refID='$refID')";
         $arr = $db->query($q, 2);
@@ -714,7 +774,8 @@ class Generic {
         }
     }
 
-    public static function removeTC($refID, $table) {
+    public static function removeTC($refID, $table)
+    {
         global $db;
         $q = "SELECT * FROM $table WHERE (refID='$refID')";
         $arr = $db->query($q, 2);
@@ -726,7 +787,8 @@ class Generic {
         }
     }
 
-    public static function getAllmemberTC($refID, $table) {
+    public static function getAllmemberTC($refID, $table)
+    {
         global $db;
         $q = "SELECT * FROM $table WHERE (refID='$refID')";
         $arr = $db->query($q, 2);
@@ -738,14 +800,16 @@ class Generic {
         }
     }
 
-    public static function getMasterSPP($kpoid, $iboid, $level) {
+    public static function getMasterSPP($kpoid, $iboid, $level)
+    {
         $obj = new BiayaBulananModel();
         $arrObj = $obj->getWhere(" kpo_id = '$kpoid' AND ibo_id='$iboid' AND level='$level' AND type = 'MASTER'");
 
 //        return $arrObj;=z
     }
 
-    public static function getTextSettingBiaya($IDSetting) {
+    public static function getTextSettingBiaya($IDSetting)
+    {
         $obj = new SettingJenisBiayaModel();
 
         $arr = $obj->getWhere("id_biaya='$IDSetting'");
@@ -754,10 +818,11 @@ class Generic {
         }
     }
 
-    public static function getTCMember($parent_id) {
+    public static function getTCMember($parent_id)
+    {
 
         $arrTC = Generic::getAllsMyTC($parent_id);
-        $a="";
+        $a = "";
         $objGroupTC = new GroupsModel();
         $arrGroupTC = $objGroupTC->getWhere("parent_id='$parent_id'");
         foreach ($arrGroupTC as $val) {
@@ -789,18 +854,20 @@ class Generic {
         }
         return $arr;
     }
-    public static function getTCMemberRoy($parent_id,$id_group) {
+
+    public static function getTCMemberRoy($parent_id, $id_group)
+    {
 
         $arrTC = Generic::getAllsMyTC($parent_id);
 
         $objGroupTC = new GroupsModel();
         $arrGroupTC = $objGroupTC->getWhere("parent_id='$parent_id' AND id_group != '$id_group'");
         foreach ($arrGroupTC as $val) {
-          
-           
+
+
             $arrVergebenTC[] = $val->groups;
         }
-        $a="";
+        $a = "";
         $value = implode(",", array_keys($arrTC));
         $arrVal = explode(',', $value);
         foreach ($arrVergebenTC as $val) {
@@ -827,7 +894,9 @@ class Generic {
         }
         return $arr;
     }
-    public static function getNamaBarangByKPOID($kpo_id) {
+
+    public static function getNamaBarangByKPOID($kpo_id)
+    {
         $objBarang = new BarangWebModel();
         $arrBarang = $objBarang->getWhere("kpo_id='$kpo_id'");
         if (count($arrBarang) == 0) {
@@ -840,7 +909,8 @@ class Generic {
         return $barang;
     }
 
-    public static function getQtyBarangByKPOID($kpo_id) {
+    public static function getQtyBarangByKPOID($kpo_id)
+    {
         $objBarang = new StockModel();
         $arrBarang = $objBarang->getWhere("org_id='$kpo_id'");
         if (count($arrBarang) == 0) {
@@ -854,7 +924,8 @@ class Generic {
         return $barang;
     }
 
-    public static function getNamaBarangByIDKPOID($id_barang, $kpo_id) {
+    public static function getNamaBarangByIDKPOID($id_barang, $kpo_id)
+    {
         $objBarang = new BarangWebModel();
         $arrBarang = $objBarang->getWhere("kpo_id='$kpo_id' AND id_barang_harga='$id_barang'");
         if (count($arrBarang) == 0) {
@@ -864,7 +935,8 @@ class Generic {
         }
     }
 
-    public static function getStockByOrgID($id_barang, $org_id) {
+    public static function getStockByOrgID($id_barang, $org_id)
+    {
         $objStock = new StockModel();
         $arrStock = $objStock->getWhere("org_id='$org_id' AND id_barang='$id_barang'");
         if (count($arrStock) == 0) {
@@ -875,7 +947,8 @@ class Generic {
     }
 
 
-    public static function getNamaBarangByIDBarang($id_barang) {
+    public static function getNamaBarangByIDBarang($id_barang)
+    {
         $objBarang = new BarangWebModel();
         $arrBarang = $objBarang->getWhere("id_barang_harga='$id_barang'");
         if (count($arrBarang) == 0) {
@@ -885,7 +958,8 @@ class Generic {
         }
     }
 
-    public static function getNamaBarang() {
+    public static function getNamaBarang()
+    {
         $objBarang = new BarangWebModel();
         $arrBarang = $objBarang->getAll();
         $namaBarang = array();
@@ -896,13 +970,15 @@ class Generic {
         return $namaBarang;
     }
 
-    public static function getJumlahStockByID($id_barang, $kpo_id) {
+    public static function getJumlahStockByID($id_barang, $kpo_id)
+    {
         $objStok = new StockModel();
         $arrStock = $objStok->getWhere("id_barang = '$id_barang' AND org_id='$kpo_id'");
         return $arrStock;
     }
 
-    public static function getHargaBarang($id_barang, $atasan_id) {
+    public static function getHargaBarang($id_barang, $atasan_id)
+    {
         $hargaBarang = new SettingHargaBarang();
         $key = $atasan_id . "_" . $id_barang;
         $arrHargaBarang = $hargaBarang->getWhere("id_setting_biaya='$key'");
@@ -914,7 +990,8 @@ class Generic {
         }
     }
 
-    public static function getHargaBarangByGroup($id_barang, $group_id) {
+    public static function getHargaBarangByGroup($id_barang, $group_id)
+    {
         $hargaBarang = new SettingHargaBarang();
         $key = $group_id . "_" . $id_barang;
 //        pr($key);
@@ -927,49 +1004,58 @@ class Generic {
         }
     }
 
-    public static function number($number) {
+    public static function number($number)
+    {
         return number_format($number, 0, '', '.');
     }
 
-    public static function getMyStock($myID) {
+    public static function getMyStock($myID)
+    {
         $objStock = new StockModel();
         $arrStock = $objStock->getWhere("org_id='$myID'");
         return $arrStock;
     }
 
-    public static function getAdminNameByID($id) {
+    public static function getAdminNameByID($id)
+    {
         $acc = new SempoaAccount();
         $name = $acc->getWhere("admin_org_id='$id'");
         return $name[0]->admin_nama_depan;
     }
 
-    public static function getTCNamebyID($tc_id) {
+    public static function getTCNamebyID($tc_id)
+    {
         $objTC = new SempoaOrg();
         $objTC->getByID($tc_id);
         return $objTC->nama;
     }
 
 
-    public static function getOrgIDByName($orgName) {
+    public static function getOrgIDByName($orgName)
+    {
         $org = new SempoaOrg();
         $org->getWhereOne("nama='$orgName'");
         return $org->org_id;
     }
-    public static function getIBONamebyID($ibo_id) {
+
+    public static function getIBONamebyID($ibo_id)
+    {
         $objTC = new SempoaOrg();
         $objTC->getByID($ibo_id);
         return $objTC->nama;
     }
 
-    public static function getLevelNameByID($id) {
+    public static function getLevelNameByID($id)
+    {
 
-        if($id == "" || $id == 0)return "<i>Not Set</i>";
+        if ($id == "" || $id == 0) return "<i>Not Set</i>";
         $obj = new SempoaLevel();
         $obj->getByID($id);
         return $obj->level;
     }
 
-    public static function printerKelas($kelas_id) {
+    public static function printerKelas($kelas_id)
+    {
 
         $kelas = new KelasWebModel();
         $kelas->getByID($kelas_id);
@@ -980,25 +1066,29 @@ class Generic {
         return $level->level . ", " . Generic::getWeekDay()[$kelas->hari_kelas] . " " . $kelas->jam_mulai_kelas . "-" . $kelas->jam_akhir_kelas;
     }
 
-    public static function getGuruNamebyID($id) {
+    public static function getGuruNamebyID($id)
+    {
         $obj = new SempoaGuruModel();
         $arrGuru = $obj->getWhere("guru_id='$id'");
         return $arrGuru[0]->nama_guru;
     }
 
-    public static function getTrainerNamebyID($id) {
+    public static function getTrainerNamebyID($id)
+    {
         $obj = new TrainerModel();
         $obj->getByID($id);
         return $obj->nama_trainer;
     }
 
-    public static function getMuridNamebyID($id) {
+    public static function getMuridNamebyID($id)
+    {
         $obj = new MuridModel;
         $arrMurid = $obj->getWhere("id_murid='$id'");
         return $arrMurid[0]->nama_siswa;
     }
 
-    public static function getMyNextLevel($myLevel) {
+    public static function getMyNextLevel($myLevel)
+    {
         $objLevel = new SempoaLevel();
         $arrAll = $objLevel->getAll();
         $keymylevel = "";
@@ -1012,7 +1102,23 @@ class Generic {
         return $help;
     }
 
-    public static function istLevelNeedCertificate($level_id) {
+    public static function getMyNextLevelLama($myLevel)
+    {
+        $objLevel = new SempoaLevelLama();
+        $arrAll = $objLevel->getAll();
+        $keymylevel = "";
+        foreach ($arrAll as $key => $level) {
+            if ($level->id_level_lama == $myLevel) {
+                $keymylevel = $key;
+                break;
+            }
+        }
+        $help = $arrAll[$key + 1];
+        return $help;
+    }
+
+    public static function istLevelNeedCertificate($level_id)
+    {
         $level = new SempoaLevel();
         $level->getByID($level_id);
         if ($level->level_sertifikat) {
@@ -1022,13 +1128,15 @@ class Generic {
         }
     }
 
-    public static function getPOByID($po_id) {
+    public static function getPOByID($po_id)
+    {
         $po_object = new POModel();
         $po_object->getByID($po_id);
         return $po_object;
     }
 
-    public static function createLaporanDebet($orgID, $orgID_Biaya, $kode_jenis_biaya, $jenis_biaya, $keterangan, $jmlh_item, $debet, $type) {
+    public static function createLaporanDebet($orgID, $orgID_Biaya, $kode_jenis_biaya, $jenis_biaya, $keterangan, $jmlh_item, $debet, $type)
+    {
         if ($type == "Utama") {
             $jenisbm = new JenisBiayaModel();
             $jenisbm->getByID($orgID . "_" . $jenis_biaya); //bahaya krn di hardcode .... //test coba2 dulu myorgid
@@ -1037,33 +1145,28 @@ class Generic {
         } elseif ($type == "Training") {
 
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jmlh_item, $debet, $orgID);
-        }
-
-        elseif ($type == "Discount100") {
+        } elseif ($type == "Discount100") {
 
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jmlh_item, $debet, $orgID);
-        }
-
-        elseif ($type == "") {
+        } elseif ($type == "") {
             $jenisbm = new SettingHargaBarang();
             $jenisbm->getByID($orgID_Biaya . "_" . $jenis_biaya); //bahaya krn di hardcode .... //test coba2 dulu myorgid
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jenisbm->harga * $jmlh_item, $debet, $orgID);
         }
     }
 
-    public static function createLaporanKredit($orgID, $orgID_Biaya='0', $kode_jenis_biaya, $jenis_biaya, $keterangan, $jmlh_item, $credit, $type) {
+    public static function createLaporanKredit($orgID, $orgID_Biaya = '0', $kode_jenis_biaya, $jenis_biaya, $keterangan, $jmlh_item, $credit, $type)
+    {
         if ($type == "Utama") {
             $jenisbm = new JenisBiayaModel();
             $jenisbm->getByID($orgID . "_" . $jenis_biaya); //bahaya krn di hardcode .... //test coba2 dulu myorgid
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $credit, $jenisbm->harga * $jmlh_item, $orgID);
         } elseif ($type == "Training") {
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $credit, $jmlh_item, $orgID);
-        }
-        elseif ($type == "Discount100") {
+        } elseif ($type == "Discount100") {
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $jmlh_item, $credit, $orgID);
 
-        }
-        elseif ($type == "") {
+        } elseif ($type == "") {
             $jenisbm = new SettingHargaBarang();
             $jenisbm->getByID($orgID_Biaya . "_" . $jenis_biaya); //bahaya krn di hardcode .... //test coba2 dulu myorgid
             TransaksiModel::entry($kode_jenis_biaya, $keterangan, $credit, $jenisbm->harga * $jmlh_item, $orgID);
@@ -1071,20 +1174,21 @@ class Generic {
     }
 
 
-
-
-    public static function getAllMonths() {
+    public static function getAllMonths()
+    {
         $arrBulan = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
         return $arrBulan;
     }
 
-    public static function getAllMonthsWithAll() {
+    public static function getAllMonthsWithAll()
+    {
         $arrBulan = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
         $arrBulan[count($arrBulan) + 1] = "All";
         return $arrBulan;
     }
 
-    public static function getMonthName($bln) {
+    public static function getMonthName($bln)
+    {
         if ($bln == 1) {
             return "Januari";
         } elseif ($bln == 2) {
@@ -1112,7 +1216,8 @@ class Generic {
         }
     }
 
-    public static function myOrgData() {
+    public static function myOrgData()
+    {
         $myOrgId = AccessRight::getMyOrgID();
         $myIBO = new SempoaOrg();
         $myIBO->getByID($myOrgId);
@@ -1189,7 +1294,8 @@ class Generic {
         <?
     }
 
-    public static function getAllGuruQualifiedByTC($tcID) {
+    public static function getAllGuruQualifiedByTC($tcID)
+    {
         $guru = new SempoaGuruModel();
         $arrGuru = $guru->getWhere("guru_tc_id='$tcID' AND status =1");
         $arrAllGuru = array();
@@ -1200,7 +1306,8 @@ class Generic {
         return $arrAllGuru;
     }
 
-    public static function getAllGuruAktivByTC($tcID) {
+    public static function getAllGuruAktivByTC($tcID)
+    {
         $guru = new SempoaGuruModel();
         $arrGuru = $guru->getWhere("guru_tc_id='$tcID'");
         $arrAllGuru = array();
@@ -1211,7 +1318,8 @@ class Generic {
         return $arrAllGuru;
     }
 
-    public static function getJenisTraining() {
+    public static function getJenisTraining()
+    {
         $arrJenis = array();
         $arrJenis[] = KEY::$JENIS_TRAINING_MATERI;
         $arrJenis[] = KEY::$JENIS_TRAINING_EVALUASI;
@@ -1219,13 +1327,15 @@ class Generic {
         return $arrJenis;
     }
 
-    public static function getAllTrainerByIBO($ibo_id) {
+    public static function getAllTrainerByIBO($ibo_id)
+    {
         $trainer = new TrainerModel();
         $arrTrainer = $trainer->getWhere("tr_ibo_id='$ibo_id'");
         return $arrTrainer;
     }
 
-    public static function getAllTrainerWithIDByIBO($ibo_id) {
+    public static function getAllTrainerWithIDByIBO($ibo_id)
+    {
         $trainer = new TrainerModel();
         $arrTrainer = $trainer->getWhere("tr_ibo_id='$ibo_id'");
         $arrTrainerHelp = array();
@@ -1236,7 +1346,8 @@ class Generic {
         return $arrTrainerHelp;
     }
 
-    public static function getJenisBarangType() {
+    public static function getJenisBarangType()
+    {
         $barang = new BarangWebModel();
         $arrBarang = $barang->getAll();
         $arrBrgHlp = array();
@@ -1246,7 +1357,8 @@ class Generic {
         return $arrBrgHlp;
     }
 
-    public static function getJenisBarang() {
+    public static function getJenisBarang()
+    {
         $arrJenisBarang = array();
         $arrJenisBarang[KEY::$JENIS_BIAYA_BARANG] = KEY::$JB_BARANG;
         $arrJenisBarang[KEY::$JENIS_BIAYA_BUKU] = KEY::$JB_BUKU;
@@ -1254,7 +1366,8 @@ class Generic {
         return $arrJenisBarang;
     }
 
-    public static function getJenisBiayaTraining() {
+    public static function getJenisBiayaTraining()
+    {
         $arrBiayaTraining = array();
         $arrBiayaTraining[KEY::$INDEX_TRAINING_SATUAN] = KEY::$TRAINING_SATUAN;
         $arrBiayaTraining[KEY::$INDEX_TRAINING_PAKET] = KEY::$TRAINING_PAKET;
@@ -1262,13 +1375,15 @@ class Generic {
         return $arrBiayaTraining;
     }
 
-    public static function getTrainingLevel($training_id) {
+    public static function getTrainingLevel($training_id)
+    {
         $training = new JadwalTrainingModel();
         $training->getByID($training_id);
         return $training->jt_level_from;
     }
 
-    public static function getLevelGroup() {
+    public static function getLevelGroup()
+    {
         $arrGroupLevel = array();
         $arrGroupLevel[KEY::$LEVEL_GROUP_JUNIOR] = KEY::$GROUP_JUNIOR;
         $arrGroupLevel[KEY::$LEVEL_GROUP_FOUNDATION] = KEY::$GROUP_FOUNDATION;
@@ -1278,7 +1393,8 @@ class Generic {
         return $arrGroupLevel;
     }
 
-    public static function getSettingNilai() {
+    public static function getSettingNilai()
+    {
         $arrNilai = array();
         $arrNilai[0] = "Belum diisi";
         $arrNilai[1] = "A";
@@ -1289,7 +1405,32 @@ class Generic {
         return $arrNilai;
     }
 
-    public static function getAktivMuridByTcID($tc_id) {
+
+    public static function getJenisKurikulum()
+    {
+        $arrKur = array();
+        $arrKur[KEY::$KURIKULUM_BARU] = KEY::$KURIKULUM_BARU_TEXT;
+        $arrKur[KEY::$KURIKULUM_LAMA] = KEY::$KURIKULUM_LAMA_TEXT;
+
+        return $arrKur;
+    }
+
+
+    public static function getLevelKurikulumLama()
+    {
+        $obj = new SempoaLevelLama();
+        $arrObj = $obj->getAll();
+        $arrColumn = explode(",", $obj->coloumlist);
+        $arrBiaya = array();
+        foreach ($arrObj as $val) {
+            $sem[$val->id_level_lama] = $val->level_lama;
+        }
+
+        return $sem;
+    }
+
+    public static function getAktivMuridByTcID($tc_id)
+    {
         $objMurid = new MuridModel();
         $arrMurid = $objMurid->getWhere("status !=0 AND murid_tc_id='$tc_id' ORDER BY nama_siswa ASC");
         $arrResult = array();
@@ -1300,7 +1441,8 @@ class Generic {
         return $arrResult;
     }
 
-    public static function getJenisUjian() {
+    public static function getJenisUjian()
+    {
         $arrJenisUjian = array();
         $arrJenisUjian[KEY::$KEY_UJIAN_LAIN] = KEY::$UJIAN_LAIN;
         $arrJenisUjian[KEY::$KEY_UJIAN_SPT] = KEY::$UJIAN_SPT;
@@ -1308,19 +1450,23 @@ class Generic {
         return $arrJenisUjian;
     }
 
-    public static function getStatusAktiv() {
+    public static function getStatusAktiv()
+    {
         $arrStatusAktif = array();
         $arrStatusAktif[KEY::$KEY_STATUS_TIDAK_AKTIV] = KEY::$STATUS_TIDAK_AKTIV;
         $arrStatusAktif[KEY::$KEY_STATUS_AKTIV] = KEY::$STATUS_AKTIV;
         return $arrStatusAktif;
     }
 
-    static function printsempoa() {
+    static function printsempoa()
+    {
         $t = time();
         ?>
         <span id="print_<?= $t; ?>" class="glyphicon glyphicon-print" aria-hidden="true"></span>
         <style type="text/css" media="print">
-            @page { size: landscape; }
+            @page {
+                size: landscape;
+            }
         </style>
         <script>
 
@@ -1332,7 +1478,8 @@ class Generic {
         <?
     }
 
-    static function isPast($date) {
+    static function isPast($date)
+    {
         $today = date("Y-m-d H:i:s");
         $date = $ujian->ujian_date;
 
@@ -1342,20 +1489,23 @@ class Generic {
         return false;
     }
 
-    static function getBiayaByJenis($jenis_biaya, $org_id) {
+    static function getBiayaByJenis($jenis_biaya, $org_id)
+    {
         $jenisBiaya = new JenisBiayaModel();
         $jenisBiaya->getWhereOne("jenis_biaya=$jenis_biaya AND setting_org_id=$org_id");
         return $jenisBiaya->harga;
     }
 
-    public static function exportLogo() {
+    public static function exportLogo()
+    {
         $t = time();
         ?>
         <span id="export_<?= $t; ?>" class="glyphicon glyphicon-export" aria-hidden="true"></span>
         <?
     }
 
-    public function exportIt($return) {
+    public function exportIt($return)
+    {
 //        $return = $this->overwriteReadExcel($return);
 
         $filename = "test.xls";
@@ -1393,41 +1543,44 @@ class Generic {
         exit;
     }
 
-    public static function getDateRangeByWeek($year) {
+    public static function getDateRangeByWeek($year)
+    {
         $firstDayOfYear = mktime(0, 0, 0, 1, 1, $year);
         $nextMonday = strtotime('monday', $firstDayOfYear);
         $nextSunday = strtotime('sunday', $nextMonday);
         $arrWeek = array();
-        $i =1;
+        $i = 1;
         while (date('Y', $nextMonday) == $year) {
             $arrWeek[$i] = date("d-m", $nextMonday) . ' - ' . date("d-m", $nextSunday);
             $nextMonday = strtotime('+1 week', $nextMonday);
             $nextSunday = strtotime('+1 week', $nextSunday);
             $i++;
         }
-        
+
         return $arrWeek;
     }
 
-    public static function getLevelAbsenCoach($arrLevel){
+    public static function getLevelAbsenCoach($arrLevel)
+    {
         sort($arrLevel);
-        foreach($arrLevel as $lvl){
+        foreach ($arrLevel as $lvl) {
             $arrLevelHlp[$lvl] = Generic::getLevelNameByID($lvl);
         }
         $strLevel = implode(",", $arrLevelHlp);
-        if($strLevel == "")
+        if ($strLevel == "")
             $strLevel = "-";
         return $strLevel;
     }
 
-    public static function getJeniskelamin(){
+    public static function getJeniskelamin()
+    {
         $arrJeniskelamin = array();
         $arrJeniskelamin['f'] = 'Female';
         $arrJeniskelamin['m'] = 'Male';
         return $arrJeniskelamin;
     }
 
-    public static function pagination ($return, $webClass)
+    public static function pagination($return, $webClass)
     {
         $c = $return['classname'];
         $page = $return['page'];
@@ -1451,7 +1604,7 @@ class Generic {
                 openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=1&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
             });
             $("#<?=$webClass;?>prevpat_<?=$page;?><?=$t;?>").click(function () {
-                openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page-1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
+                openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page - 1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
             });
         </script>
         <?
@@ -1502,7 +1655,7 @@ class Generic {
                     openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=$totalpage;?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
                 });
                 $("#<?=$webClass;?>nextpat_<?=$page;?><?=$t;?>").click(function () {
-                    openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page+1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
+                    openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page + 1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
                 });
             </script><?
 
@@ -1511,7 +1664,7 @@ class Generic {
 
     }
 
-    public static function pagination_baru ()
+    public static function pagination_baru()
     {
         $webClass = $_GET['webClass'];
         $c = $_GET['classname'];
@@ -1536,7 +1689,7 @@ class Generic {
                 openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=1&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
             });
             $("#<?=$webClass;?>prevpat_<?=$page;?><?=$t;?>").click(function () {
-                openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page-1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
+                openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page - 1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
             });
         </script>
         <?
@@ -1587,7 +1740,7 @@ class Generic {
                     openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=$totalpage;?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
                 });
                 $("#<?=$webClass;?>nextpat_<?=$page;?><?=$t;?>").click(function () {
-                    openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page+1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
+                    openLw(window.selected_page, '<?=_SPPATH;?><?=$webClass;?>/<?=$c;?>?page=<?=($page + 1);?>&clms=<?=$clms;?>&sort=<?=$sort;?>&search=<?=$search;?>&word=<?=$w;?>&status=<?=$return['status'];?>&tc_id=<?=$return['tc_id'];?>', 'fade');
                 });
             </script><?
 
@@ -1597,21 +1750,22 @@ class Generic {
     }
 
 
-    public static function getJenisBiayaType(){
+    public static function getJenisBiayaType()
+    {
         $arrLevel = Generic::getAllLevel();
         $arrJenisBiaya = array();
-        foreach($arrLevel as $key=>$level){
-            if($key == KEY::$LEVEL_JUNIOR1){
+        foreach ($arrLevel as $key => $level) {
+            if ($key == KEY::$LEVEL_JUNIOR1) {
                 $arrJenisBiaya[$key] = KEY::$BIAYA_SPP_TYPE_1;
-            }
-            else{
+            } else {
                 $arrJenisBiaya[$key] = KEY::$BIAYA_SPP_TYPE_2;
             }
         }
         return $arrJenisBiaya;
     }
 
-    public static function getNamaHari(){
+    public static function getNamaHari()
+    {
         $dowMap = array('Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu');
         return $dowMap;
     }
@@ -1625,9 +1779,203 @@ class Generic {
     }
 
 
-    public static function diffTwoDaysInDay($date1, $date2){
+    public static function diffTwoDaysInDay($date1, $date2)
+    {
         $datediff = $date1 - $date2;
-        $datediff =  floor($datediff / (60 * 60 * 24));
+        $datediff = floor($datediff / (60 * 60 * 24));
         return $datediff;
+    }
+
+
+    public static function getLevelAndKurByIdBarang($id_barang)
+    {
+        $res = array();
+        $obj = new BarangWebModel();
+        $obj->getByID($id_barang);
+        if (!is_null($obj->id_barang_harga)) {
+            $res[KEY::$TEXT_LEVEL] = $obj->level;
+            $res[KEY::$TEXT_KURIKULUM] = $obj->jenis_kurikulum;
+        }
+        return $res;
+
+    }
+
+    public static function getLastNomorBuku($no_buku)
+    {
+
+        $awalan = substr($no_buku, 0, 3);
+        $help = substr($no_buku, 3, strlen($no_buku));
+        $c = ((int)$help);
+        $c++;
+        if (strlen($c) == 1) {
+            // 0 ada 4
+            $res = $awalan . "0000" . $c;
+        } else if (strlen($c) == 2) {
+            // 0 ada 3
+            $res = $awalan . "000" . $c;
+        } else if (strlen($c) == 3) {
+            // 0 ada 2
+            $res = $awalan . "00" . $c;
+        } else if (strlen($c) == 4) {
+            // 0 ada 1
+            $res = $awalan . "0" . $c;
+        } else {
+            pr($awalan . $c);
+            $res = $awalan . $c;
+        }
+
+        return $res;
+    }
+
+    public static function getLevelByBarangID()
+    {
+
+        $arrBarangIds = Generic::getAllBuku();
+        $arrKur = Generic::returnKurikulum();
+        $res = array();
+        foreach($arrBarangIds as $val){
+            $obj = new BarangWebModel();
+            $obj->getWhereOne("id_barang_harga=$val");
+            if (!(is_null($obj->id_barang_harga))) {
+                $kur = $obj->jenis_kurikulum;
+
+                $res[$val]= ($obj->nama_barang) . " - " . $arrKur[$kur];
+            }
+        }
+        return $res;
+    }
+
+    public static function returnKurikulum()
+    {
+        $res[KEY::$KURIKULUM_LAMA] = KEY::$KURIKULUM_LAMA_TEXT;
+        $res[KEY::$KURIKULUM_BARU] = KEY::$KURIKULUM_BARU_TEXT;
+        return $res;
+    }
+
+    public static function getAllBuku()
+    {
+        $stockNoBuku = new StockBuku();
+        $arrBuku = $stockNoBuku->getWhere("stock_buku_id >=1 GROUP BY stock_id_buku");
+        $res = array();
+        foreach ($arrBuku as $val) {
+            $res[] = $val->stock_id_buku;
+        }
+        return $res;
+    }
+
+
+    public static function getStatusBuku(){
+
+        $res[KEY::$BUKU_NON_AVAILABLE] = KEY::$BUKU_NON_AVAILABLE_TEXT;
+        $res[KEY::$BUKU_AVAILABLE] = KEY::$BUKU_AVAILABLE_TEXT;
+        return $res;
+    }
+
+    public static function getLevelIdByIdBarang($id_barang){
+        $objBarang = new BarangWebModel();
+        $objBarang->getWhereOne("id_barang_harga=$id_barang");
+        return $objBarang->level;
+    }
+
+    public static function getIdBarangByLevel($level, $kurikulum){
+        $barang = new BarangWebModel();
+        $arrBarang = $barang->getWhere("level=$level AND jenis_kurikulum=$kurikulum");
+
+        $res = array();
+        foreach($arrBarang as $val){
+            $res[] = $val->id_barang_harga;
+        }
+        return $res;
+    }
+
+    public static function recalculationStock(){
+
+    }
+
+
+    public static function convertLevelLamaKeBaru($levelLama){
+        if($levelLama == 1){
+            return 1;
+        }
+        if($levelLama == 2){
+            return 2;
+        }
+        if($levelLama == 3){
+            return 3;
+        }
+        if($levelLama == 4){
+            return 4;
+        }
+        if($levelLama == 5){
+            return 6;
+        }
+        elseif($levelLama == 6){
+            return 7;
+        }
+        elseif($levelLama == 7){
+            return 8;
+        }
+        elseif($levelLama == 8){
+            return 9;
+        }
+        elseif($levelLama == 9){
+            return 10;
+        }
+        elseif($levelLama == 10){
+            return 11;
+        }
+        elseif($levelLama == 11){
+            return 12;
+        }
+        elseif($levelLama == 12){
+            return 13;
+        }
+        elseif($levelLama == 13){
+            return 14;
+        }
+
+    }
+
+    public static function convertLevelBaruKeLama($levelBaru){
+        if($levelBaru == 1){
+            return 1;
+        }
+        if($levelBaru == 2){
+            return 2;
+        }
+        if($levelBaru == 3){
+            return 3;
+        }
+        if($levelBaru == 4){
+            return 4;
+        }
+        if($levelBaru == 6){
+            return 5;
+        }
+        elseif($levelBaru == 7){
+            return 6;
+        }
+        elseif($levelBaru == 8){
+            return 7;
+        }
+        elseif($levelBaru == 9){
+            return 8;
+        }
+        elseif($levelBaru == 10){
+            return 9;
+        }
+        elseif($levelBaru == 11){
+            return 10;
+        }
+        elseif($levelBaru == 12){
+            return 11;
+        }
+        elseif($levelBaru == 13){
+            return 12;
+        }
+        elseif($levelBaru == 14){
+            return 13;
+        }
+
     }
 }

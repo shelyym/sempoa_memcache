@@ -17,10 +17,10 @@ class IuranBuku extends Model
     var $main_id = "bln_id";
 
     //Default Coloms for read
-    public $default_read_coloms = "bln_id,bln_murid_id,bln_buku_level,bln_date_pembayaran,bln_date,bln_mon,bln_tahun,bln_status,bln_tc_id,bln_ibo_id,bln_kpo_id,bln_ak_id,bln_cara_bayar,bln_no_urut_inv,bln_no_invoice";
+    public $default_read_coloms = "bln_id,bln_murid_id,bln_buku_level,bln_date_pembayaran,bln_date,bln_mon,bln_tahun,bln_status,bln_tc_id,bln_ibo_id,bln_kpo_id,bln_ak_id,bln_cara_bayar,bln_no_urut_inv,bln_no_invoice,bln_kur,bln_ganti_kur";
 
 //allowed colom in CRUD filter
-    public $coloumlist = "bln_id,bln_murid_id,bln_buku_level,bln_date_pembayaran,bln_date,bln_mon,bln_tahun,bln_status,bln_tc_id,bln_ibo_id,bln_kpo_id,bln_ak_id,bln_cara_bayar,bln_no_urut_inv,bln_no_invoice";
+    public $coloumlist = "bln_id,bln_murid_id,bln_buku_level,bln_date_pembayaran,bln_date,bln_mon,bln_tahun,bln_status,bln_tc_id,bln_ibo_id,bln_kpo_id,bln_ak_id,bln_cara_bayar,bln_no_urut_inv,bln_no_invoice,bln_kur,bln_ganti_kur";
     public $bln_id;
     public $bln_murid_id;
     public $bln_buku_level;
@@ -36,6 +36,8 @@ class IuranBuku extends Model
     public $bln_cara_bayar;
     public $bln_no_urut_inv;
     public $bln_no_invoice;
+    public $bln_kur;
+    public $bln_ganti_kur;
 
     function getLastNoUrutInvoice($thn, $bln, $tc_id)
     {

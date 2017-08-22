@@ -26,7 +26,7 @@ class UserWeb3_ extends WebService {
 //                            [7] => create_user_ibo
 //                        )
 
-    public function read_user_grup_ibo() {
+    public function read_user_grup_ibo_() {
 //         $obj = new UserWeb3
 //         $obj->printColumlistAsAttributes();
     }

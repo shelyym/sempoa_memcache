@@ -6,7 +6,8 @@
  * Date: 8/2/16
  * Time: 9:53 AM
  */
-class GuruWeb extends WebService {
+class GuruWeb extends WebService
+{
     /*
      * [0] =>
       [0] => read_jenis_level_guru
@@ -15,20 +16,24 @@ class GuruWeb extends WebService {
       [3] => delete_jenis_level_guru
      */
 
-    function update_jenis_level_guru() {
-        
+    function update_jenis_level_guru()
+    {
+
     }
 
-    function delete_jenis_level_guru() {
-        
+    function delete_jenis_level_guru()
+    {
+
     }
 
-    function create_jenis_level_guru() {
+    function create_jenis_level_guru()
+    {
         $_GET['cmd'] = 'edit';
         $this->read_jenis_level_guru();
     }
 
-    function read_jenis_level_guru() {
+    function read_jenis_level_guru()
+    {
         $obj = new SempoaLevel();
         $crud = new CrudCustom();
         $crud->ar_add = AccessRight::hasRight("create_jenis_level_guru");
@@ -37,10 +42,43 @@ class GuruWeb extends WebService {
         $crud->run_custom($obj, "GuruWeb", "read_jenis_level_guru");
     }
 
-    public function read_guru_ibo() {
+//read_jenis_level_lama
+//create_jenis_level_lama
+//update_jenis_level_lama
+//delete_jenis_level_lama
+
+    function create_jenis_level_lama()
+    {
+        $_GET['cmd'] = 'edit';
+        $this->read_jenis_level_lama();
+    }
+
+    function read_jenis_level_lama()
+    {
+        $obj = new SempoaLevelLama();
+        $crud = new CrudCustom();
+        $crud->ar_add = AccessRight::hasRight("create_jenis_level_lama");
+        $crud->ar_delete = AccessRight::hasRight("delete_jenis_level_lama");
+        $crud->ar_edit = AccessRight::hasRight("update_jenis_level_lama");
+        $crud->run_custom($obj, "GuruWeb", "read_jenis_level_lama");
+    }
 
 
-        if($_GET['status_guru']!=""){
+    function update_jenis_level_lama()
+    {
+
+    }
+
+    function delete_jenis_level_lama()
+    {
+
+    }
+
+    public function read_guru_ibo()
+    {
+
+
+        if ($_GET['status_guru'] != "") {
             $gw = new GuruWebHelper();
             $gw->guru_crud_per_tc();
             die();
@@ -58,22 +96,22 @@ class GuruWeb extends WebService {
         <div style="text-align: center; margin-top: 100px;">
             <h1>Pilih TC Anda</h1>
             <div style="width: 200px; margin: 0 auto; margin-bottom: 20px;">
-            <select id="pilih_tc_<?= $t; ?>" class="form-control" style="font-size: 20px;">
+                <select id="pilih_tc_<?= $t; ?>" class="form-control" style="font-size: 20px;">
 
-                <?
+                    <?
 
-                foreach ($arrMyTC as $key => $val) {
-                    if ($tcid == $key) {
-                        $selected = "selected";
-                    } else {
-                        $selected = "";
+                    foreach ($arrMyTC as $key => $val) {
+                        if ($tcid == $key) {
+                            $selected = "selected";
+                        } else {
+                            $selected = "";
+                        }
+                        ?>
+                        <option value="<?= $key; ?>" <?= $selected; ?>><?= $val; ?></option>
+                        <?
                     }
                     ?>
-                    <option value="<?= $key; ?>" <?= $selected; ?>><?= $val; ?></option>
-                <?
-                }
-                ?>
-            </select>
+                </select>
             </div>
 
             <button class="btn btn-default" id="submit_status_guru_<?= $t; ?>">submit</button>
@@ -81,7 +119,7 @@ class GuruWeb extends WebService {
                 $('#submit_status_guru_<?= $t; ?>').click(function () {
                     var slc = $('#pilih_tc_<?= $t; ?>').val();
                     var status = $('#pilih_status_<?= $t; ?>').val();
-                    openLw("guru_tc_ibo","<?= _SPPATH; ?>GuruWebHelper/guru_crud_per_tc?tc_id="+slc+"&now="+$.now(),"fade");
+                    openLw("guru_tc_ibo", "<?= _SPPATH; ?>GuruWebHelper/guru_crud_per_tc?tc_id=" + slc + "&now=" + $.now(), "fade");
 
                     //$('#content_load_guru_<?=$t;?>').load('<?= _SPPATH; ?>GuruWebHelper/guru_crud_per_tc?tc_id=' + slc +'&status=' + status, function () }, 'json');
                 });
@@ -106,7 +144,7 @@ class GuruWeb extends WebService {
         $page = isset($_GET['page']) ? addslashes($_GET['page']) : 1;
         $limit = 20;
         $begin = ($page - 1) * $limit;
-        $index = (($page-1)* 20) +1;
+        $index = (($page - 1) * 20) + 1;
         $status = isset($_GET['status']) ? addslashes($_GET['status']) : 1;
         $arrGuru = $obj->getWhere("guru_tc_id=$tcid AND status=$status ORDER BY nama_guru ASC  LIMIT $begin, $limit");
         $jumlahTotal = $obj->getJumlah("guru_tc_id=$tcid AND status=$status");
@@ -163,7 +201,7 @@ class GuruWeb extends WebService {
                         $('#submit_status_guru_<?= $t; ?>').click(function () {
                             var slc = $('#pilih_tc_<?= $t; ?>').val();
                             var status = $('#pilih_status_<?= $t; ?>').val();
-                            $('#content_load_guru_<?=$t;?>').load('<?= _SPPATH; ?>GuruWebHelper/read_guru_ibo_page?tc_id=' + slc +'&status=' + status, function () {
+                            $('#content_load_guru_<?=$t;?>').load('<?= _SPPATH; ?>GuruWebHelper/read_guru_ibo_page?tc_id=' + slc + '&status=' + status, function () {
 
                             }, 'json');
                         });
@@ -197,7 +235,7 @@ class GuruWeb extends WebService {
                                 <td><?= $valGuru->nama_guru; ?></td>
                                 <td><?= $arrStatusGuru[$valGuru->status]; ?></td>
                                 <td><?= $arrLevel[$valGuru->id_level_training_guru]; ?></td>
-                                <td><?=  "<button onclick='window.location.href = \"mailto:" . $valGuru->email_guru . "\";'>Email</button>" ?></td>
+                                <td><?= "<button onclick='window.location.href = \"mailto:" . $valGuru->email_guru . "\";'>Email</button>" ?></td>
 
 
                                 <td><?
@@ -236,30 +274,37 @@ class GuruWeb extends WebService {
         die();
 
     }
-public function read_guru_ibo_hlp(){
-    $myOrgID = (AccessRight::getMyOrgID());
-    $obj = new SempoaGuruModel();
-    $crud = new CrudCustomSempoa();
-    $crud->ar_add = AccessRight::hasRight("create_guru_ibo");
-    $crud->ar_delete = AccessRight::hasRight("delete_guru_ibo");
-    $crud->ar_edit = AccessRight::hasRight("update_guru_ibo");
-    $crud->run_custom($obj, "GuruWeb", "read_guru_ibo_hlp", "  guru_ibo_id = '$myOrgID'");
-}
-    public function create_guru_ibo() {
+
+    public function read_guru_ibo_hlp()
+    {
+        $myOrgID = (AccessRight::getMyOrgID());
+        $obj = new SempoaGuruModel();
+        $crud = new CrudCustomSempoa();
+        $crud->ar_add = AccessRight::hasRight("create_guru_ibo");
+        $crud->ar_delete = AccessRight::hasRight("delete_guru_ibo");
+        $crud->ar_edit = AccessRight::hasRight("update_guru_ibo");
+        $crud->run_custom($obj, "GuruWeb", "read_guru_ibo_hlp", "  guru_ibo_id = '$myOrgID'");
+    }
+
+    public function create_guru_ibo()
+    {
         $_GET['cmd'] = 'edit';
         $_GET['new'] = 'new';
         $this->read_guru_ibo_hlp();
     }
 
-    public function update_guru_ibo() {
-        
+    public function update_guru_ibo()
+    {
+
     }
 
-    public function delete_guru_ibo() {
-        
+    public function delete_guru_ibo()
+    {
+
     }
 
-    public function get_level_guru_ibo() {
+    public function get_level_guru_ibo()
+    {
         $obj = new SempoaLevel();
         $crud = new CrudCustom();
         $crud->ar_add = 0;
@@ -268,7 +313,8 @@ public function read_guru_ibo_hlp(){
         $crud->run_custom($obj, "GuruWeb", "get_level_guru_ibo");
     }
 
-    public function get_level_guru_tc() {
+    public function get_level_guru_tc()
+    {
         $obj = new SempoaLevel();
         $crud = new CrudCustom();
         $crud->ar_add = 0;
@@ -277,14 +323,15 @@ public function read_guru_ibo_hlp(){
         $crud->run_custom($obj, "GuruWeb", "get_level_guru_tc");
     }
 
-    public function read_pembayaran_regis_guru() {
+    public function read_pembayaran_regis_guru()
+    {
         $myOrgID = AccessRight::getMyOrgID();
         $objRegisterGuru = new RegisterGuru();
         $arrInv = $objRegisterGuru->getWhere("transaksi_ibo_id='$myOrgID' ORDER BY transaksi_id DESC");
 //        pr($arrInv);
         $arrStatus = Generic::getStatus();
         ?>
-        <section class="content-header" >
+        <section class="content-header">
             <h1>
                 Invoices Registrasi Guru
             </h1>
@@ -303,9 +350,9 @@ public function read_guru_ibo_hlp(){
                     border-left: 4px solid transparent;
                 }
             </style>
-            <div class="table-responsive" >
+            <div class="table-responsive">
                 <table class="table table-bordered table-striped" style="background-color: #FFFFFF;">
-                    <thead class ='heading'>
+                    <thead class='heading'>
                     <tr>
                         <th>Transaksi ID</th>
                         <th>TC</th>
@@ -327,7 +374,7 @@ public function read_guru_ibo_hlp(){
                             <td><?= $val->transaksi_id; ?></td>
                             <td><?= Generic::getTCNamebyID($val->transaksi_tc_id); ?></td>
                             <td><?= Generic::getGuruNamebyID($val->transaksi_guru_id); ?></td>
-                            <td id = "status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>"><?= $arrStatus[$val->transaksi_status]; ?></td>
+                            <td id="status_<?= $val->transaksi_id . "_" . $val->transaksi_guru_id; ?>"><?= $arrStatus[$val->transaksi_status]; ?></td>
                             <td><?= idr($val->transaksi_jumlah); ?></td>
                             <td><?= $val->transaksi_date; ?></td>
                         </tr>
