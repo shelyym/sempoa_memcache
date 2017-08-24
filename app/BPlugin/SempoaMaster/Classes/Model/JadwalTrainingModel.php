@@ -33,6 +33,7 @@ class JadwalTrainingModel extends SempoaModel {
     public $jt_ibo_id;
     public $removeAutoCrudClick = array();
     public $hideColoums = array("jt_trainer_id", "jt_kpo_id", "jt_ibo_id", "jt_ak_id");
+    public $crud_setting = array("add" => 0, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
 
     public function overwriteForm($return, $returnfull) {
         parent::overwriteForm($return, $returnfull);

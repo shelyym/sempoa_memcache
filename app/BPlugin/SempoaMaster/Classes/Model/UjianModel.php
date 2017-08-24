@@ -27,7 +27,11 @@ class UjianModel extends SempoaModel {
     public $ujian_date;
     public $ujian_status;
     public $ujian_ibo_id;
- public $hideColoums = array("ujian_ibo_id");
+
+    public $crud_setting = array("add" => 0, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
+
+
+    public $hideColoums = array("ujian_ibo_id");
     public function overwriteForm($return, $returnfull) {
         $t = time();
         $return = parent::overwriteForm($return, $returnfull);

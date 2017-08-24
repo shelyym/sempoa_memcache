@@ -41,6 +41,8 @@ class SempoaGuruModel extends SempoaModel
     public $guru_tc_id;
     public $removeAutoCrudClick = array("guru_first_register", "profile");
     public $hideColoums = array("guru_ak_id", "guru_kpo_id", "guru_ibo_id");
+    public $crud_setting = array("add" => 0, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
+
 
     public function overwriteForm($return, $returnfull)
     {
@@ -273,6 +275,48 @@ class SempoaGuruModel extends SempoaModel
     {
         $arrTc = $this->getWhere("guru_tc_id=$tc_id AND status=1");
         return $arrTc;
+    }
+
+
+    public function overwriteReadExcel($return)
+    {
+        $objs = $return['objs'];
+
+        $jumlah = 0;
+
+        $arrLevel = Generic::getAllLevel();
+        $arrStatus = Generic::getAllStatusGuru();
+        $arrAgama = Generic::getAllAgama();
+
+        foreach ($objs as $obj) {
+
+            if (isset($obj->jenis_kelamin)) {
+                if ($obj->jenis_kelamin == 'm') {
+                    $obj->jenis_kelamin = "Male";
+                } elseif ($obj->jenis_kelamin == 'f') {
+                    $obj->jenis_kelamin = "Female";
+                } else {
+                    $obj->jenis_kelamin = "";
+                }
+            }
+
+            if (isset($obj->id_level_training_guru)) {
+                $obj->id_level_training_guru = $arrLevel[$obj->id_level_training_guru];
+            }
+
+
+            if (isset($obj->status)) {
+                $obj->status = $arrStatus[$obj->status];
+            }
+            if (isset($obj->agama)) {
+                $obj->agama = $arrAgama[$obj->agama];
+            }
+
+            if (isset($obj->kode_tc)) {
+                $obj->kode_tc = Generic::getTCNamebyID($obj->guru_tc_id);
+            }
+        }
+        return $return;
     }
 
 }

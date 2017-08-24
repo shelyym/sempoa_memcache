@@ -291,9 +291,8 @@ class CoretCoret extends WebService
 
     public function loginidorg()
     {
-
 //        unset($_SESSION);
-        pr($_SESSION);
+        pr(Generic::getAllLevel());
         die();
 
 //        pr(AccessRight::getMyOrgID() . " - " . AccessRight::getMyOrgType());
@@ -319,5 +318,29 @@ class CoretCoret extends WebService
 
         }
 
+    }
+
+    public function getTC(){
+        $obj = new SempoaOrg();
+//        pr($IBOid);
+        $arr = $obj->getWhere("org_type='tc' AND org_parent_id='3' ORDER BY nama ASC");
+//        pr($arr);
+        if (count($arr) > 0) {
+            foreach ($arr as $val) {
+                $arrTC[$val->org_id] = $val->nama;
+            }
+        }
+        pr($arrTC);
+
+        die();
+        $arrSortTC = $arrTC;
+        sort($arrSortTC);
+        $arrNewSort = array();
+        foreach($arrSortTC as $val){
+            $arrNewSort[array_search($val,$arrTC)] = $val;
+//            pr($val);
+        }
+        pr($arrNewSort);
+        pr($arrTC);
     }
 }

@@ -49,4 +49,9 @@ class KuponSatuan extends Model {
         }
     }
 
+    function jumlahKuponTersedia($id_owner){
+        $jumlah = $this->getJumlah("kupon_owner_id='$id_owner' AND kupon_status =0");
+        return $jumlah;
+    }
+
 }

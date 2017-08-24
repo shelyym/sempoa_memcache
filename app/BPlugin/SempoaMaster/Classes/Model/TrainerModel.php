@@ -40,6 +40,7 @@ class TrainerModel extends SempoaModel {
     public $tr_kpo_id;
     public $tr_ibo_id;
     public $hideColoums = array("tr_ak_id","tr_kpo_id");
+    public $crud_setting = array("add" => 0, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
 
 
     public function overwriteForm($return, $returnfull) {
@@ -107,11 +108,32 @@ class TrainerModel extends SempoaModel {
 
     public function overwriteRead($return) {
         $return = parent::overwriteRead($return);
-      
+        $arrStatusGuru = Generic::getAllStatusGuru();
+        $arrLevel = Generic::getAllLevel();
+        $arrAgama = Generic::getAllAgama();
+
         $objs = $return['objs'];
         foreach ($objs as $obj) {
             if (isset($obj->id_level_trainer)) {
-                $obj->id_level_trainer = Generic::getLevelNameByID($obj->id_level_trainer);
+                $obj->id_level_trainer = $obj->id_level_traine;
+            }
+            if (isset($obj->status)) {
+                $obj->status = $arrStatusGuru[$obj->status];
+            }
+            if (isset($obj->jenis_kelamin)) {
+                if ($obj->jenis_kelamin == 'm') {
+                    $obj->jenis_kelamin = "Male";
+                } elseif ($obj->jenis_kelamin == 'f') {
+                    $obj->jenis_kelamin = "Female";
+                } else {
+                    $obj->jenis_kelamin = "";
+                }
+            }
+            if (isset($obj->agama)) {
+                $obj->agama = $arrAgama[$obj->agama];
+            }
+            if (isset($obj->tr_ibo_id)) {
+                $obj->tr_ibo_id = Generic::getTCNamebyID($obj->tr_ibo_id);
             }
         }
         return $return;
@@ -163,5 +185,47 @@ class TrainerModel extends SempoaModel {
 
          return $err;
     }
-    
+
+
+    public function overwriteReadExcel($return)
+
+    {
+        $objs = $return['objs'];
+
+        $jumlah = 0;
+
+        $arrLevel = Generic::getAllLevel();
+        $arrStatus = Generic::getAllStatusGuru();
+        $arrAgama = Generic::getAllAgama();
+
+        foreach ($objs as $obj) {
+
+            if (isset($obj->jenis_kelamin)) {
+                if ($obj->jenis_kelamin == 'm') {
+                    $obj->jenis_kelamin = "Male";
+                } elseif ($obj->jenis_kelamin == 'f') {
+                    $obj->jenis_kelamin = "Female";
+                } else {
+                    $obj->jenis_kelamin = "";
+                }
+            }
+
+            if (isset($obj->id_level_trainer)) {
+                $obj->id_level_trainer = $arrLevel[$obj->id_level_trainer];
+            }
+
+
+            if (isset($obj->status)) {
+                $obj->status = $arrStatus[$obj->status];
+            }
+            if (isset($obj->agama)) {
+                $obj->agama = $arrAgama[$obj->agama];
+            }
+
+            if (isset($obj->tr_ibo_id)) {
+                $obj->tr_ibo_id = Generic::getTCNamebyID($obj->tr_ibo_id);
+            }
+        }
+        return $return;
+    }
 }

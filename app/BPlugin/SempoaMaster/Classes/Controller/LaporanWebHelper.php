@@ -119,9 +119,11 @@ class LaporanWebHelper extends WebService
             $jenisBiayaSPP = $arrjenisBiayaSPP[$level_murid];
 
             Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BULANAN_TC, $jenisBiayaSPP, "Iuran Bulanan: Siswa: " . Generic::getMuridNamebyID($iuranBulanan->bln_murid_id) . ", Bulan: " . $iuranBulanan->bln_date . " dgn Kode Kupon: " . $kupon_id, 1, 0, "Utama");
+            $kuponSatuan = new KuponSatuan();
+            $jumlahKuponTersedia = $kuponSatuan->jumlahKuponTersedia($kupon_owner);
             $json['get'] = $_GET;
             $json['status_code'] = 1;
-            $json['status_message'] = "Success!";
+            $json['status_message'] = "Success! \nJumlah kupon tersedia: "  . $jumlahKuponTersedia ;
             echo json_encode($json);
             die();
         }

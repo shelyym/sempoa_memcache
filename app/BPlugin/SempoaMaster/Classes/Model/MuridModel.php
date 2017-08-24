@@ -310,6 +310,10 @@ class MuridModel extends SempoaModel
         $jumlah = 0;
 
         $arrLevel = Generic::getAllLevel();
+        $arrStatus = Generic::getAllStatusMurid();
+        $arrAgama = Generic::getAllAgama();
+        $arrKurikulum = Generic::getJenisKurikulum();
+
         foreach ($objs as $obj) {
 
             if (isset($obj->jenis_kelamin)) {
@@ -321,22 +325,27 @@ class MuridModel extends SempoaModel
                     $obj->jenis_kelamin = "";
                 }
             }
-                $jumlah++;
 
+            if (isset($obj->id_level_sekarang)) {
+                $obj->id_level_sekarang = $arrLevel[$obj->id_level_sekarang];
+            }
 
+            if (isset($obj->id_level_masuk)) {
+                $obj->id_level_masuk = $arrLevel[$obj->id_level_masuk];
+            }
 
+            if (isset($obj->status)) {
+                $obj->status = $arrStatus[$obj->status];
+            }
+            if (isset($obj->agama)) {
+                $obj->agama = $arrAgama[$obj->agama];
+            }
+
+            if (isset($obj->murid_kurikulum)) {
+                $obj->murid_kurikulum = $arrKurikulum[$obj->murid_kurikulum];
+            }
+            $obj->TC = Generic::getTCNamebyID($obj->murid_tc_id);
         }
-
-//        $return['objs'][$jumlah]->commission_id = "";
-//        $return['objs'][$jumlah]->commision_aff_id = "Total";
-//
-//
-//        $return['objs'][$jumlah]->useqr = "";
-//        $return['objs'][$jumlah]->useqwr = "";
-//        $return['objs'][$jumlah]->user = "";
-//        $return['objs'][$jumlah]->usera = "";
-
-
         return $return;
     }
 }

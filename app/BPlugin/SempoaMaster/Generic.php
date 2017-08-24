@@ -153,14 +153,14 @@ class Generic
     {
         $obj = new SempoaOrg();
 //        pr($IBOid);
-        $arr = $obj->getWhere("org_type='tc' AND org_parent_id='$IBOid'");
+        $arr = $obj->getWhere("org_type='tc' AND org_parent_id='$IBOid' ORDER BY nama ASC");
 //        pr($arr);
         if (count($arr) > 0) {
             foreach ($arr as $val) {
                 $arrTC[$val->org_id] = $val->nama;
             }
         }
-        sort($arrTC);
+
         return $arrTC;
     }
 

@@ -114,7 +114,7 @@ class KuponWeb extends WebService {
                             Tgl Pemesanan
                         </th>
                         <th>
-                            Peminta
+                            Nama TC
                         </th>
                         <th>
                             Qty (in Bundle)
@@ -531,7 +531,7 @@ class KuponWeb extends WebService {
                     <th>No. </th>
                     <th>Req. Id </th>
                     <th>Tanggal Pemesanan</th>
-                    <th>Peminta</th>
+                    <th>Nama TC</th>
                     <th>Nama Pengirim</th>
                     <th>Nama Penerima</th>
                     <th>Jumlah Bundle</th>
