@@ -36,9 +36,9 @@ class Role extends Model {
     }
     public function overwriteForm ($return, $returnfull)
     {
-        $return  = parent::overwriteForm($return, $returnfull);    
-             
-        
+        $return  = parent::overwriteForm($return, $returnfull);
+
+
         $return['role_active'] = new Leap\View\InputSelect($this->arrayYesNO, "role_active", "role_active",
             $this->role_active);
         

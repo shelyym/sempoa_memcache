@@ -83,7 +83,8 @@ class StokWeb extends WebService
 //                    alert(id_pemilik_barang);
                     var tanggal = $('#tanggal_<?= $t; ?>').val();
                     var keterangan = $('#keterangan_<?= $t; ?>').val();
-                    $.get("<?= _SPPATH; ?>StockWebHelper/insertKartuStock?id_barang=" + id_barang + "&stk_masuk=" + stk_masuk + "&tanggal=" + tanggal + "&pemilik=" + id_pemilik_barang + "&id_nama=" + name + "&keterangan=" + keterangan, function (data) {
+                    var name_barang = $('#buku_<?= $t; ?> option:selected').text();
+                    $.get("<?= _SPPATH; ?>StockWebHelper/insertKartuStock?id_barang=" + id_barang + "&stk_masuk=" + stk_masuk + "&tanggal=" + tanggal + "&pemilik=" + id_pemilik_barang + "&id_nama=" + name + "&keterangan=" + keterangan +"&name_barang="+name_barang, function (data) {
                         console.log(data);
                         if (data.status_code) {
                             console.log(data.id_pemilik_barang);
@@ -470,7 +471,6 @@ class StokWeb extends WebService
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
         $t = time();
-
         $arrJenisBarang = Generic::getLevelByBarangID();
         $arrStatusBuku = Generic::getStatusBuku();
         $stockNo = new StockBuku();
@@ -510,6 +510,11 @@ class StokWeb extends WebService
             <script>
                 $("#submit_pilih_level_<?= $t; ?>").click(function () {
                     var slc = $('#pilih_level_<?= $t; ?>').val();
+
+
+                    $('#sum_barang_<?=$t;?>').load('<?= _SPPATH; ?>StockWebHelper/get_anzahl_available_buku?brg_id=' + slc, function () {
+
+                    }, 'json');
                     $('#content_load_buku_<?=$t;?>').load('<?= _SPPATH; ?>StockWebHelper/get_available_buku?brg_id=' + slc, function () {
 
                     }, 'json');
@@ -520,7 +525,10 @@ class StokWeb extends WebService
             <div class="clearfix"></div>
             <section class="content">
 
-                <table class="table table-bordered table-striped">
+                <div id="sum_barang_<?=$t;?>" style="text-align: left; font-size: 16px;"><?=  "<b>Jumlah buku yang tersedia: " . count($arrStock) . "</b><br>";?>
+
+                </div>
+                <table class="table table-bordered table-striped" style="margin-top: 20px;">
                     <thead>
                     <tr>
                         <th><b>ID</b></th>

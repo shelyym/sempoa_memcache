@@ -51,9 +51,10 @@ class MuridModel extends SempoaModel
 
 
     // Webservice
-    public $crud_setting = array("add" => 1, "search" => 1, "viewall" => 1, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 1);
+    public $crud_setting = array("add" => 1, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
     public $crud_webservice_allowed = "id_murid,kode_siswa,nama_siswa,jenis_kelamin,alamat,agama,tempat_lahir,id_level_sekarang,tanggal_lahir,telepon,nama_sekolah,nama_ortu,gambar,email_ortu";
     public $crud_add_photourl = array("gambar");
+//    public $crud_read_gabungan="id_murid,kode_siswa,nama_siswa,jenis_kelamin,alamat,agama,tempat_lahir,tanggal_lahir,telepon,nama_sekolah,nama_ortu,gambar,tanggal_masuk,email_ortu,id_level_masuk,id_level_sekarang,nomor_pendaftaran,kode_guru,status,murid_ak_id,murid_kpo_id,murid_ibo_id,murid_tc_id,pay_firsttime";
 
 
     public function overwriteForm($return, $returnfull)
@@ -301,4 +302,41 @@ class MuridModel extends SempoaModel
         return $count;
     }
 
+
+    public function overwriteReadExcel($return)
+    {
+        $objs = $return['objs'];
+
+        $jumlah = 0;
+
+        $arrLevel = Generic::getAllLevel();
+        foreach ($objs as $obj) {
+
+            if (isset($obj->jenis_kelamin)) {
+                if ($obj->jenis_kelamin == 'm') {
+                    $obj->jenis_kelamin = "Male";
+                } elseif ($obj->jenis_kelamin == 'f') {
+                    $obj->jenis_kelamin = "Female";
+                } else {
+                    $obj->jenis_kelamin = "";
+                }
+            }
+                $jumlah++;
+
+
+
+        }
+
+//        $return['objs'][$jumlah]->commission_id = "";
+//        $return['objs'][$jumlah]->commision_aff_id = "Total";
+//
+//
+//        $return['objs'][$jumlah]->useqr = "";
+//        $return['objs'][$jumlah]->useqwr = "";
+//        $return['objs'][$jumlah]->user = "";
+//        $return['objs'][$jumlah]->usera = "";
+
+
+        return $return;
+    }
 }

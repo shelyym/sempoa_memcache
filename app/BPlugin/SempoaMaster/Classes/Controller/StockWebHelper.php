@@ -25,7 +25,7 @@ class StockWebHelper extends WebService
         $tanggal = addslashes($_GET['tanggal']);
         $keterangan = addslashes($_GET['keterangan']);
         $id_nama = addslashes($_GET['id_nama']);
-
+        $name_barang = addslashes($_GET['name_barang']);
 
         $json['pemilik'] = $id_pemilik_barang;
         $json['tanggal'] = $tanggal;
@@ -85,7 +85,7 @@ class StockWebHelper extends WebService
 //                    echo json_encode($json);
 //                    die();
                 } else {
-                    $stockBuku->createNoBuku($id_barang, $no, AccessRight::getMyOrgID());
+                    $stockBuku->createNoBuku($id_barang, $no, AccessRight::getMyOrgID(),$name_barang);
                 }
 
             }
@@ -269,11 +269,30 @@ class StockWebHelper extends WebService
         }
     }
 
+    public function get_anzahl_available_buku(){
+        $brg_id = $_GET['brg_id'];
+        $i=0;
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrJenisBarang = Generic::getLevelByBarangID();
+        $arrStatusBuku = Generic::getStatusBuku();
+        $stockNo = new StockBuku();
+        if ($myOrgType == KEY::$KPO) {
+            $jumlah = $stockNo->getJumlah("stock_buku_status_kpo = 1 AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$IBO) {
+            $jumlah = $stockNo->getJumlah("stock_status_ibo = 1 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$TC) {
+            $jumlah = $stockNo->getJumlah("stock_status_tc = 1 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
+        }
+
+        echo "<b>Jumlah buku yang tersedia: " . $jumlah . "</b><br>";
+
+    }
     public function get_available_buku()
     {
 
         $brg_id = $_GET['brg_id'];
-
+        $i=0;
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
         $arrJenisBarang = Generic::getLevelByBarangID();
@@ -322,7 +341,7 @@ class StockWebHelper extends WebService
     {
 
         $brg_id = $_GET['brg_id'];
-
+        $i =0;
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
         $arrJenisBarang = Generic::getLevelByBarangID();

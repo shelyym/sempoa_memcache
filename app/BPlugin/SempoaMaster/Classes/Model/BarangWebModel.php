@@ -137,4 +137,9 @@ class BarangWebModel extends SempoaModel
         return $this->nama_barang;
     }
 
+    public function getNamaBukuByNoBuku($awalannobuku)
+    {
+        $this->getWhereOne("no_buku=$awalannobuku");
+        return $this->nama_barang;
+    }
 }

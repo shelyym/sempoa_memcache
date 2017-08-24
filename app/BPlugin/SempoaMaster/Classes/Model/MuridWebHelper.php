@@ -931,23 +931,6 @@ class MuridWebHelper extends WebService
                                 </td>
                             </tr>
 
-
-                            <tr>
-                                <td>
-                                    History Buku
-                                </td>
-                                <td colspan="2">
-                                    <?
-                                    $stockBuku = new StockBuku();
-                                    $arrBuku = $stockBuku->getBukuNoByStudentID($murid->id_murid);
-                                    foreach($arrBuku as $val){
-                                        echo $val->stock_buku_no .  "=>" . Generic::getLevelNameByID($val->stock_grup_level). "<br>";
-                                    }
-                                    ?>
-                                </td>
-                            </tr>
-
-
                             <?
                             if (AccessRight::getMyOrgType() == KEY::$IBO) {
                                 ?>
@@ -1036,6 +1019,20 @@ class MuridWebHelper extends WebService
                             </td>
 
                         </tr>
+
+
+                        <tr>
+                            <td>
+                                Beli Buku
+                            </td>
+                            <td colspan="2">
+                                <button id="beli_buku_<?= $t; ?>"
+                                        class="btn btn-default"><?= Generic::getLevelNameByID($murid->id_level_sekarang); ?>
+                                </button>
+                            </td>
+                        </tr>
+
+
                     </table>
                 </div>
 
@@ -1107,6 +1104,52 @@ class MuridWebHelper extends WebService
             </div>
         </div>
         <script>
+
+            $("#beli_buku_<?= $t; ?>").click(function () {
+                if (confirm("Anda yakin akan membeli buku level " + "<?=Generic::getLevelNameByID($murid->id_level_sekarang);?>")) {
+
+                    var kur =<?= $murid->murid_kurikulum; ?>;
+                    var id_level =<?= $murid->id_level_sekarang; ?>;
+                    var id_murid = <?= $murid->id_murid; ?>;
+
+                    if (kur == 0) {
+                        $.get("<?= _SPPATH; ?>MuridWebHelper/create_invoice_buku_manual?id_murid=" + id_murid + "&id_level=" + id_level + "&kur=" + kur, function (data2) {
+                            console.log(data2);
+                            if (data2.status_code) {
+                                alert(data2.status_message);
+                                openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                                lwrefresh("murid_Invoices_<?= $murid->id_murid; ?>");
+                            } else {
+                                alert(data2.status_message);
+                                openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                                lwrefresh("murid_Invoices_<?= $murid->id_murid; ?>");
+
+                            }
+                        }, 'json');
+
+                    }
+
+
+                    else {
+                        $.get("<?= _SPPATH; ?>MuridWebHelper/create_invoice_buku_manual?id_murid=" + id_murid + "&id_level=" + id_level + "&kur=" + kur, function (data2) {
+                            console.log(data2);
+                            lwrefresh("murid_Invoices_<?= $murid->id_murid; ?>");
+                            if (data2.status_code) {
+                                alert(data2.status_message);
+
+                                openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                                lwrefresh("murid_Invoices_<?= $murid->id_murid; ?>");
+                            } else {
+                                alert(data2.status_message);
+                                openLw('murid_Invoices_1', '<?=_SPPATH;?>MuridWebHelper/murid_invoices?active_tab=buku&id=' + id_murid, 'fade');
+                                lwrefresh("murid_Invoices_<?= $murid->id_murid; ?>");
+
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+
 
             $("#murid_ganti_kur_<?= $id; ?>").click(function () {
 
@@ -2406,6 +2449,16 @@ class MuridWebHelper extends WebService
                                         }
                                         ?></td>
                                     <td>
+                                        <?
+                                        $stock = new StockBuku();
+                                        $res = $stock->getBukuNoByInvoiceID($val->bln_id);
+                                        if (count($res) > 0) {
+                                            foreach ($res as $key => $nobuku) {
+                                                echo $nobuku . "/" . $key . "<br>";
+                                            }
+                                        }
+
+                                        ?>
 
                                     </td>
                                     <td><?
@@ -3326,6 +3379,97 @@ class MuridWebHelper extends WebService
             echo json_encode($json);
             die();
         }
+        //1 . buat log naik level
+        // 2. ganti level di table murid
+        //3. buat invoice iuran buku
+    }
+
+    public function create_invoice_buku_manual()
+    {
+        $id_murid = addslashes($_GET['id_murid']);
+        $id_level = addslashes($_GET['id_level']);
+        $kur = addslashes($_GET['kur']);
+        $gantiKur = 0;
+        $json = array();
+        $objIuranBuku = new IuranBuku();
+
+        $jumlahIuran = $objIuranBuku->getJumlah("bln_murid_id='$id_murid'  AND bln_status=0");
+
+        if ($jumlahIuran > 0) {
+            $json['status_code'] = 1;
+            $json['status_message'] = "Masih ada taggihan buku yang belum dibayar!";
+            echo json_encode($json);
+            die();
+        }
+
+//        bln_status
+        // Check Kurikulum
+        if ($kur == KEY::$KURIKULUM_LAMA) {
+            $objIuranBuku = new IuranBuku();
+
+
+            // Ganti Kurikulum lama ke Kurikulum Baru
+            if ($gantiKur == 1) {
+                $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$id_level'");
+            } else {
+                $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$id_level'");
+            }
+
+        } // Kurikulum Baru
+        else {
+            $objIuranBuku = new IuranBuku();
+            $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$id_level'");
+        }
+
+
+        $objMurid = new MuridModel();
+        $objMurid->getByID($id_murid);
+        $bln = date("n");
+        $thn = date("Y");
+        $objIuranBuku->bln_murid_id = $objMurid->id_murid;
+        $objIuranBuku->bln_date_pembayaran = leap_mysqldate();
+        $objIuranBuku->bln_date = $bln . "-" . $thn;
+        $objIuranBuku->bln_mon = $bln;
+        $objIuranBuku->bln_tahun = $thn;
+        $objIuranBuku->bln_tc_id = $objMurid->murid_tc_id;
+        $objIuranBuku->bln_kpo_id = $objMurid->murid_kpo_id;
+        $objIuranBuku->bln_ibo_id = $objMurid->murid_ibo_id;
+        $objIuranBuku->bln_ak_id = $objMurid->murid_ak_id;
+
+
+        // Kurikulum lama
+
+        if ($kur == KEY::$KURIKULUM_LAMA) {
+            //berarti Anda memilih buku Kurikulum baru dan kurikulum akan disesuaikan
+            if ($gantiKur == 1) {
+                $objIuranBuku->bln_buku_level = $id_level;
+            } else {
+
+                $objIuranBuku->bln_buku_level = $id_level;
+            }
+
+        } else {
+            $objIuranBuku->bln_buku_level = $id_level;
+        }
+
+        $objIuranBuku->bln_kur = $kur;
+        if ($kur == 1) {
+            $objIuranBuku->bln_ganti_kur = $gantiKur;
+        }
+
+        $succ = $objIuranBuku->save();
+        if ($succ) {
+            // Create Nilai
+            $json['status_code'] = 1;
+            $json['status_message'] = "Invoice tercetak!";
+            echo json_encode($json);
+            die();
+        }
+        $json['status_code'] = 0;
+        $json['status_message'] = "Invoice sdh tercetak";
+        echo json_encode($json);
+        die();
+
         //1 . buat log naik level
         // 2. ganti level di table murid
         //3. buat invoice iuran buku
@@ -4290,7 +4434,7 @@ class MuridWebHelper extends WebService
         <!DOCTYPE html>
         <html lang="en">
         <head>
-            <title>Invoice Iuran Buku</title>
+            <title>Invoice <?=Lang::t("Iuran Buku")?></title>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -4314,7 +4458,7 @@ class MuridWebHelper extends WebService
         <body>
 
         <div class="container">
-            <h2 style="text-align:center">Invoices Iuran Buku</h2>
+            <h2 style="text-align:center">Invoices <?=Lang::t("Iuran Buku")?></h2>
             <br>
             <br>
             <br>
@@ -4457,7 +4601,7 @@ class MuridWebHelper extends WebService
                         <td style="text-align:right;"><?= idr($SPP); ?></td>
                     </tr>
                     <tr>
-                        <td>Iuran Buku level <?= Generic::getLevelNameByID($murid->id_level_masuk); ?></td>
+                        <td><?=Lang::t("Iuran Buku")?> level <?= Generic::getLevelNameByID($murid->id_level_masuk); ?></td>
                         <td style="text-align:right;"><?= idr($ibuku); ?></td>
                     </tr>
                     <tr>
@@ -5021,6 +5165,26 @@ class MuridWebHelper extends WebService
                         <?
                     } else {
                         echo "<b>Unpaid</b>";
+                    }
+                }
+                ?></td>
+
+            <td><?
+                if ($val->bln_status)
+                    echo $arrPembayaran[$val->bln_cara_bayar];
+                else {
+                    if (AccessRight::getMyOrgType() == "tc") {
+                        ?>
+                        <select id="jenis_pmbr_invoice_<?= $val->bln_id ?>">
+                            <?
+                            foreach ($arrPembayaran as $key => $by) {
+                                ?>
+                                <option value="<?= $key; ?>"><?= $by; ?></option>
+                                <?
+                            }
+                            ?>
+                        </select>
+                        <?
                     }
                 }
                 ?></td>

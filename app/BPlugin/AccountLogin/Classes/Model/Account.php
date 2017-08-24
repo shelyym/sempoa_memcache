@@ -130,7 +130,7 @@ class Account extends Model {
                 //pr($this);
 		if ($var) {
 			$acc = new Account();
-                        
+
                         $load = (isset($this->load) ? addslashes($this->load) : 0);
                         if(!$load)
                             $acc->getByID($var);
@@ -138,7 +138,7 @@ class Account extends Model {
                             $mainValue = $this->admin_id;
                             $acc = $this;
                         }
-                        
+
 			$role2Acc = new Role2Account();
                         $arr = $role2Acc->getWhere("role_admin_id = '{$acc->admin_id}'");
                         //pr($arr);
@@ -157,7 +157,7 @@ class Account extends Model {
                             $role2Acc->role_id = $acc->admin_role;
                             $role2Acc->account_username = $acc->admin_username;
                         }
-                        
+
 
 			//process Hook just in case
 			Hook::processHook($this->save_hook);

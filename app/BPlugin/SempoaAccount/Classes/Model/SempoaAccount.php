@@ -1,20 +1,21 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: elroy
  * Date: 7/27/16
  * Time: 2:55 PM
  */
-
-class SempoaAccount extends Account{
+class SempoaAccount extends Account
+{
 
     var $default_read_coloms = "admin_id,admin_username,admin_nama_depan,admin_email,admin_role,admin_org_type,admin_org_id,admin_ak_id,admin_kpo_id,admin_ibo_id,admin_tc_id";
 //masi copy paste
-var $uname_min = 5;
-var $uname_max = 15;
+    var $uname_min = 5;
+    var $uname_max = 15;
 
-var $passwd_min = 5;
-var $passwd_max = 15;
+    var $passwd_min = 5;
+    var $passwd_max = 15;
 
     var $admin_ak_id;
     var $admin_kpo_id;
@@ -23,17 +24,19 @@ var $passwd_max = 15;
 
     var $coloumlist = "admin_id,admin_username,admin_nama_depan,admin_password,admin_lastupdate,admin_reg_date,admin_aktiv,admin_email,admin_role,admin_type,admin_webpassword,admin_org_type,admin_org_id,admin_ak_id,admin_kpo_id,admin_ibo_id,admin_tc_id";
     public $hideColoums = array("admin_kpo_id");
+    public $removeAutoCrudClick = array("Action");
 
-    function form_constraints(){
+    function form_constraints()
+    {
 
         //err id => err msg
-        $err = array ();
+        $err = array();
 
         if (!isset($this->admin_email) || $this->admin_email == "") {
             $err['admin_email'] = Lang::t('err admin_email empty');
-        }else{
+        } else {
             if (!filter_var($this->admin_email, FILTER_VALIDATE_EMAIL)) {
-                $err['admin_email'] =  "Invalid Email Address";
+                $err['admin_email'] = "Invalid Email Address";
             }
         }
         if (!isset($this->admin_nama_depan) || $this->admin_nama_depan == "") {
@@ -47,22 +50,22 @@ var $passwd_max = 15;
         }
         if (!isset($this->admin_password) || $this->admin_password == "") {
             $err['admin_password'] = Lang::t('err admin_password empty');
-        }else{
-            if(strlen($this->admin_password)<$this->passwd_min || strlen($this->admin_password)>$this->passwd_max){
+        } else {
+            if (strlen($this->admin_password) < $this->passwd_min || strlen($this->admin_password) > $this->passwd_max) {
                 $err['admin_password'] = "The password has the wrong length. Min {$this->passwd_min} Max {$this->passwd_max} Characters.";
             }
         }
         if (!isset($this->admin_password2) || $this->admin_password2 == "") {
             $err['admin_password2'] = Lang::t('err admin_password2 empty');
-        }else{
-            if(strlen($this->admin_password2)<$this->passwd_min || strlen($this->admin_password2)>$this->passwd_max){
+        } else {
+            if (strlen($this->admin_password2) < $this->passwd_min || strlen($this->admin_password2) > $this->passwd_max) {
                 $err['admin_password2'] = "The password has the wrong length. Min {$this->passwd_min} Max {$this->passwd_max} Characters.";
-            }else{
-                if($this->admin_password == $this->admin_password2){
+            } else {
+                if ($this->admin_password == $this->admin_password2) {
                     $crypt = Account::cryptPassword($this->admin_password);
                     $this->admin_password = $crypt;
                     $this->admin_webpassword = $crypt;
-                }else{
+                } else {
                     $err['admin_password'] = "Password mismatched";
                     $err['admin_password2'] = "Password mismatched";
                 }
@@ -75,12 +78,12 @@ var $passwd_max = 15;
         /*if (!isset($this->admin_id)) {
             $err['admin_username'] = Lang::t('Create New User Not Allowed');
         }*/
-        if(count($err)<1){
+        if (count($err) < 1) {
             //cari apakah username terpakai
             $nr = $this->getJumlah("admin_email = '{$this->admin_email}'");
             if ($nr > 0) {
                 $err['admin_email'] = Lang::t("Email is already being registered.");
-            }else{
+            } else {
                 $this->admin_username = $this->admin_email;
                 $this->admin_aktiv = 1;
                 $this->admin_lastupdate = leap_mysqldate();
@@ -92,10 +95,11 @@ var $passwd_max = 15;
 
     }
 
-    function form_constraints_edit(){
+    function form_constraints_edit()
+    {
 
         //err id => err msg
-        $err = array ();
+        $err = array();
 
 //        if (!isset($this->admin_id) || $this->admin_id == "") {
 //            $err['all'] = Lang::t('err admin_id empty');
@@ -105,9 +109,9 @@ var $passwd_max = 15;
 //        }
         if (!isset($this->admin_email) || $this->admin_email == "") {
             $err['admin_email'] = Lang::t('err admin_email empty');
-        }else{
+        } else {
             if (!filter_var($this->admin_email, FILTER_VALIDATE_EMAIL)) {
-                $err['admin_email'] =  "Invalid Email Address";
+                $err['admin_email'] = "Invalid Email Address";
             }
         }
         if (!isset($this->admin_nama_depan) || $this->admin_nama_depan == "") {
@@ -119,11 +123,11 @@ var $passwd_max = 15;
         if (!isset($this->admin_org_type) || $this->admin_org_type == "") {
             $err['admin_org_type'] = Lang::t('err admin_org_type empty');
         }
-        if ($this->admin_password != "" && $_POST['admin_password']!="") {
+        if ($this->admin_password != "" && $_POST['admin_password'] != "") {
 
-            if(strlen($this->admin_password)<$this->passwd_min || strlen($this->admin_password)>$this->passwd_max){
+            if (strlen($this->admin_password) < $this->passwd_min || strlen($this->admin_password) > $this->passwd_max) {
                 $err['admin_password'] = "The password has the wrong length. Min {$this->passwd_min} Max {$this->passwd_max} Characters.";
-            }else{
+            } else {
                 $crypt = Account::cryptPassword($this->admin_password);
                 $this->admin_password = $crypt;
                 $this->admin_webpassword = $crypt;
@@ -151,21 +155,23 @@ var $passwd_max = 15;
         /*if (!isset($this->admin_id)) {
             $err['admin_username'] = Lang::t('Create New User Not Allowed');
         }*/
-        if(count($err)<1){
+        if (count($err) < 1) {
             //cari apakah username terpakai
 
-                $this->admin_username = $this->admin_email;
+            $this->admin_username = $this->admin_email;
 //                $this->admin_aktiv = 1;
 //                $this->admin_lastupdate = leap_mysqldate();
 //                $this->admin_reg_date = leap_mysqldate();
-                $this->load = 1;
+            $this->load = 1;
 
         }
 
         return $err;
 
     }
-    public function onSaveNewItemSuccess($id){
+
+    public function onSaveNewItemSuccess($id)
+    {
         $acc = new SempoaAccount();
         $acc->getByID($id);
         //add role to role2account
@@ -176,7 +182,7 @@ var $passwd_max = 15;
         $role2acc->save();
     }
 
-    public function overwriteRead ($return)
+    public function overwriteRead($return)
     {
         $objs = $return['objs'];
         foreach ($objs as $obj) {
@@ -188,12 +194,60 @@ var $passwd_max = 15;
                 $org->getByID($obj->admin_org_id);
                 $obj->admin_org_id = $org->nama;
             }
-//            $arrType = ['admin', 'user', 'store'];
-//            $obj->admin_type = $arrType[$obj->admin_type];
+
+            $obj->Action = "<button  title='Detail' onclick='popup(\"$obj->admin_id\")'><i class='fa fa-list'></i></button>";
+            if (isset($obj->admin_id)) {
+                ?>
+                <script>
+
+                    function popup(id) {
+
+                        $.post("<?= _SPPATH; ?>AccountHelper/logoutMember", {user_id: id}, function (data) {
+                            if (data.status_code) {
+                                $.post("<?= _SPPATH; ?>AccountHelper/loginMember", {user_id: id}, function (data2) {
+                                    alert(data2.status_message);
+                                    location.reload();
+//                                    window.open('<?//=_BPATH;?>//' + 'home?st=dashboard_tc', '_blank');
+                                }, 'json');
+                            }
+
+                        }, 'json');
+                    }
+                </script>
+                <?
+            }
 
         }
 
         //pr($return);
         return $return;
+    }
+
+    public function loadByUserLoginIBO($id_admin)
+    {
+
+
+        //load from db
+        global $db;
+
+        $sql = "SELECT * FROM {$this->table_name} WHERE admin_id = '$id_admin' AND admin_aktiv = 1 ";
+        $obj = $db->query($sql, 1);
+
+        $row = toRow($obj);
+
+        $this->fill($row);
+
+        if ($id_admin == $this->admin_id) {
+
+            $_SESSION["admin_session"] = 1;
+            $_SESSION["account"] = $obj;
+
+            $Coba["admin_session"] = 1;
+            $Coba["account"] = $obj;
+            //Update setlastlogin
+            return self::setLastUpdate($_SESSION["account"]->admin_id);
+        } else {
+            return 0;
+        }
     }
 } 

@@ -319,5 +319,7 @@ class KEY
     public static $BUKU_AVAILABLE_TEXT = "Available";
     public static $BUKU_NON_AVAILABLE_TEXT = "Non Available";
 
+    public static $MIN_JUMLAH_KUPON = 10;
+    public static $MIN_JUMLAH_BUKU = 10;
 
 }

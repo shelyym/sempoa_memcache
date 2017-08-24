@@ -12,12 +12,13 @@ class StockBuku extends Model
     var $main_id = "stock_buku_id";
 
 //Default Coloms for read
-    public $default_read_coloms = "stock_buku_id,stock_buku_no,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
+    public $default_read_coloms = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
 
 //allowed colom in CRUD filter
-    public $coloumlist = "stock_buku_id,stock_buku_no,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
+    public $coloumlist = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
     public $stock_buku_id;
     public $stock_buku_no;
+    public $stock_name_buku;
     public $stock_id_buku;
     public $stock_grup_level;
     public $stock_buku_status_kpo;
@@ -63,7 +64,7 @@ class StockBuku extends Model
 
     }
 
-    public function createNoBuku($id_barang, $no_buku, $kpo)
+    public function createNoBuku($id_barang, $no_buku, $kpo,$name_barang)
     {
         $level = Generic::getLevelIdByIdBarang($id_barang);
         $a = new $this();
@@ -73,6 +74,7 @@ class StockBuku extends Model
         $a->stock_buku_kpo = $kpo;
         $a->stock_buku_tgl_masuk_kpo = leap_mysqldate();
         $a->stock_grup_level = $level;
+        $a->stock_name_buku = $name_barang;
         $a->save();
 
     }
@@ -95,7 +97,7 @@ class StockBuku extends Model
         return $res;
     }
 
-    public function setStatusBuku($res, $id_murid)
+    public function setStatusBuku($res, $id_murid, $inv_bln_id)
     {
 
         if (count($res) == 0) {
@@ -108,6 +110,7 @@ class StockBuku extends Model
                 $buno->stock_buku_tgl_keluar_tc = leap_mysqldate();
                 $buno->stock_murid_id = $id_murid;
                 $buno->stock_murid = 1;
+                $buno->stock_invoice_murid = $inv_bln_id;
                 $buno->save(1);
 
             }
@@ -146,5 +149,17 @@ class StockBuku extends Model
         $buno = new $this();
         $arrStudent = $buno->getwhere("stock_murid_id=$student_id ORDER by stock_grup_level DESC");
         return $arrStudent;
+    }
+
+    public function getBukuNoByInvoiceID($stock_invoice_murid){
+        $buno = new $this();
+        $arr = $buno->getWhere("stock_invoice_murid='$stock_invoice_murid'");
+        $res = array();
+        foreach($arr as $val){
+            $brg = new BarangWebModel();
+//            $brg->getNamaBukuByNoBuku(substr($val->stock_buku_no,0,3));
+            $res[ $val->stock_buku_no] = $val->stock_name_buku;
+        }
+        return $res;
     }
 }

@@ -278,4 +278,46 @@ class CoretCoret extends WebService
         $resStokBuku = $setNoBuku->setStatusBuku(2, 4, 55, 0);
         pr($resStokBuku);
     }
+
+    public function getBkuNo()
+    {
+
+        $a = "21500002";
+        $awalan = substr($a, 0, 3);
+        pr($awalan);
+        $stock = new StockBuku();
+        pr($stock->getBukuNoByInvoiceID(2381));
+    }
+
+    public function loginidorg()
+    {
+
+//        unset($_SESSION);
+        pr($_SESSION);
+        die();
+
+//        pr(AccessRight::getMyOrgID() . " - " . AccessRight::getMyOrgType());
+//        pr(AccessRight::getMyAR_All());
+//        pr($_SESSION);
+//        die();
+//        Auth::logout();
+        $userid = 104;
+        $acc = new SempoaAccount();
+        $acc->getByID($userid);
+        $row = array();
+
+        foreach ($acc as $key => $value) {
+            $row[$key] = $value;
+        }
+
+
+        AuthSempoa::loginSempoaIBO($row);
+        if (Auth::isLogged()) {
+            pr($_SESSION);
+            die();
+            header("Location:" . _BPATH . "home?st=dashboard_tc");
+
+        }
+
+    }
 }

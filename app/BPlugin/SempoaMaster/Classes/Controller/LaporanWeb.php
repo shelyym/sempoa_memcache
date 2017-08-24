@@ -89,16 +89,10 @@ class LaporanWeb extends WebService
     //TC
     public function create_operasional_pembayaran_iuran_bulanan_tc()
     {
-//        echo "0<br>";
-        ini_set('display_errors', '1');
-        error_reporting(E_ERROR);
         $myorg = AccessRight::getMyOrgID();
-//        pr($myorg);
-//        echo "1<br>";
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
-//        pr("Tc: " . $tc_id);
         $murid = new MuridModel();
         // Status cuti dikeluarkan
         $arrMurid = $murid->getWhere("(status = 1) AND murid_tc_id = '$tc_id' ORDER BY nama_siswa ASC");
@@ -119,8 +113,7 @@ class LaporanWeb extends WebService
         $checkKupon = count($arrkupon);
 //        $checkKupon = 0;
         $arrSTatus = array("<b>Unpaid</b>", "Paid");
-        $t = time();
-//        echo "3<br>";
+        $t = time();;
         ?>
 
         <section class="content-header">
@@ -204,7 +197,7 @@ class LaporanWeb extends WebService
 
                         $iuranBulanan = new IuranBulanan();
                         $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
-                        pr($iuranBulanan);
+//                        pr($iuranBulanan);
                         if($mk->id_murid == '3202'){
                             pr($mk->id_murid . " - " . $bln);
                         }

@@ -160,7 +160,7 @@ class Generic
                 $arrTC[$val->org_id] = $val->nama;
             }
         }
-
+        sort($arrTC);
         return $arrTC;
     }
 
@@ -1022,6 +1022,14 @@ class Generic
         $name = $acc->getWhere("admin_org_id='$id'");
         return $name[0]->admin_nama_depan;
     }
+
+    public static function getAdminUsernameByID($id)
+    {
+        $acc = new SempoaAccount();
+        $name = $acc->getWhere("admin_org_id='$id'");
+        return $name[0]->admin_username;
+    }
+
 
     public static function getTCNamebyID($tc_id)
     {
