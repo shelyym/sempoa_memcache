@@ -83,3 +83,15 @@ $_lang['admin_password'] = "Password";
 $_lang['admin_email'] = "Email";
 $_lang['admin_role'] = "Role";
 $_lang['lang_wrong_username_or_password'] = "Wrong Username or Password";
+$_lang['no_buku'] = "Awalan no buku";
+
+
+
+$_lang['Iuran Buku'] = "Uang Buku";
+
+$_lang['tc_no_hp_office'] = "No. Hp. Office";
+$_lang['tc_no_fax_office'] = "No. Fax. Office";
+$_lang['Laporan Iuran Buku'] = "Laporan Uang Buku";
+$_lang['tc_nama_bank'] = "Nama Bank";
+$_lang['tc_cabang_bank'] = "Cabang";
+$_lang['tc_acc_bank'] = "Account No.";

@@ -6,10 +6,11 @@
  * Date: 8/1/16
  * Time: 9:38 PM
  */
-class OrgWebContainer {
+class OrgWebContainer
+{
 
-    public static function create($orgModel, $webClass, $lvl, $kode_ibo) {
-
+    public static function create($orgModel, $webClass, $lvl, $kode_ibo)
+    {
 
 
         $kpo = new $orgModel();
@@ -39,6 +40,8 @@ class OrgWebContainer {
             "alamat" => new \Leap\View\InputText("text", "alamat", "alamat", ""),
             "propinsi" => new \Leap\View\InputText("text", "propinsi", "propinsi", ""),
             "nomor_telp" => new \Leap\View\InputText("text", "nomor_telp", "nomor_telp", ""),
+            "tc_no_fax_office" => new \Leap\View\InputText("text", "tc_no_fax_office", "tc_no_fax_office", ""),
+            "tc_no_hp_office" => new \Leap\View\InputText("text", "tc_no_hp_office", "tc_no_hp_office", ""),
             "email" => new \Leap\View\InputText("email", "email", "email", ""),
             "nama_pemilik" => new \Leap\View\InputText("text", "nama_pemilik", "nama_pemilik", ""),
             "tanggal_lahir" => new \Leap\View\InputText("date", "tanggal_lahir", "tanggal_lahir", ""),
@@ -49,15 +52,18 @@ class OrgWebContainer {
             "tgl_kontrak" => new \Leap\View\InputText("date", "tgl_kontrak", "tgl_kontrak", ""),
             "tgl_kontrak" => new \Leap\View\InputText("date", "tgl_kontrak", "tgl_kontrak", ""),
             "alamat_rmh_priv" => new \Leap\View\InputText("text", "alamat_rmh_priv", "alamat_rmh_priv", ""),
-            "org_lat" => new \Leap\View\InputNumberWithStep("number","any", "org_lat", "org_lat", ""),
-            "org_lng" => new \Leap\View\InputNumberWithStep("number","any", "org_lng", "org_lng", ""),
+            "tc_nama_bank" => new \Leap\View\InputText("text", "tc_nama_bank", "tc_nama_bank", ""),
+            "tc_cabang_bank" => new \Leap\View\InputText("text", "tc_cabang_bank", "tc_cabang_bank", ""),
+            "tc_acc_bank" => new \Leap\View\InputText("text", "tc_acc_bank", "tc_acc_bank", ""),
+            "org_lat" => new \Leap\View\InputNumberWithStep("number", "any", "org_lat", "org_lat", ""),
+            "org_lng" => new \Leap\View\InputNumberWithStep("number", "any", "org_lng", "org_lng", ""),
             "org_catatan" => new \Leap\View\InputTextRTE("org_catatan", "org_catatan", "")
 //            "alamat" => new \Leap\View\InputMap("alamat".time(), "org_lat", "org_long","org_lat","org_long","alamat","")
         );
         FormCreator::receiveSempoa(array($orgModel, "form_constraints"));
         ?>
         <style>
-            #kpo_form_<?= $t; ?> .form_title,#user_form_<?= $t; ?> .form_title{
+            #kpo_form_<?= $t; ?> .form_title, #user_form_<?= $t; ?> .form_title {
                 text-align: center;
             }
         </style>
@@ -65,7 +71,7 @@ class OrgWebContainer {
 
             <?
             $onSuccess = "$('#kpo_form_" . $t . "').hide();$('#success_form_" . $t . "').show();$('#kpo_id_" . $t . "').val(data.id);";
-//        pr($onSuccess);
+            //        pr($onSuccess);
             FormCreator::createFormSempoa($judul, $arrDetails, _SPPATH . $webClass . "/create_" . $lvl, $onSuccess);
             ?>
         </div>
@@ -75,7 +81,8 @@ class OrgWebContainer {
             <h2 style="padding-bottom: 20px; padding-top: 20px;"><?= Lang::t('Data Added Successfully'); ?></h2>
             <div class="alert alert-info" style="margin-left: 20px; margin-right: 20px;">
                 <h3 style="padding: 0; margin: 0px;">Do you want to add user to this <?= strtoupper($lvl); ?>?</h3>
-                <p style="font-style: italic; padding: 10px;">You can add user later in <?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?>.</p>
+                <p style="font-style: italic; padding: 10px;">You can add user later
+                    in <?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?>.</p>
                 <?
                 $lanjutan = "$('#success_form_" . $t . "').hide();$('#user_form_" . $t . "').show();";
                 $lanjutan = "openLw('create_user_$lvl','" . AccessRight::getRightURL('create_user_' . $lvl) . "?{$lvl}_id='+$('#kpo_id_$t').val(),'fade');";
@@ -86,16 +93,18 @@ class OrgWebContainer {
                     <button class="btn btn-default" onclick="<?= $lanjutan; ?>"><?= Lang::t('YES'); ?></button>
                     <button onclick="lwclose(selected_page);" class="btn btn-default"><?= Lang::t('NO'); ?></button>
                 <? } ?>
-                <button onclick="openLw('read_semua_<?= $lvl; ?>', '<?= AccessRight::getRightURL('read_semua_' . $lvl); ?>', 'fade');" class="btn btn-default"><?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?></button>
+                <button
+                    onclick="openLw('read_semua_<?= $lvl; ?>', '<?= AccessRight::getRightURL('read_semua_' . $lvl); ?>', 'fade');"
+                    class="btn btn-default"><?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?></button>
             </div>
         </div>
-
 
 
         <?
     }
 
-    public static function update_semua($orgModel, $webClass, $lvl) {
+    public static function update_semua($orgModel, $webClass, $lvl)
+    {
 
         FormCreator::receive(array($orgModel, "form_constraints"));
         $id = addslashes($_GET['id']);
@@ -117,6 +126,8 @@ class OrgWebContainer {
             "alamat" => new \Leap\View\InputText("text", "alamat", "alamat", $kpo->alamat),
             "propinsi" => new \Leap\View\InputText("text", "propinsi", "propinsi", $kpo->propinsi),
             "nomor_telp" => new \Leap\View\InputText("text", "nomor_telp", "nomor_telp", $kpo->nomor_telp),
+            "tc_no_fax_office" => new \Leap\View\InputText("text", "tc_no_fax_office", "tc_no_fax_office", $kpo->tc_no_fax_office),
+            "tc_no_hp_office" => new \Leap\View\InputText("text", "tc_no_hp_office", "tc_no_hp_office", $kpo->tc_no_hp_office),
             "email" => new \Leap\View\InputText("email", "email", "email", $kpo->email),
             "nama_pemilik" => new \Leap\View\InputText("text", "nama_pemilik", "nama_pemilik", $kpo->nama_pemilik),
             "tanggal_lahir" => new \Leap\View\InputText("date", "tanggal_lahir", "tanggal_lahir", $kpo->tanggal_lahir),
@@ -126,13 +137,16 @@ class OrgWebContainer {
             "email_priv" => new \Leap\View\InputText("email", "email_priv", "email_priv", $kpo->email_priv),
             "tgl_kontrak" => new \Leap\View\InputText("date", "tgl_kontrak", "tgl_kontrak", $kpo->tgl_kontrak),
             "alamat_rmh_priv" => new \Leap\View\InputText("text", "alamat_rmh_priv", "alamat_rmh_priv", $kpo->alamat_rmh_priv),
-            "org_lat" => new \Leap\View\InputNumberWithStep("number","any", "org_lat", "org_lat", $kpo->org_lat),
-            "org_lng" => new \Leap\View\InputNumberWithStep("number","any", "org_lng", "org_lng", $kpo->org_lng),
+            "tc_nama_bank" => new \Leap\View\InputText("text", "tc_nama_bank", "tc_nama_bank", $kpo->tc_nama_bank),
+            "tc_cabang_bank" => new \Leap\View\InputText("text", "tc_cabang_bank", "tc_cabang_bank", $kpo->tc_cabang_bank),
+            "tc_acc_bank" => new \Leap\View\InputText("text", "tc_acc_bank", "tc_acc_bank", $kpo->tc_acc_bank),
+            "org_lat" => new \Leap\View\InputNumberWithStep("number", "any", "org_lat", "org_lat", $kpo->org_lat),
+            "org_lng" => new \Leap\View\InputNumberWithStep("number", "any", "org_lng", "org_lng", $kpo->org_lng),
             "org_catatan" => new \Leap\View\InputTextRTE("org_catatan", "org_catatan", $kpo->org_catatan)
         );
         ?>
         <style>
-            #kpo_form_<?= $t; ?> .form_title,#user_form_<?= $t; ?> .form_title{
+            #kpo_form_<?= $t; ?> .form_title, #user_form_<?= $t; ?> .form_title {
                 text-align: center;
             }
         </style>
@@ -148,7 +162,8 @@ class OrgWebContainer {
             <h2 style="padding-bottom: 20px; padding-top: 20px;"><?= Lang::t('Data Edited Successfully'); ?></h2>
             <div class="alert alert-info" style="margin-left: 20px; margin-right: 20px;">
                 <h3 style="padding: 0; margin: 0px;">Do you want to add user to this <?= strtoupper($lvl); ?>?</h3>
-                <p style="font-style: italic; padding: 10px;">You can add user later in <?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?>.</p>
+                <p style="font-style: italic; padding: 10px;">You can add user later
+                    in <?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?>.</p>
                 <?
                 $lanjutan = "$('#success_form_" . $t . "').hide();$('#user_form_" . $t . "').show();";
                 $lanjutan = "openLw('create_user_$lvl','" . AccessRight::getRightURL('create_user_' . $lvl) . "?{$lvl}_id='+$('#kpo_id_$t').val(),'fade');";
@@ -159,20 +174,23 @@ class OrgWebContainer {
                     <button class="btn btn-default" onclick="<?= $lanjutan; ?>"><?= Lang::t('YES'); ?></button>
                     <button onclick="lwclose(selected_page);" class="btn btn-default"><?= Lang::t('NO'); ?></button>
                 <? } ?>
-                <button onclick="openLw('read_semua_<?= $lvl; ?>', '<?= AccessRight::getRightURL('read_semua_' . $lvl); ?>', 'fade');" class="btn btn-default"><?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?></button>
+                <button
+                    onclick="openLw('read_semua_<?= $lvl; ?>', '<?= AccessRight::getRightURL('read_semua_' . $lvl); ?>', 'fade');"
+                    class="btn btn-default"><?= AccessRight::getRightObject('read_semua_' . $lvl)->ar_display_name; ?></button>
             </div>
         </div>
-
 
 
         <?
     }
 
-    function delete_semua() {
-        
+    function delete_semua()
+    {
+
     }
 
-    public static function read_semua($orgModel, $webClass, $lvl) {
+    public static function read_semua($orgModel, $webClass, $lvl)
+    {
         $obj = new $orgModel();
 //        $obj->removeAutoCrudClick = array("org_type");
         $obj->read_filter_array = array("org_parent_id" => AccessRight::getMyOrgID());

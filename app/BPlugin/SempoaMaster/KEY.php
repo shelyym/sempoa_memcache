@@ -322,4 +322,6 @@ class KEY
     public static $MIN_JUMLAH_KUPON = 10;
     public static $MIN_JUMLAH_BUKU = 10;
 
+    public static $AWALAN_FIRST_PAYMENT = "FP";
+
 }

@@ -190,6 +190,35 @@ class LaporanWebHelper extends WebService
     }
 
 
+    function undo_iuran_buku_2(){
+        $bln_id = addslashes($_POST['bln_id']);
+
+        $iuranBuku = new IuranBuku();
+        $iuranBuku->getWhereOne("bln_id=$bln_id");
+        if(is_null($iuranBuku->bln_id)){
+            $json['status_code'] = 0;
+            $json['status_message'] = "Retour gagal!";
+            echo json_encode($json);
+            die();
+        }
+        $iuranBuku->bln_status = 0;
+        $iuranBuku->bln_date_pembayaran = KEY::$TGL_KOSONG;
+        $iuranBuku->save(1);
+
+        $stockBukuNo = new StockBuku();
+        $arrStockBuku = $stockBukuNo->getWhere("stock_invoice_murid='$bln_id'");
+        foreach ($arrStockBuku as $buku) {
+            $stockBuku = new StockBuku();
+            $stockBuku->retourBukuMurid($bln_id);
+            $stockBarang = new StockModel();
+            $stockBarang->retourStock($buku->stock_id_buku, $buku->stock_buku_tc);
+        }
+        $json['status_code'] = 1;
+        $json['status_message'] = "Retour berhasil!";
+        echo json_encode($json);
+        die();
+
+    }
     function paymentDetails()
     {
         $bln_id = addslashes($_GET['bln_id']);
@@ -502,7 +531,7 @@ class LaporanWebHelper extends WebService
             die();
         } else {
             $arrJumlahbrg = array();
-            $arrIDNoBuku = $setNoBuku->setStatusBuku($resBuku, $iuranBuku->bln_murid_id);
+            $arrIDNoBuku = $setNoBuku->setStatusBuku($resBuku, $iuranBuku->bln_murid_id,$bln_id);
             foreach ($resBuku as $val) {
                 $setNoBuku = new StockBuku();
                 $id_barang = $setNoBuku->getBarangIDbyPk($val);

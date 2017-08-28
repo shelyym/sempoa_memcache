@@ -299,7 +299,7 @@ class MuridWebHelper extends WebService
                             alert("Stock Buku atau perlengkapan habis!");
                         }
                     }
-                    else{
+                    else {
 
                     }
 
@@ -437,7 +437,7 @@ class MuridWebHelper extends WebService
                 $thn_skrg = date("Y");
                 $bln_skrg = date("n");
                 $first->bln_no_urut_inv = $first->getLastNoUrutInvoice($thn_skrg, $bln_skrg, AccessRight::getMyOrgID());
-                $noInvoiceFP =  "FP/" . $thn_skrg . "/" . $bln_skrg . "/" . $first->bln_no_urut_inv;
+                $noInvoiceFP = "FP/" . $thn_skrg . "/" . $bln_skrg . "/" . $first->bln_no_urut_inv;
                 $first->bln_no_invoice = $noInvoiceFP;
                 $first->murid_biaya_serial = serialize($arrSerial);
                 $succ = $first->save(1);
@@ -485,7 +485,7 @@ class MuridWebHelper extends WebService
                     $stockBarangBuku = new StockModel();
                     $stockBarangBuku->getWhereOne("id_barang = '$val' AND org_id='$org'");
                     $stockBarangBuku->jumlah_stock = $stockBarangBuku->jumlah_stock - 1;
-                    $stockBarangBuku->save();
+                    $stockBarangBuku->save(1);
                 }
 
                 $objIuranBuku = new IuranBuku();
@@ -505,10 +505,10 @@ class MuridWebHelper extends WebService
                 $objIuranBuku->bln_cara_bayar = $jenis_pmbr;
                 $objIuranBuku->bln_no_invoice = $noInvoiceFP;
                 $id_iuranbuku = $objIuranBuku->save();
-                $json['noinvice']= $noInvoiceFP;
+                $json['noinvice'] = $noInvoiceFP;
                 $setNoBuku = new StockBuku();
                 $resBuNo = $setNoBuku->getBukuYgdReservMurid($murid->id_level_sekarang, $murid->murid_tc_id, $murid_id, 0);
-                $setNoBuku->setStatusBuku($resBuNo, $murid_id,$id_iuranbuku);
+                $setNoBuku->setStatusBuku($resBuNo, $murid_id, $id_iuranbuku);
                 // Stock Buku No
 
 
@@ -603,7 +603,7 @@ class MuridWebHelper extends WebService
                     $id_buku = $buku_active->id_barang_harga;
 
 
-                    $stockBarang->retourStock($id_buku, $myID);
+//                    $stockBarang->retourStock($id_buku, $myID);
                     Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BUKU_TC, KEY::$BIAYA_IURAN_BUKU, "Iuran Buku: Siswa: " . Generic::getMuridNamebyID($murid_id), -1, 0, "Utama");
 
 
@@ -629,13 +629,16 @@ class MuridWebHelper extends WebService
                 }
                 if (($key == "nomor")) {
                     $kuponSatuan = new KuponSatuan();
+                    $noKupon = $val['nomor'];
                     $kuponSatuan->retourKupon($val['nomor']);
                     $json['nokupon'] = $val['nomor'];
                     $arrjenisBiayaSPP = Generic::getJenisBiayaType();
                     $jenisBiayaSPP = $arrjenisBiayaSPP[$id_level];
                     $m = new DateTime($fp->murid_pay_date);
                     Generic::createLaporanDebet($myID, $myID, KEY::$DEBET_IURAN_BULANAN_TC, $jenisBiayaSPP, "Iuran Bulanan: Siswa: " . Generic::getMuridNamebyID($murid_id) . ", Bulan: " . $m->format("m-Y") . " dgn Kode Kupon: " . $val['nomor'], -1, 0, "Utama");
-
+                    $iuranBulanan = new IuranBulanan();
+                    $iuranBulanan->getWhereOne("bln_kupon_id='$noKupon'");
+                    $iuranBulanan->delete($iuranBulanan->bln_id);
                 }
             }
 
@@ -644,14 +647,16 @@ class MuridWebHelper extends WebService
 
         $iuranBuku = new IuranBuku();
         $iuranBuku->getWhereOne("bln_no_invoice='$noInvoice'");
-        $iuranBuku->bln_status =0;
-        $iuranBuku->save(1);
+        $iuranBuku->bln_status = 0;
+        $iuranBuku->delete($iuranBuku->bln_id);
         $id_invoice = $iuranBuku->bln_id;
         $stockBuku = new StockBuku();
         $arrStockBuku = $stockBuku->getWhere("stock_invoice_murid='$id_invoice'");
-        foreach($arrStockBuku as $buku){
+        foreach ($arrStockBuku as $buku) {
             $stockBuku = new StockBuku();
             $stockBuku->retourBukuMurid($id_invoice);
+            $stockBarang = new StockModel();
+            $stockBarang->retourStock($buku->stock_id_buku, $myID);
         }
         $nilaiMurid = new NilaiModel();
         $nilaiMurid->getWhereOne("nilai_murid_id=$murid_id AND nilai_level=$id_level");
@@ -2375,7 +2380,7 @@ class MuridWebHelper extends WebService
                                 }
                                 ?>
                                 <?
-                                if (AccessRight::getMyOrgType() == "XYZ") {
+                                if (AccessRight::getMyOrgType() == KEY::$IBO) {
                                     ?>
                                     <th>
                                         Undo
@@ -2386,7 +2391,7 @@ class MuridWebHelper extends WebService
 
                             </tr>
                             </thead>
-                            <tbody id='container_load_history_iuranBuku'>
+                            <tbody id='container_load_history_iuranBuku_<?=$t;?>'>
                             <?
                             foreach ($arrIuranBuku as $key => $val) {
                                 ?>
@@ -2474,19 +2479,22 @@ class MuridWebHelper extends WebService
                                     }
                                     ?>
                                     <?
-                                    if (AccessRight::getMyOrgType() == "XYZ") {
+                                    if (AccessRight::getMyOrgType() == KEY::$IBO) {
                                         ?>
                                         <td>
                                             <?
-                                            $now = time();
-                                            $your_date = strtotime($val->bln_date_pembayaran);
-                                            $datediff = Generic::diffTwoDaysInDay($now, $your_date);
-                                            if ($datediff <= 14) {
-                                                ?>
-                                                <span id="undo_<?= $val->bln_id; ?>" class="fa fa-undo"
-                                                      aria-hidden="true"></span>
-                                                <?
+                                            if (substr($val->bln_no_invoice, 0, 2) != KEY::$AWALAN_FIRST_PAYMENT) {
+                                                $now = time();
+                                                $your_date = strtotime($val->bln_date_pembayaran);
+                                                $datediff = Generic::diffTwoDaysInDay($now, $your_date);
+                                                if ($datediff <= 14) {
+                                                    ?>
+                                                    <span id="undo_iuran_buku_<?= $val->bln_id; ?>" class="fa fa-undo"
+                                                          aria-hidden="true"></span>
+                                                    <?
+                                                }
                                             }
+
                                             ?>
                                         </td>
                                         <?
@@ -2495,6 +2503,25 @@ class MuridWebHelper extends WebService
 
                                     <script>
 
+                                        $("#undo_iuran_buku_<?= $val->bln_id; ?>").click(function(){
+
+                                            var bln_id = '<?= $val->bln_id; ?>';
+                                                alert(bln_id);
+                                            if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?")){
+                                                $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_buku_2", {
+                                                    bln_id: bln_id
+                                                }, function (data) {
+                                                    console.log(data);
+                                                    alert(data.status_message);
+                                                    if (data.status_code) {
+                                                        lwrefresh(selected_page);
+                                                        lwrefresh("Profile_Murid");
+                                                    }
+                                                }, 'json');
+                                        }
+                                            //kosongkan status di iuran bulanan
+                                            //
+                                        });
                                         $('#undo_<?= $val->bln_id . $t; ?>').click(function () {
                                         });
 
@@ -2554,7 +2581,7 @@ class MuridWebHelper extends WebService
                                 if (page_buku < total_page_buku) {
                                     page_buku++;
                                     $.get("<?= _SPPATH; ?>MuridWebHelper/murid_iuranBuku_load?id=<?= $id; ?>&page=" + page_buku, function (data) {
-                                        $("#container_load_history_iuranBuku").append(data);
+                                        $("#container_load_history_iuranBuku_<?=$t;?>").append(data);
                                     });
                                     if (page_buku > total_page_buku)
                                         $('#loadmore_iuranBuku_<?= $val->bln_murid_id; ?>').hide();
@@ -4403,7 +4430,10 @@ class MuridWebHelper extends WebService
         $arrLevel = Generic::getAllLevel();
         $a = array_keys($arrLevel, $level);
         $iuranBuku->getWhereOne("bln_murid_id=$id_murid AND bln_buku_level=$a[0]");
-
+        $tc = new SempoaOrg();
+        $tc->getWhereOne("org_id=$murid->murid_tc_id");
+        $bukuDgnNo = new StockBuku();
+        $arbukuDgnNo = $bukuDgnNo->getWhere("stock_invoice_murid=$iuranBuku->bln_id");
         ?>
 
         <html>
@@ -4466,134 +4496,200 @@ class MuridWebHelper extends WebService
         </head>
 
         <body>
-        <div class="invoice_orang_tua">
-            <div class="kop_invoices">
-                <img id="logo_sempoa" src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png">
-                <h3 id="data_tc">
-                    TC Taman Semanan Indah<br>
-                    Ruko Blok F No 7, Taman Semanan Indah - Jakarta Barat<br>
-                    Telp. 021 - 5444398, Fax. 021 - 5444397, HP. 08159923311
-                </h3>
-                <div class="info_invoices">
-                    <b>No. Invoice :</b><br>
-                    <b>Tanggal :</b>
-                </div>
-                <div class="nama_siswa">
-                    <p>
-                        Telah diterima pembayaran oleh Murid :<br>
-                        <b>Nama Murid :</b><br>
-                        <b>ID Murid :</b>
-                    </p>
-                    <table style="border-right: 20px;">
-                        <thead>
-                        <th>No Buku</th>
-                        <th>Keterangan</th>
-                        <th>Harga</th>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>No.Buku</td>
-                            <td>Uang Buku Junior 1</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total</td>
-                            <td></td>
-                        </tr>
-                        </tbody>
-                    </table>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="invoice_orang_tua">
+                        <div class="kop_invoices">
+                            <img id="logo_sempoa" src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png">
+                            <h3 id="data_tc">
+                                <?= $tc->nama; ?><br>
+                                <?= $tc->alamat; ?><br>
+                                Telp. <?= $tc->nomor_telp; ?>, Fax. <?= $tc->tc_no_fax_office; ?>,
+                                HP. <?= $tc->tc_no_hp_office; ?>
+                            </h3>
+                            <div class="info_invoices">
+                                <b>No. Invoice : <?= $iuranBuku->bln_no_invoice; ?></b> <br>
+                                <b>Tanggal : <?= $tgl; ?></b>
+                            </div>
+                            <div class="nama_siswa">
+                                <p>
+                                    Telah diterima pembayaran oleh Murid :<br>
+                                    <b>Nama Murid : <?= $nama; ?></b><br>
+                                    <b>No Murid : <?= $murid->kode_siswa; ?></b><br>
+                                </p>
+                                <table style="border-right: 20px;">
+                                    <thead>
+                                    <th>No Buku</th>
+                                    <th>Keterangan</th>
+                                    <th>Harga</th>
+                                    </thead>
+                                    <tbody>
+                                    <?
+                                    foreach ($arbukuDgnNo as $val) {
+                                        $date = new DateTime($val->stock_buku_tgl_keluar_tc);
+                                        $tanggal = $date->format("d-m-Y");
+                                        ?>
+                                        <tr>
+                                            <td><?= $val->stock_buku_no; ?></td>
+                                            <td><?= $val->stock_name_buku; ?></td>
+                                            <td></td>
+                                        </tr>
+                                        <?
+                                    }
+                                    ?>
+
+                                    <tr>
+                                        <td></td>
+                                        <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total
+                                        </td>
+                                        <td><?= idr($jenisbm->harga); ?> </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                     <span>
 	<p>Pembayaran melalui mesin EDC atau via transfer ke :</p>
-	<h3 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h3>
-	<p style="float: right; margin-right: 20px;">....................., 11 Juli 2017</p>
+	<h3 id="sempoasip_pusat">SEMPOA SIP<br><?= $tc->tc_nama_bank; ?> <?= $tc->tc_cabang_bank; ?>
+        <br><?= $tc->tc_acc_bank; ?></h3>
+
 </span>
-                    <div class="penutup_invoices">
-                        <p style="font-size: 30px">
-                            <img style="float: left; width: 100px; height: 100px "
-                                 src="<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png">
-                            Terima Kasih
-                            <img style="float: right; width: 100px; height: 100px "
-                                 src="<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png">
-                        </p>
+                                <div class="clearfix"></div>
+
+
+                                <div>
+                                    <img src=<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png" alt=""/>
+                                    <img src="http://placehold.it/100x100" alt=""/>
+                                    <img src=<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png" alt=""/>
+                                </div>
+
+                                <style>
+                                    div {
+                                        text-align: justify;
+                                    }
+
+                                    div img {
+                                        display: inline-block;
+                                        width: 100px;
+                                        height: 100px;
+                                    }
+
+                                    div:after {
+                                        content: '';
+                                        display: inline-block;
+                                        width: 100%;
+                                    }
+                                </style>
+
+
+                                <!--                                <div class="row">-->
+                                <!--                                    <div class="col-md-3" style="text-align: right;"><img-->
+                                <!--                                            style="width: 100px; height: 100px;"-->
+                                <!--                                            src="--><?//= _SPPATH . _PHOTOURL;
+                                ?><!--Sempa_20.png"></div>-->
+                                <!--                                    <div class="col-md-3" style="text-align: center;">Terima Kasih</div>-->
+                                <!--                                    <div class="col-md-3" style="text-align: left;"><img-->
+                                <!--                                            style=" width: 100px; height: 100px;"-->
+                                <!--                                            src="--><?//= _SPPATH . _PHOTOURL;
+                                ?><!--Sempi_20.png"></div>-->
+                                <!--                                    <div class="col-md-3" style="text-align: center;">-->
+                                <!--                                        ....................., --><?//= $tanggal;
+                                ?><!--</div>-->
+                                <!---->
+                                <!--                                </div>-->
+                                <div class="clearfix"></div>
+
+                                <br><br>
+                                <div>
+                                    <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre
+                                        beroperasional dan
+                                        memiliki kepemilikan secara mandiri</p>
+                                    <p style="float: right;margin-right: 20px;">Training Center</p>
+                                </div>
+                                <br><br><br>
+                                <hr>
+                            </div>
+
+
+                        </div>
+
                     </div>
-                    <br><br>
-                    <div>
-                        <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre beroperasional dan
-                            memiliki kepemilikan secara mandiri</p>
-                        <p style="float: right;margin-right: 20px;">Training Center</p>
-                    </div>
-                    <br><br><br>
-                    <hr>
                 </div>
-
-
             </div>
 
-        </div>
-        <br>
-        <br>
-        <div class="invoies_tc">
-            <div class="kop_invoices">
-                <img id="logo_sempoa" src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png">
-                <h3 id="data_tc">
-                    TC Taman Semanan Indah<br>
-                    Ruko Blok F No 7, Taman Semanan Indah - Jakarta Barat<br>
-                    Telp. 021 - 5444398, Fax. 021 - 5444397, HP. 08159923311
-                </h3>
-                <div class="info_invoices">
-                    <b>No. Invoice :</b> <br>
-                    <b>Tanggal :</b>
-                </div>
-                <div class="nama_siswa">
-                    <p>
-                        Telah diterima pembayaran oleh Murid :<br>
-                        <b>Nama Murid :</b><br>
-                        <b>ID Murid :</b>
-                    </p>
-                </div>
-                <table>
-                    <tr>
-                        <th>No Buku</th>
-                        <th>Keterangan</th>
-                        <th>Harga</th>
-                    </tr>
-                    <tr>
-                        <td>No.Buku</td>
-                        <td>Uang Buku Junior 1</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total</td>
-                        <td></td>
-                    </tr>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="invoies_tc">
+                        <div class="kop_invoices">
+                            <img id="logo_sempoa" src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png">
+                            <h3 id="data_tc">
+                                <?= $tc->nama; ?><br>
+                                <?= $tc->alamat; ?><br>
+                                Telp. <?= $tc->nomor_telp; ?>, Fax. <?= $tc->tc_no_fax_office; ?>,
+                                HP. <?= $tc->tc_no_hp_office; ?>
 
-                </table>
+                            </h3>
+                            <div class="info_invoices">
+                                <b>No. Invoice :</b> <br>
+                                <b>Tanggal :</b>
+                            </div>
+                            <div class="nama_siswa">
+                                <p>
+                                    Telah diterima pembayaran oleh Murid :<br>
+                                    <b>Nama Murid :</b><br>
+                                    <b>ID Murid :</b>
+                                </p>
+                            </div>
+                            <table style="border-right: 20px;">
+                                <tr>
+                                    <th>No Buku</th>
+                                    <th>Keterangan</th>
+                                    <th>Harga</th>
+                                </tr>
+                                <tr>
+                                    <td>No.Buku</td>
+                                    <td>Uang Buku Junior 1</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total</td>
+                                    <td></td>
+                                </tr>
+
+                            </table>
 
 <span>
 	<p>Pembayaran melalui mesin EDC atau via transfer ke :</p>
-	<h3 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h3>
+	<h3 id="sempoasip_pusat">SEMPOA SIP<br><?= $tc->tc_nama_bank; ?> <?= $tc->tc_cabang_bank; ?>
+        <br><?= $tc->tc_acc_bank; ?></h3>
 	<p style="float: right; margin-right: 20px;">....................., 11 Juli 2017</p>
 </span>
-                <div class="penutup_invoices">
-                    <p style="font-size: 30px">
-                        <img style="float: left; width: 100px; height: 100px "
-                             src="<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png">
-                        Terima Kasih
-                        <img style="float: right; width: 100px; height: 100px "
-                             src="<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png">
-                    </p>
-                </div>
-                <br><br>
-                <div>
-                    <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre beroperasional dan
-                        memiliki kepemilikan secara mandiri</p>
-                    <p style="float: right;margin-right: 20px;">Training Center</p>
-                </div>
+                            <div class="penutup_invoices">
+                                <p style="font-size: 30px">
+                                    <img style="float: left; width: 100px; height: 100px "
+                                         src="<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png">
+                                    Terima Kasih
+                                    <img style="float: right; width: 100px; height: 100px "
+                                         src="<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png">
+                                </p>
+                            </div>
+                            <br><br>
+                            <div>
+                                <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre
+                                    beroperasional dan
+                                    memiliki kepemilikan secara mandiri</p>
+                                <p style="float: right;margin-right: 20px;">Training Center</p>
+                            </div>
 
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <br>
+        <br>
+
 
         </body>
         </html>
@@ -5465,6 +5561,7 @@ class MuridWebHelper extends WebService
 
     }
 
+
     function murid_iuranBuku_load()
     {
         $page = isset($_GET['page']) ? addslashes($_GET['page']) : 1;
@@ -5483,128 +5580,174 @@ class MuridWebHelper extends WebService
         foreach ($arrIuranBuku as $key => $val) {
             ?>
             <tr>
-            <td><?= $val->bln_date_pembayaran; ?></td>
-            <td><?= Generic::getLevelNameByID($val->bln_buku_level); ?></td>
-            <td><?
-                if ($val->bln_status)
-                    echo $arrSTatus[$val->bln_status];
-                else {
-
-                    if (AccessRight::getMyOrgType() == "tc") {
-                        ?>
-                        <button class="btn btn-default belumbayar_<?= $val->bln_id; ?>"
-                                id='pay_now_bulanan_<?= $val->bln_id; ?>'>Pay Now
-                        </button>
-
-                        <?
-                    } else {
-                        echo "<b>Unpaid</b>";
-                    }
-                }
-                ?></td>
-
-            <td><?
-                if ($val->bln_status)
-                    echo $arrPembayaran[$val->bln_cara_bayar];
-                else {
-                    if (AccessRight::getMyOrgType() == "tc") {
-                        ?>
-                        <select id="jenis_pmbr_invoice_<?= $val->bln_id ?>">
-                            <?
-                            foreach ($arrPembayaran as $key => $by) {
-                                ?>
-                                <option value="<?= $key; ?>"><?= $by; ?></option>
-                                <?
-                            }
+                <td><?= $val->bln_date_pembayaran; ?></td>
+                <td><?= Generic::getLevelNameByID($val->bln_buku_level); ?></td>
+                <td><?
+                    if ($val->bln_status)
+                        echo $arrSTatus[$val->bln_status];
+                    else {
+                        if (AccessRight::getMyOrgType() == "tc") {
                             ?>
-                        </select>
-                        <?
-                    }
-                }
-                ?></td>
-            <td><?
-                if ($val->bln_status)
-                    echo $arrPembayaran[$val->bln_cara_bayar];
-                else {
-                    if (AccessRight::getMyOrgType() == "tc") {
-                        ?>
-                        <select id="jenis_pmbr_invoice_<?= $val->bln_id ?>">
+                            <button class="btn btn-default belumbayar_<?= $val->bln_id; ?>"
+                                    id='pay_now_bulanan_<?= $val->bln_id; ?>'>Pay Now
+                            </button>
+
                             <?
-                            foreach ($arrPembayaran as $key => $by) {
-                                ?>
-                                <option value="<?= $key; ?>"><?= $by; ?></option>
-                                <?
-                            }
-                            ?>
-                        </select>
-                        <?
+                        } else {
+                            echo "<b>Unpaid</b>";
+                        }
                     }
-                }
-                ?></td>
+                    ?></td>
+                <td>
+                    <?
+                    $stock = new StockBuku();
+                    $res = $stock->getBukuNoByInvoiceID($val->bln_id);
+                    if (count($res) > 0) {
+                        foreach ($res as $key => $nobuku) {
+                            echo $nobuku . "/" . $key . "<br>";
+                        }
+                    }
 
+                    ?>
 
-            <td>
+                </td>
+                <td><?
+                    if ($val->bln_status)
+                        echo $arrPembayaran[$val->bln_cara_bayar];
+                    else {
+                        if (AccessRight::getMyOrgType() == "tc") {
+                            ?>
+                            <select id="jenis_pmbr_invoice_<?= $val->bln_id ?>">
+                                <?
+                                foreach ($arrPembayaran as $key => $by) {
+                                    ?>
+                                    <option value="<?= $key; ?>"><?= $by; ?></option>
+                                    <?
+                                }
+                                ?>
+                            </select>
+                            <?
+                        }
+                    }
+                    ?></td>
+
                 <?
-                if ($val->bln_status == 0) {
+                if ((AccessRight::getMyOrgType() == KEY::$TC)) {
+                    ?>
+                    <td>
+                        <?
+                        if ($val->bln_status == 0) {
 //                                                echo $mk->bln_kupon_id;
-                } else {
-                    if ($murid->id_level_masuk == $val->bln_buku_level) {
-                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                        } else {
+                            if ($murid->id_level_masuk == $val->bln_buku_level) {
+                                echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
-                    } else {
-                        ?>
-                        <a target="_blank"
-                           href="<?= _SPPATH; ?>MuridWebHelper/printBuku?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
-
-                            <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-                        </a>
-                        <?
-                    }
-
-
-                }
-                ?>
-
-            </td>
-            <script>
-                <?
-                if ($val->bln_status) {
-                ?>
-                $('#belumbayar_<?= $val->bln_id; ?>').hide();
-                <?
-                } else {
-                ?>
-                $('#belumbayar_<?= $val->bln_id; ?>').show();
-                <?
-                }
-                ?>
-                $('#pay_now_bulanan_<?= $val->bln_id; ?>').click(function () {
-                    var jpb = $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').val();
-                    var bln_id = <?= $val->bln_id; ?>;
-                    $.post("<?= _SPPATH; ?>LaporanWebHelper/pay_iuran_buku_roy", {
-                            bln_id: bln_id,
-                            cara_pby: jpb
-                        },
-                        function (data) {
-                            alert(data.status_message);
-                            if (data.status_code) {
-                                $('#belumbayar_<?= $val->bln_id; ?>').hide();
-                                $('.sudahbayar').show();
-                                $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').attr("disabled", "true");
-                                lwrefresh(selected_page);
-                                // Refresh profile muridnya
-                                lwrefresh("Profile_Murid");
                             } else {
+                                ?>
+                                <a target="_blank"
+                                   href="<?= _SPPATH; ?>MuridWebHelper/printBuku?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
+
+                                                        <span class="glyphicon glyphicon-print"
+                                                              aria-hidden="true"></span>
+                                </a>
+                                <?
                             }
-                            console.log(data);
-                            //                                                                $('#balikan_<? //= $val->bln_id;                                                                                                                          ?>//').html(data);
-                        }, 'json');
-                });
-                //
 
 
-            </script>
+                        }
+                        ?>
 
+                    </td>
+                    <?
+
+                }
+                ?>
+                <?
+                if (AccessRight::getMyOrgType() == KEY::$IBO) {
+                    ?>
+                    <td>
+                        <?
+                        if (substr($val->bln_no_invoice, 0, 2) != KEY::$AWALAN_FIRST_PAYMENT) {
+                            $now = time();
+                            $your_date = strtotime($val->bln_date_pembayaran);
+                            $datediff = Generic::diffTwoDaysInDay($now, $your_date);
+                            if ($datediff <= 14) {
+                                ?>
+                                <span id="undo_iuran_buku_<?= $val->bln_id; ?>" class="fa fa-undo"
+                                      aria-hidden="true"></span>
+                                <?
+                            }
+                        }
+
+                        ?>
+                    </td>
+                    <?
+                }
+                ?>
+
+                <script>
+
+                    $("#undo_iuran_buku_<?= $val->bln_id; ?>").click(function(){
+
+                        var bln_id = '<?= $val->bln_id; ?>';
+                        alert(bln_id);
+                        if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?")){
+                            $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_buku_2", {
+                                bln_id: bln_id
+                            }, function (data) {
+                                console.log(data);
+                                alert(data.status_message);
+                                if (data.status_code) {
+                                    lwrefresh(selected_page);
+                                    lwrefresh("Profile_Murid");
+                                }
+                            }, 'json');
+                        }
+                        //kosongkan status di iuran bulanan
+                        //
+                    });
+                    $('#undo_<?= $val->bln_id . $t; ?>').click(function () {
+                    });
+
+                    <?
+                    if ($val->bln_status) {
+                    ?>
+                    $('#belumbayar_<?= $val->bln_id; ?>').hide();
+                    <?
+                    } else {
+                    ?>
+                    $('#belumbayar_<?= $val->bln_id; ?>').show();
+                    <?
+                    }
+                    ?>
+                    $('#pay_now_bulanan_<?= $val->bln_id; ?>').click(function () {
+//                                            alert("asas");
+                        var jpb = $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').val();
+                        var bln_id = <?= $val->bln_id; ?>;
+                        $.post("<?= _SPPATH; ?>LaporanWebHelper/pay_iuran_buku_roy", {
+                                bln_id: bln_id,
+                                cara_pby: jpb
+                            },
+                            function (data) {
+                                alert(data.status_message);
+                                if (data.status_code) {
+                                    $('.td .belumbayar_<?= $val->bln_id; ?>').hide();
+                                    $('.sudahbayar').show();
+                                    $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').attr("disabled", "true");
+                                    lwrefresh(selected_page);
+                                    // Refresh profile muridnya
+                                    lwrefresh("Profile_Murid");
+                                } else {
+                                }
+                                console.log(data);
+                                //                                                                $('#balikan_<? //= $val->bln_id;                                                                                                                          ?>//').html(data);
+                            }, 'json');
+                    });
+                    //
+
+
+                </script>
+            </tr>
             <?
         }
 

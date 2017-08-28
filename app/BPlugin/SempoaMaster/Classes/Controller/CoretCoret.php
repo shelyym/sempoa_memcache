@@ -320,13 +320,164 @@ class CoretCoret extends WebService
 
     }
 
+    function murid_iuranBuku_load()
+    {
+        $page = isset($_GET['page']) ? addslashes($_GET['page']) : 1;
+        $limit = KEY::$LIMIT_PROFILE;
+        $begin = ($page - 1) * $limit;
+        $id = addslashes($_GET['id']);
+        $iuranBuku = new IuranBuku();
+        $arrIuranBuku = $iuranBuku->getWhere("bln_murid_id='$id' ORDER by bln_date_pembayaran DESC LIMIT $begin,$limit");
+        $jumlahTotal = $iuranBuku->getJumlah("bln_murid_id='$id'");
+//        pr($arrIuranBuku);
+        $jumlahHalamanTotal = ceil($jumlahTotal / $limit);
+        $arrPembayaran = Generic::getJenisPembayaran();
+        $arrSTatus = array("<b>Unpaid</b>", "Paid");
+        $murid = new MuridModel();
+        $murid->getByID($id);
+        foreach ($arrIuranBuku as $key => $val) {
+            ?>
+            <tr>
+            <td><?= $val->bln_date_pembayaran; ?></td>
+            <td><?= Generic::getLevelNameByID($val->bln_buku_level); ?></td>
+            <td><?
+                if ($val->bln_status)
+                    echo $arrSTatus[$val->bln_status];
+                else {
+
+                    if (AccessRight::getMyOrgType() == "tc") {
+                        ?>
+                        <button class="btn btn-default belumbayar_<?= $val->bln_id; ?>"
+                                id='pay_now_bulanan_<?= $val->bln_id; ?>'>Pay Now
+                        </button>
+
+                        <?
+                    } else {
+                        echo "<b>Unpaid</b>";
+                    }
+                }
+                ?></td>
+
+            <td><?
+                if ($val->bln_status)
+                    echo $arrPembayaran[$val->bln_cara_bayar];
+                else {
+                    if (AccessRight::getMyOrgType() == "tc") {
+                        ?>
+                        <select id="jenis_pmbr_invoice_<?= $val->bln_id ?>">
+                            <?
+                            foreach ($arrPembayaran as $key => $by) {
+                                ?>
+                                <option value="<?= $key; ?>"><?= $by; ?></option>
+                                <?
+                            }
+                            ?>
+                        </select>
+                        <?
+                    }
+                }
+                ?></td>
+            <td><?
+                if ($val->bln_status)
+                    echo $arrPembayaran[$val->bln_cara_bayar];
+                else {
+                    if (AccessRight::getMyOrgType() == "tc") {
+                        ?>
+                        <select id="jenis_pmbr_invoice_<?= $val->bln_id ?>">
+                            <?
+                            foreach ($arrPembayaran as $key => $by) {
+                                ?>
+                                <option value="<?= $key; ?>"><?= $by; ?></option>
+                                <?
+                            }
+                            ?>
+                        </select>
+                        <?
+                    }
+                }
+                ?></td>
+
+
+            <td>
+                <?
+                if ($val->bln_status == 0) {
+//                                                echo $mk->bln_kupon_id;
+                } else {
+                    if ($murid->id_level_masuk == $val->bln_buku_level) {
+                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                            </a>";
+                    } else {
+                        ?>
+                        <a target="_blank"
+                           href="<?= _SPPATH; ?>MuridWebHelper/printBuku?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
+
+                            <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+                        </a>
+                        <?
+                    }
+
+
+                }
+                ?>
+
+            </td>
+            <script>
+                <?
+                if ($val->bln_status) {
+                ?>
+                $('#belumbayar_<?= $val->bln_id; ?>').hide();
+                <?
+                } else {
+                ?>
+                $('#belumbayar_<?= $val->bln_id; ?>').show();
+                <?
+                }
+                ?>
+                $('#pay_now_bulanan_<?= $val->bln_id; ?>').click(function () {
+                    var jpb = $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').val();
+                    var bln_id = <?= $val->bln_id; ?>;
+                    $.post("<?= _SPPATH; ?>LaporanWebHelper/pay_iuran_buku_roy", {
+                            bln_id: bln_id,
+                            cara_pby: jpb
+                        },
+                        function (data) {
+                            alert(data.status_message);
+                            if (data.status_code) {
+                                $('#belumbayar_<?= $val->bln_id; ?>').hide();
+                                $('.sudahbayar').show();
+                                $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').attr("disabled", "true");
+                                lwrefresh(selected_page);
+                                // Refresh profile muridnya
+                                lwrefresh("Profile_Murid");
+                            } else {
+                            }
+                            console.log(data);
+                            //                                                                $('#balikan_<? //= $val->bln_id;                                                                                                                          ?>//').html(data);
+                        }, 'json');
+                });
+                //
+
+
+            </script>
+
+            <?
+        }
+
+
+    }
+
+
     public function getTC()
     {
 
-        $a = new SempoaOrg();
-        $a->printColumlistAsAttributes();
-        die();
         $noInvoice = "FP/2017/8/7";
+
+        $a = substr($noInvoice,0,2);
+
+        pr($a);
+        die();
+
+
         $iuranBuku = new IuranBuku();
         $iuranBuku->getWhereOne("bln_no_invoice='$noInvoice'");
         $id_invoice = $iuranBuku->bln_id;

@@ -167,7 +167,7 @@ class StockBuku extends Model
         $this->getWhereOne("stock_murid=1 AND stock_invoice_murid='$invoice_id'");
 
         if(!is_null($this->stock_buku_id)){
-            $this->stock_buku_tc = 1;
+            $this->stock_status_tc = 1;
             $this->stock_murid =0;
             $this->stock_invoice_murid = "";
             $this->stock_murid_id = "";
