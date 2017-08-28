@@ -44,7 +44,7 @@ class AccountHelper extends WebService
 
         if (Auth::isLogged()) {
             $json['status_code'] = 1;
-            $json['status_message'] = "Berhasil login " . $userid . Generic::getAdminUsernameByID($userid);
+            $json['status_message'] = "Berhasil login " . Generic::getAdminUsernameByID($userid);
         } else {
             $json['status_code'] = 0;
             $json['status_message'] = "Gagal!";

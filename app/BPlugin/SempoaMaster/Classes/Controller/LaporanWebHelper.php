@@ -123,7 +123,10 @@ class LaporanWebHelper extends WebService
             $jumlahKuponTersedia = $kuponSatuan->jumlahKuponTersedia($kupon_owner);
             $json['get'] = $_GET;
             $json['status_code'] = 1;
-            $json['status_message'] = "Success! \nJumlah kupon tersedia: "  . $jumlahKuponTersedia ;
+            $json['status_message'] = "Success! \nJumlah kupon tersedia: " . $jumlahKuponTersedia;
+            if ($jumlahKuponTersedia <= KEY::$MIN_JUMLAH_KUPON) {
+                SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), AccessRight::getMyOrgID(), "Warning", "Kupon Anda Tinggal: <b>" . $jumlahKuponTersedia . "</b>");
+            }
             echo json_encode($json);
             die();
         }
@@ -420,13 +423,11 @@ class LaporanWebHelper extends WebService
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
-
         $bln_id = addslashes($_POST['bln_id']);
         $cara_pby = addslashes($_POST['cara_pby']);
 
         $iuranBuku = new IuranBuku();
         $iuranBuku->getByID($bln_id);
-//        pr($iuranBuku);
         $myOrg = AccessRight::getMyOrgID();
         $myParentID = Generic::getMyParentID($myOrg);
         $myGrandParentID = Generic::getMyParentID($myParentID);
@@ -450,16 +451,11 @@ class LaporanWebHelper extends WebService
 
         $resBuku = $setNoBuku->getBukuYgdReservMurid($level_baru, $myOrg, $iuranBuku->bln_murid_id, $iuranBuku->bln_kur);
 
-
-
-
         $weiter = true;
 
+        // ambil id barang dari level
         $jumlahBukuIst = Generic::getIdBarangByLevel($level_baru, $iuranBuku->bln_kur);
-//        pr($level_baru);
-//        pr($resBuku);
-//        pr($jumlahBukuIst);
-//        die();
+
         if (count($resBuku) == 0) {
             $weiter = false;
             $json['status_code'] = 0;
@@ -473,6 +469,7 @@ class LaporanWebHelper extends WebService
             echo json_encode($json);
             die();
         }
+
 
         foreach ($resBuku as $val) {
             $setNoBuku = new StockBuku();
@@ -504,6 +501,7 @@ class LaporanWebHelper extends WebService
             echo json_encode($json);
             die();
         } else {
+            $arrJumlahbrg = array();
             $arrIDNoBuku = $setNoBuku->setStatusBuku($resBuku, $iuranBuku->bln_murid_id);
             foreach ($resBuku as $val) {
                 $setNoBuku = new StockBuku();
@@ -511,7 +509,11 @@ class LaporanWebHelper extends WebService
                 $stockBarang = new StockModel();
                 $stockBarang->getWhereOne("id_barang='$id_barang' AND org_id='$myOrg'");
                 if ($stockBarang->jumlah_stock > 0) {
+
                     $stockBarang->jumlah_stock--;
+                    if ($stockBarang->jumlah_stock <= KEY::$MIN_JUMLAH_BUKU) {
+                        $arrJumlahbrg[$id_barang] = $stockBarang->jumlah_stock + 1;
+                    }
                     $stockBarang->save();
                 }
             }
@@ -525,6 +527,21 @@ class LaporanWebHelper extends WebService
                 $objMurid->save(1);
 
             }
+        }
+        if (count($arrJumlahbrg) > 0) {
+            $strmsg = "";
+
+            foreach ($arrJumlahbrg as $key => $val) {
+                if($strmsg == ""){
+                    $a = new BarangWebModel();
+                    $strmsg = "Sisa buku " . $a->getNamaBukuByID($key) .  " : <b>" . $val . "</b><br>";
+                }
+                else{
+                    $strmsg = $strmsg .  "Sisa buku " . $a->getNamaBukuByID($key) .  " : <b>" . $val . "</b><br>";
+                }
+            }
+            SempoaInboxModel::sendMsg(AccessRight::getMyOrgID(), AccessRight::getMyOrgID(), "Warning", $strmsg);
+
         }
 
 

@@ -1026,8 +1026,8 @@ class Generic
     public static function getAdminUsernameByID($id)
     {
         $acc = new SempoaAccount();
-        $name = $acc->getWhere("admin_org_id='$id'");
-        return $name[0]->admin_username;
+        $acc->getWhereOne("admin_id='$id'");
+        return $acc->admin_username;
     }
 
 

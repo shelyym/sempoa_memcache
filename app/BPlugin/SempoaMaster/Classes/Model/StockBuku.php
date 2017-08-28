@@ -162,4 +162,17 @@ class StockBuku extends Model
         }
         return $res;
     }
+
+    public function retourBukuMurid($invoice_id){
+        $this->getWhereOne("stock_murid=1 AND stock_invoice_murid='$invoice_id'");
+
+        if(!is_null($this->stock_buku_id)){
+            $this->stock_buku_tc = 1;
+            $this->stock_murid =0;
+            $this->stock_invoice_murid = "";
+            $this->stock_murid_id = "";
+            $this->save(1);
+
+        }
+    }
 }

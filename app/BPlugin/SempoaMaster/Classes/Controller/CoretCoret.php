@@ -320,8 +320,67 @@ class CoretCoret extends WebService
 
     }
 
-    public function getTC(){
+    public function getTC()
+    {
+
+        $a = new SempoaOrg();
+        $a->printColumlistAsAttributes();
+        die();
+        $noInvoice = "FP/2017/8/7";
+        $iuranBuku = new IuranBuku();
+        $iuranBuku->getWhereOne("bln_no_invoice='$noInvoice'");
+        $id_invoice = $iuranBuku->bln_id;
+
+        pr($id_invoice);
+        die();
+        $stockBuku = new StockBuku();
+        $arrStockBuku = $stockBuku->getWhere("stock_invoice_murid='$id_invoice'");
+        pr($arrStockBuku);
+        die();
+
+        $invoice_id = 2416;
+        $stockBuku = new StockBuku();
+        $stockBuku->retourBukuMurid($invoice_id);
+
+
+        die();
+//        $iuranBulanan = new IuranBulanan();
+//        $iuranBulanan->getWhereOne("bln_no_invoice='$noInvoice'");
+//        $id_invoice = $iuranBulanan->bln_id;
+//        $stockBuku = new StockBuku();
+//        $arrStockBuku = $stockBuku->getWhere("stock_invoice_murid='$id_invoice'");
+//        foreach($arrStockBuku as $buku){
+//            $stockBuku = new StockBuku();
+//            $stockBuku->retourBukuMurid($id_invoice);
+//        }
+//
+
+        $id_buku = "3,4";
+        $arrIDBuku = explode(",", $id_buku);
+        pr($arrIDBuku);
+        foreach ($arrIDBuku as $val) {
+            $stockBarangBuku = new StockModel();
+            $stockBarangBuku->getWhereOne("id_barang = '$val' AND org_id='4'");
+            $stockBarangBuku->jumlah_stock = $stockBarangBuku->jumlah_stock - 1;
+//            $stockBarangBuku->save();
+            $setNoBuku = new StockBuku();
+            $resBuNo = $setNoBuku->getBukuYgdReservMurid(2, 4, 13029, 0);
+            pr($resBuNo);
+//            $setNoBuku->setStatusBuku($resBuNo, $murid_id);
+        }
+        die();
+        pr(_PHOTOPATH);
+        pr(_SPPATH . _PHOTOURL);
+        $acc = new SempoaAccount();
+        $acc->getWhereOne("admin_id='104'");
+        pr($acc->admin_username);
+
+        die();
+        return $acc->admin_username;
+
+
         $obj = new SempoaOrg();
+
 //        pr($IBOid);
         $arr = $obj->getWhere("org_type='tc' AND org_parent_id='3' ORDER BY nama ASC");
 //        pr($arr);
@@ -336,8 +395,8 @@ class CoretCoret extends WebService
         $arrSortTC = $arrTC;
         sort($arrSortTC);
         $arrNewSort = array();
-        foreach($arrSortTC as $val){
-            $arrNewSort[array_search($val,$arrTC)] = $val;
+        foreach ($arrSortTC as $val) {
+            $arrNewSort[array_search($val, $arrTC)] = $val;
 //            pr($val);
         }
         pr($arrNewSort);
