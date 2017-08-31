@@ -467,9 +467,14 @@ class LaporanWebHelper extends WebService
         // Check stock bu no ada ngak
         // Check Buku ada ngak;
 //bln_ganti_kur
+
+
         $setNoBuku = new StockBuku();
         if (($iuranBuku->bln_kur == KEY::$KURIKULUM_LAMA) && ($iuranBuku->bln_ganti_kur != 1)) {
+
             $level_baru = Generic::convertLevelBaruKeLama($iuranBuku->bln_buku_level);
+
+            $json['ganti'] = "ganti kuri: " . $level_baru;
         } else {
             $level_baru = $iuranBuku->bln_buku_level;
         }
@@ -478,22 +483,25 @@ class LaporanWebHelper extends WebService
             $iuranBuku->bln_kur = 0;
         }
 
-        $resBuku = $setNoBuku->getBukuYgdReservMurid($level_baru, $myOrg, $iuranBuku->bln_murid_id, $iuranBuku->bln_kur);
+        $resBuku = $setNoBuku->getBukuYgdReservMurid($level_baru, $myOrg, $iuranBuku->bln_murid_id, $iuranBuku->bln_kur,KEY::$JENIS_BUKU);
 
         $weiter = true;
 
         // ambil id barang dari level
-        $jumlahBukuIst = Generic::getIdBarangByLevel($level_baru, $iuranBuku->bln_kur);
+        $jumlahBukuIst = Generic::getIdBarangByLevelDanJenisBiaya($level_baru, $iuranBuku->bln_kur,KEY::$JENIS_BUKU);
 
         if (count($resBuku) == 0) {
             $weiter = false;
             $json['status_code'] = 0;
-            $json['status_message'] = "Persediaan Buku Habis!";
+            $json['status_message'] = "Persediaan Buku Habis!!";
             echo json_encode($json);
             die();
         } elseif (count($jumlahBukuIst) <> count($resBuku)) {
             $weiter = false;
             $json['status_code'] = 0;
+            $json['level'] = $level_baru;
+            $json['res'] = $resBuku;
+            $json['jumlahBukuIst'] = $jumlahBukuIst;
             $json['status_message'] = "Persediaan Buku Habis!";
             echo json_encode($json);
             die();

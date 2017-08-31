@@ -79,10 +79,10 @@ class StockBuku extends Model
 
     }
 
-    public function getBukuYgdReservMurid($level, $org_id_pemilik, $id_murid, $kurikulum)
+    public function getBukuYgdReservMurid($level, $org_id_pemilik, $id_murid, $kurikulum, $jenis_biaya)
     {
 
-        $arrIdBarang = Generic::getIdBarangByLevel($level, $kurikulum);
+        $arrIdBarang = Generic::getIdBarangByLevelDanJenisBiaya($level, $kurikulum,$jenis_biaya);
         $res = array();
         foreach ($arrIdBarang as $val) {
             $buno = new StockBuku();

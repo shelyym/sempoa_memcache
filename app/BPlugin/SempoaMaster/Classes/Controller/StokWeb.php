@@ -22,10 +22,23 @@ class StokWeb extends WebService
         $org = new SempoaOrg();
         $acc = new SempoaAccount();
         $t = time();
+        $arrJenisBarang = Generic::getJenisBiaya();
         ?>
         <h1>Kartu Stock</h1>
         <form id="kartuStock_<?= $kpo_id . $acc->getMyID(); ?>">
             <div class="form-group">
+                <label for="namaBarang">Jenis Barang:</label>
+                <select class="form-control" id="jenis_barang_<?= $t; ?>">
+                    <?
+                    foreach ($arrJenisBarang as $key => $jenisBarang) {
+                        ?>
+                        <option id='<?= $jenisBarang . "_" . $t; ?>'
+                                value="<?= $key; ?>"><?= $jenisBarang; ?></option>
+                        <?
+                    }
+                    ?>
+                </select>
+
                 <label for="namaBarang">Nama Barang:</label>
                 <select class="form-control" id="buku_<?= $t; ?>">
                     <?
@@ -51,6 +64,11 @@ class StokWeb extends WebService
                 <label for="stockMasuk">Stock Masuk:</label>
                 <input type="text" class="form-control" id="stockMasuk_<?= $t; ?>" placeholder="Stock masuk">
 
+                <label id="no_buku_<?= $t; ?>" for="noBuku">No Buku Mulai:</label>
+                <input id="no_buku_masuk_<?= $t; ?>" type="number" min="0" onKeyPress="if(this.value.length==5) return false;" class="form-control" id="no_buku_masuk_<?= $t; ?>"
+                       placeholder="No. Buku dimulai" required>
+
+
                 <label for="keterangan">Keterangan:</label>
                 <input type="text" class="form-control" id="keterangan_<?= $t; ?>" placeholder="Keterangan">
 
@@ -74,6 +92,41 @@ class StokWeb extends WebService
         </style>
         <script>
 
+            $(document).ready(function () {
+                var jenis_barang = $('#jenis_barang_<?= $t; ?> option:selected').val();
+                getBarangByIdJenis(jenis_barang);
+                $("#no_buku_<?= $t; ?>").hide();
+                $("#no_buku_masuk_<?= $t; ?>").hide();
+            });
+
+            $("#jenis_barang_<?= $t; ?>").change(function () {
+                var jenis_barang = $('#jenis_barang_<?= $t; ?> option:selected').val();
+                getBarangByIdJenis(jenis_barang);
+                if (jenis_barang == <?=KEY::$JENIS_BUKU;?>) {
+                    $("#no_buku_<?= $t; ?>").show();
+                    $("#no_buku_masuk_<?= $t; ?>").show();
+//                    alert($('#jenis_barang_<?//= $t; ?>// option:selected').val());
+//                    alert($('#jenis_barang_<?//= $t; ?>// option:selected').text());
+                }
+                else {
+                    $("#no_buku_<?= $t; ?>").hide();
+                    $("#no_buku_masuk_<?= $t; ?>").hide();
+                }
+
+            });
+
+            function getBarangByIdJenis(slc) {
+                $.ajax({
+                    type: "GET",
+                    url: "<?= _SPPATH; ?>StockWebHelper/loadJenisBarang?",
+                    data: 'jenis_barang=' + slc,
+                    success: function (data) {
+                        console.log(data);
+                        $("#buku_<?= $t; ?>").html(data);
+                    }
+                });
+            }
+
             $('#btn_kartuStock_<?= $kpo_id . $acc->getMyID(); ?>').click(function () {
                 if (confirm("Anda yakin?")) {
                     var stk_masuk = $('#stockMasuk_<?= $t; ?>').val();
@@ -84,17 +137,36 @@ class StokWeb extends WebService
                     var tanggal = $('#tanggal_<?= $t; ?>').val();
                     var keterangan = $('#keterangan_<?= $t; ?>').val();
                     var name_barang = $('#buku_<?= $t; ?> option:selected').text();
-                    $.get("<?= _SPPATH; ?>StockWebHelper/insertKartuStock?id_barang=" + id_barang + "&stk_masuk=" + stk_masuk + "&tanggal=" + tanggal + "&pemilik=" + id_pemilik_barang + "&id_nama=" + name + "&keterangan=" + keterangan +"&name_barang="+name_barang, function (data) {
-                        console.log(data);
-                        if (data.status_code) {
-                            console.log(data.id_pemilik_barang);
-                            alert("Success!");
-                            //                            lwrefresh("read_stok_buku_dan_barang_kpo");
-                            //                            lwrefresh("read_kartu_stok_kpo");
-                        } else {
-                            alert(data.status_message);
-                        }
-                    }, 'json');
+                    var jenis_barang = $('#jenis_barang_<?= $t; ?> option:selected').val();
+
+                    if(jenis_barang != <?=KEY::$JENIS_BUKU;?>){
+                        $.get("<?= _SPPATH; ?>StockWebHelper/insertKartuStock?id_barang=" + id_barang + "&stk_masuk=" + stk_masuk + "&tanggal=" + tanggal + "&pemilik=" + id_pemilik_barang + "&id_nama=" + name + "&keterangan=" + keterangan + "&name_barang=" + name_barang, function (data) {
+                            console.log(data);
+                            if (data.status_code) {
+                                console.log(data.id_pemilik_barang);
+                                alert("Success!");
+                                //                            lwrefresh("read_stok_buku_dan_barang_kpo");
+                                //                            lwrefresh("read_kartu_stok_kpo");
+                            } else {
+                                alert(data.status_message);
+                            }
+                        }, 'json');
+                    }
+                    else{
+                        var no_buku = $('#no_buku_masuk_<?= $t; ?>').val();
+                        no_buku = parseInt(no_buku);
+                        $.get("<?= _SPPATH; ?>StockWebHelper/insertKartuStockBuku?id_barang=" + id_barang + "&no_buku=" + no_buku + "&stk_masuk=" + stk_masuk + "&tanggal=" + tanggal + "&pemilik=" + id_pemilik_barang + "&id_nama=" + name + "&keterangan=" + keterangan + "&name_barang=" + name_barang, function (data) {
+                            console.log(data);
+                            if (data.status_code) {
+                                console.log(data);
+                                alert("Success!");
+                                //                            lwrefresh("read_stok_buku_dan_barang_kpo");
+                                //                            lwrefresh("read_kartu_stok_kpo");
+                            } else {
+                                alert(data.status_message);
+                            }
+                        }, 'json');
+                    }
                 }
 
             });
@@ -525,7 +597,8 @@ class StokWeb extends WebService
             <div class="clearfix"></div>
             <section class="content">
 
-                <div id="sum_barang_<?=$t;?>" style="text-align: left; font-size: 16px;"><?=  "<b>Jumlah buku yang tersedia: " . count($arrStock) . "</b><br>";?>
+                <div id="sum_barang_<?= $t; ?>"
+                     style="text-align: left; font-size: 16px;"><?= "<b>Jumlah buku yang tersedia: " . count($arrStock) . "</b><br>"; ?>
 
                 </div>
                 <table class="table table-bordered table-striped" style="margin-top: 20px;">

@@ -73,7 +73,10 @@ class Generic
 
     public static function getJenisBiaya()
     {
-        $arrBiaya = array("Barang", "Buku", "Perlengkapan");
+//        $arrBiaya = array("Barang", "Buku", "Perlengkapan");
+        $arrBiaya[KEY::$JENIS_BARANG] = KEY::$JENIS_BARANG_TEXT;
+        $arrBiaya[KEY::$JENIS_BUKU] = KEY::$JENIS_BUKU_TEXT;
+        $arrBiaya[KEY::$JENIS_PERLENGKAPAN] = KEY::$JENIS_PERLENGKAPAN_TEXT;
         return $arrBiaya;
     }
 
@@ -1896,6 +1899,18 @@ class Generic
         return $res;
     }
 
+
+    public static function getIdBarangByLevelDanJenisBiaya($level, $kurikulum, $jenisBiaya){
+        $barang = new BarangWebModel();
+        $arrBarang = $barang->getWhere("level=$level AND jenis_kurikulum=$kurikulum AND jenis_biaya=$jenisBiaya");
+
+        $res = array();
+        foreach($arrBarang as $val){
+            $res[] = $val->id_barang_harga;
+        }
+        return $res;
+    }
+
     public static function recalculationStock(){
 
     }
@@ -1985,5 +2000,13 @@ class Generic
             return 13;
         }
 
+    }
+
+    public static function getJenisBarang_(){
+        $barang = new BarangWebModel();
+        $arr = $barang->getWhere("1 GROUP BY  jenis_biaya");
+        foreach($arr as $val){
+            $res[] = $val->jenis_biaya;
+        }
     }
 }

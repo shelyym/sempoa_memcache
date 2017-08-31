@@ -142,4 +142,13 @@ class BarangWebModel extends SempoaModel
         $this->getWhereOne("no_buku=$awalannobuku");
         return $this->nama_barang;
     }
+
+    public function getStockByIdJenisBarang($idJenisBarang){
+        $arrStock = $this->getWhere("jenis_biaya=$idJenisBarang");
+        $res = array();
+        foreach($arrStock as $val){
+            $res[$val->id_barang_harga]  = $val->nama_barang;
+        }
+        return $res;
+    }
 }

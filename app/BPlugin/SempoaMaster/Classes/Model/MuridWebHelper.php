@@ -97,7 +97,7 @@ class MuridWebHelper extends WebService
                                 //TODO check stok buku
 //                            echo "<b>Check stok buku ya..</b>";
 //                                pr($murid->id_level_masuk);
-                                $arrBukuYgDiperlukan = Generic::getIdBarangByLevel($murid->id_level_masuk, 0);
+                                $arrBukuYgDiperlukan = Generic::getIdBarangByLevelDanJenisBiaya($murid->id_level_masuk, 0,KEY::$JENIS_BUKU);
 //                                pr($arrBukuYgDiperlukan);
                                 $myBuku = new BarangWebModel();
                                 $arrMyBuku = $myBuku->getWhere("level=$murid->id_level_sekarang  AND jenis_biaya = 1 AND kpo_id = $myGrandParentID LIMIT 0,1");
@@ -507,7 +507,7 @@ class MuridWebHelper extends WebService
                 $id_iuranbuku = $objIuranBuku->save();
                 $json['noinvice'] = $noInvoiceFP;
                 $setNoBuku = new StockBuku();
-                $resBuNo = $setNoBuku->getBukuYgdReservMurid($murid->id_level_sekarang, $murid->murid_tc_id, $murid_id, 0);
+                $resBuNo = $setNoBuku->getBukuYgdReservMurid($murid->id_level_sekarang, $murid->murid_tc_id, $murid_id, 0,KEY::$JENIS_BUKU);
                 $setNoBuku->setStatusBuku($resBuNo, $murid_id, $id_iuranbuku);
                 // Stock Buku No
 
@@ -2043,12 +2043,12 @@ class MuridWebHelper extends WebService
                     <li class="<? if ($active_tab == "bulanan") {
                         ?>active<?
                     } ?>">
-                        <a style="font-weight: bold; font-size: 15px;" href="#IuranSPP_<?= $id; ?>" data-toggle="tab">Iuran
+                        <a style="font-weight: bold; font-size: 15px;" href="#IuranSPP_<?= $id.$t; ?>" data-toggle="tab">Iuran
                             Bulanan</a>
                     </li>
                     <li class="<? if ($active_tab == "buku") {
                         ?>active<?
-                    } ?>"><a style="font-weight: bold; font-size: 15px;" href="#IuranBuku_<?= $id; ?>"
+                    } ?>"><a style="font-weight: bold; font-size: 15px;" href="#IuranBuku_<?= $id.$t; ?>"
                              data-toggle="tab">Iuran
                             Buku</a>
                     </li>
@@ -2058,7 +2058,7 @@ class MuridWebHelper extends WebService
 
                     <div class="tab-pane <? if ($active_tab == "bulanan") {
                         ?>active<?
-                    } ?>" id="IuranSPP_<?= $id; ?>"
+                    } ?>" id="IuranSPP_<?= $id.$t; ?>"
                          style="background-color: #FFFFFF; padding:10px;border: 1px solid #ddd; border-top: 0px;">
                         <div class="table-responsive">
                             <table class="table table-striped ">
@@ -2349,7 +2349,7 @@ class MuridWebHelper extends WebService
                     ?>
                     <div class="tab-pane <? if ($active_tab == "buku") {
                         ?>active<?
-                    } ?>" id="IuranBuku_<?= $id; ?>"
+                    } ?>" id="IuranBuku_<?= $id.$t; ?>"
                          style="background-color: #FFFFFF; padding:10px;border: 1px solid #ddd; border-top: 0px;">
                         <table class="table table-striped table-responsive">
                             <thead>
@@ -2391,7 +2391,7 @@ class MuridWebHelper extends WebService
 
                             </tr>
                             </thead>
-                            <tbody id='container_load_history_iuranBuku_<?=$t;?>'>
+                            <tbody id='container_load_history_iuranBuku_<?= $t; ?>'>
                             <?
                             foreach ($arrIuranBuku as $key => $val) {
                                 ?>
@@ -2405,7 +2405,7 @@ class MuridWebHelper extends WebService
                                             if (AccessRight::getMyOrgType() == "tc") {
                                                 ?>
                                                 <button class="btn btn-default belumbayar_<?= $val->bln_id; ?>"
-                                                        id='pay_now_bulanan_<?= $val->bln_id; ?>'>Pay Now
+                                                        id='pay_now_bulanan_<?= $val->bln_id . $t; ?>'>Pay Now
                                                 </button>
 
                                                 <?
@@ -2503,11 +2503,11 @@ class MuridWebHelper extends WebService
 
                                     <script>
 
-                                        $("#undo_iuran_buku_<?= $val->bln_id; ?>").click(function(){
+                                        $("#undo_iuran_buku_<?= $val->bln_id; ?>").click(function () {
 
                                             var bln_id = '<?= $val->bln_id; ?>';
-                                                alert(bln_id);
-                                            if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?")){
+                                            alert(bln_id);
+                                            if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?")) {
                                                 $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_buku_2", {
                                                     bln_id: bln_id
                                                 }, function (data) {
@@ -2518,7 +2518,7 @@ class MuridWebHelper extends WebService
                                                         lwrefresh("Profile_Murid");
                                                     }
                                                 }, 'json');
-                                        }
+                                            }
                                             //kosongkan status di iuran bulanan
                                             //
                                         });
@@ -2536,9 +2536,10 @@ class MuridWebHelper extends WebService
                                         <?
                                         }
                                         ?>
-                                        $('#pay_now_bulanan_<?= $val->bln_id; ?>').click(function () {
+                                        $('#pay_now_bulanan_<?= $val->bln_id . $t; ?>').click(function () {
 //                                            alert("asas");
                                             var jpb = $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').val();
+                                            var bln_id = <?= $val->bln_id; ?>;
                                             var bln_id = <?= $val->bln_id; ?>;
                                             $.post("<?= _SPPATH; ?>LaporanWebHelper/pay_iuran_buku_roy", {
                                                     bln_id: bln_id,
@@ -4433,6 +4434,7 @@ class MuridWebHelper extends WebService
         $tc = new SempoaOrg();
         $tc->getWhereOne("org_id=$murid->murid_tc_id");
         $bukuDgnNo = new StockBuku();
+        pr($iuranBuku->bln_id);
         $arbukuDgnNo = $bukuDgnNo->getWhere("stock_invoice_murid=$iuranBuku->bln_id");
         ?>
 
@@ -4496,7 +4498,7 @@ class MuridWebHelper extends WebService
         </head>
 
         <body>
-        <div class="container">
+        <div class="container" style="border-style: dotted;">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="invoice_orang_tua">
@@ -4526,6 +4528,7 @@ class MuridWebHelper extends WebService
                                     </thead>
                                     <tbody>
                                     <?
+                                    pr($arbukuDgnNo);
                                     foreach ($arbukuDgnNo as $val) {
                                         $date = new DateTime($val->stock_buku_tgl_keluar_tc);
                                         $tanggal = $date->format("d-m-Y");
@@ -4556,107 +4559,85 @@ class MuridWebHelper extends WebService
                                 <div class="clearfix"></div>
 
 
-                                <div>
-                                    <img src=<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png" alt=""/>
-                                    <img src="http://placehold.it/100x100" alt=""/>
-                                    <img src=<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png" alt=""/>
+                                <div class="row">
+                                    <div class="col-md-3" style="text-align: right;"><img
+                                            style="width: 100px; height: 100px;"
+                                            src="<?= _SPPATH . _PHOTOURL . "Sempa_20.png"
+                                            ?>"</div>
+                                                                    <div class=" col-md-3" style="text-align:
+                                        center;">Terima Kasih
+                                    </div>
+                                    <div class="col-md-3" style="text-align: left;"><img
+                                            style=" width: 100px; height: 100px;"
+                                            src="<?= _SPPATH . _PHOTOURL ;?>Sempi_20.png"></div>
+
+                                    <div class="col-md-3" style="text-align: center;">
+                                        ....................., <?= $tanggal;
+                                                                         ?><!--</div>-->
+
+                                    </div>
+                                    <div class="clearfix"></div>
+
+                                    <br><br>
+                                    <div>
+                                        <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre
+                                            beroperasional dan
+                                            memiliki kepemilikan secara mandiri</p>
+                                        <p style="float: right;margin-right: 20px;">Training Center</p>
+                                    </div>
+                                    <br><br><br>
+                                    <hr>
                                 </div>
 
-                                <style>
-                                    div {
-                                        text-align: justify;
-                                    }
 
-                                    div img {
-                                        display: inline-block;
-                                        width: 100px;
-                                        height: 100px;
-                                    }
-
-                                    div:after {
-                                        content: '';
-                                        display: inline-block;
-                                        width: 100%;
-                                    }
-                                </style>
-
-
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-md-3" style="text-align: right;"><img-->
-                                <!--                                            style="width: 100px; height: 100px;"-->
-                                <!--                                            src="--><?//= _SPPATH . _PHOTOURL;
-                                ?><!--Sempa_20.png"></div>-->
-                                <!--                                    <div class="col-md-3" style="text-align: center;">Terima Kasih</div>-->
-                                <!--                                    <div class="col-md-3" style="text-align: left;"><img-->
-                                <!--                                            style=" width: 100px; height: 100px;"-->
-                                <!--                                            src="--><?//= _SPPATH . _PHOTOURL;
-                                ?><!--Sempi_20.png"></div>-->
-                                <!--                                    <div class="col-md-3" style="text-align: center;">-->
-                                <!--                                        ....................., --><?//= $tanggal;
-                                ?><!--</div>-->
-                                <!---->
-                                <!--                                </div>-->
-                                <div class="clearfix"></div>
-
-                                <br><br>
-                                <div>
-                                    <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre
-                                        beroperasional dan
-                                        memiliki kepemilikan secara mandiri</p>
-                                    <p style="float: right;margin-right: 20px;">Training Center</p>
-                                </div>
-                                <br><br><br>
-                                <hr>
                             </div>
-
 
                         </div>
-
                     </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="invoies_tc">
-                        <div class="kop_invoices">
-                            <img id="logo_sempoa" src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png">
-                            <h3 id="data_tc">
-                                <?= $tc->nama; ?><br>
-                                <?= $tc->alamat; ?><br>
-                                Telp. <?= $tc->nomor_telp; ?>, Fax. <?= $tc->tc_no_fax_office; ?>,
-                                HP. <?= $tc->tc_no_hp_office; ?>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="invoies_tc">
+                            <div class="kop_invoices">
+                                <img id="logo_sempoa" src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png">
+                                <h3 id="data_tc">
+                                    <?= $tc->nama; ?><br>
+                                    <?= $tc->alamat; ?><br>
+                                    Telp. <?= $tc->nomor_telp; ?>, Fax. <?= $tc->tc_no_fax_office; ?>,
+                                    HP. <?= $tc->tc_no_hp_office; ?>
 
-                            </h3>
-                            <div class="info_invoices">
-                                <b>No. Invoice :</b> <br>
-                                <b>Tanggal :</b>
-                            </div>
-                            <div class="nama_siswa">
-                                <p>
-                                    Telah diterima pembayaran oleh Murid :<br>
-                                    <b>Nama Murid :</b><br>
-                                    <b>ID Murid :</b>
-                                </p>
-                            </div>
-                            <table style="border-right: 20px;">
-                                <tr>
-                                    <th>No Buku</th>
-                                    <th>Keterangan</th>
-                                    <th>Harga</th>
-                                </tr>
-                                <tr>
-                                    <td>No.Buku</td>
-                                    <td>Uang Buku Junior 1</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total</td>
-                                    <td></td>
-                                </tr>
+                                </h3>
+                                <div class="info_invoices">
+                                    <b>No. Invoice :</b> <br>
+                                    <b>Tanggal :</b>
+                                </div>
+                                <div class="nama_siswa">
+                                    <p>
+                                        Telah diterima pembayaran oleh Murid :<br>
+                                        <b>Nama Murid :</b><br>
+                                        <b>ID Murid :</b>
+                                    </p>
+                                </div>
+                                <table style="border-right: 20px;">
+                                    <tr>
+                                        <th>No Buku</th>
+                                        <th>Keterangan</th>
+                                        <th>Harga</th>
+                                    </tr>
+                                    <tr>
+                                        <td>No.Buku</td>
+                                        <td>Uang Buku Junior 1</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total
+                                        </td>
+                                        <td></td>
+                                    </tr>
 
-                            </table>
+                                </table>
 
 <span>
 	<p>Pembayaran melalui mesin EDC atau via transfer ke :</p>
@@ -4664,33 +4645,28 @@ class MuridWebHelper extends WebService
         <br><?= $tc->tc_acc_bank; ?></h3>
 	<p style="float: right; margin-right: 20px;">....................., 11 Juli 2017</p>
 </span>
-                            <div class="penutup_invoices">
-                                <p style="font-size: 30px">
-                                    <img style="float: left; width: 100px; height: 100px "
-                                         src="<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png">
-                                    Terima Kasih
-                                    <img style="float: right; width: 100px; height: 100px "
-                                         src="<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png">
-                                </p>
-                            </div>
-                            <br><br>
-                            <div>
-                                <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre
-                                    beroperasional dan
-                                    memiliki kepemilikan secara mandiri</p>
-                                <p style="float: right;margin-right: 20px;">Training Center</p>
-                            </div>
+                                <div class="penutup_invoices">
+                                    <p style="font-size: 30px">
+                                        <img style="float: left; width: 100px; height: 100px "
+                                             src="<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png">
+                                        Terima Kasih
+                                        <img style="float: right; width: 100px; height: 100px "
+                                             src="<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png">
+                                    </p>
+                                </div>
+                                <br><br>
+                                <div>
+                                    <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre
+                                        beroperasional dan
+                                        memiliki kepemilikan secara mandiri</p>
+                                    <p style="float: right;margin-right: 20px;">Training Center</p>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <br>
-        <br>
-
-
         </body>
         </html>
         <?
@@ -5687,11 +5663,11 @@ class MuridWebHelper extends WebService
 
                 <script>
 
-                    $("#undo_iuran_buku_<?= $val->bln_id; ?>").click(function(){
+                    $("#undo_iuran_buku_<?= $val->bln_id; ?>").click(function () {
 
                         var bln_id = '<?= $val->bln_id; ?>';
                         alert(bln_id);
-                        if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?")){
+                        if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?")) {
                             $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_buku_2", {
                                 bln_id: bln_id
                             }, function (data) {

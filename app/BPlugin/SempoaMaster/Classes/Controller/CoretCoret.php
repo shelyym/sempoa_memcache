@@ -472,7 +472,7 @@ class CoretCoret extends WebService
 
         $noInvoice = "FP/2017/8/7";
 
-        $a = substr($noInvoice,0,2);
+        $a = substr($noInvoice, 0, 2);
 
         pr($a);
         die();
@@ -552,5 +552,74 @@ class CoretCoret extends WebService
         }
         pr($arrNewSort);
         pr($arrTC);
+    }
+
+    public function prompt()
+    {
+        ?>
+        <button id="btn_ha">Click</button>
+        <script>
+            $("#btn_ha").click(function(){
+               alert("saas");
+            });
+            </script>
+        <?
+    }
+
+    public function jenisBiaya(){
+
+
+
+        $buku = new StockBuku();
+        $buku->getBukuYgdReservMurid(7, 5, 831, 1, KEY::$JENIS_BUKU);
+        pr($buku);
+
+
+
+        die();
+        $jumlahBukuIst = Generic::getIdBarangByLevel(1, 0);
+
+        pr($jumlahBukuIst);
+        die();
+        $no_mulai = 010;
+
+
+
+
+        $stk_masuk = 10;
+        for ($i = 0; $i < $stk_masuk; $i++) {
+            $stockBuku = new StockBuku();
+//                if (strlen($no_buku_mulai) == 1) {
+//                    // 0 ada 4
+//                    $noKuponAwal = $tigaDigitNobuku . "0000" . $no_buku_mulai;
+//                } else if (strlen($no_buku_mulai) == 2) {
+//                    // 0 ada 3
+//                    $noKuponAwal  = $tigaDigitNobuku . "000" . $no_buku_mulai;
+//                } else if (strlen($no_buku_mulai) == 3) {
+//                    // 0 ada 2
+//                    $noKuponAwal  = $tigaDigitNobuku . "00" . $no_buku_mulai;
+//                } else if (strlen($no_buku_mulai) == 4) {
+//                    // 0 ada 1
+//                    $noKuponAwal  = $tigaDigitNobuku . "0" . $no_buku_mulai;
+//                } else {
+//                    $noKuponAwal  = $tigaDigitNobuku . $no_buku_mulai;
+//                }
+
+//            $stockBuku->createNoBuku($id_barang, $noKuponAwal, AccessRight::getMyOrgID(), $name_barang);
+//            $noKuponAwal++;
+        }
+
+
+        die();
+        $barang = new BarangWebModel();
+
+        pr($barang->getStockByIdJenisBarang(1));
+
+        die();
+        $arr = $barang->getWhere("1 GROUP BY  jenis_biaya");
+        foreach($arr as $val){
+            $res[] = $val->jenis_biaya;
+        }
+        pr($res);
     }
 }

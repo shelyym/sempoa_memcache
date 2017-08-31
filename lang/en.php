@@ -752,6 +752,6 @@ $_lang['Laporan Iuran Buku'] = "Laporan Uang Buku";
 $_lang['tc_nama_bank'] = "Nama Bank";
 $_lang['tc_cabang_bank'] = "Cabang";
 $_lang['tc_acc_bank'] = "Account No.";
-
+$_lang['no_buku'] = "Tiga Digit Kode Buku";
 
 

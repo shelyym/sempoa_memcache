@@ -85,7 +85,7 @@ class StockWebHelper extends WebService
 //                    echo json_encode($json);
 //                    die();
                 } else {
-                    $stockBuku->createNoBuku($id_barang, $no, AccessRight::getMyOrgID(),$name_barang);
+                    $stockBuku->createNoBuku($id_barang, $no, AccessRight::getMyOrgID(), $name_barang);
                 }
 
             }
@@ -269,9 +269,10 @@ class StockWebHelper extends WebService
         }
     }
 
-    public function get_anzahl_available_buku(){
+    public function get_anzahl_available_buku()
+    {
         $brg_id = $_GET['brg_id'];
-        $i=0;
+        $i = 0;
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
         $arrJenisBarang = Generic::getLevelByBarangID();
@@ -288,11 +289,12 @@ class StockWebHelper extends WebService
         echo "<b>Jumlah buku yang tersedia: " . $jumlah . "</b><br>";
 
     }
+
     public function get_available_buku()
     {
 
         $brg_id = $_GET['brg_id'];
-        $i=0;
+        $i = 0;
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
         $arrJenisBarang = Generic::getLevelByBarangID();
@@ -341,7 +343,7 @@ class StockWebHelper extends WebService
     {
 
         $brg_id = $_GET['brg_id'];
-        $i =0;
+        $i = 0;
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
         $arrJenisBarang = Generic::getLevelByBarangID();
@@ -394,4 +396,181 @@ class StockWebHelper extends WebService
         }
     }
 
+    public function loadJenisBarang()
+    {
+
+        $jenis_barang = addslashes($_GET['jenis_barang']);
+        $stockBarang = new BarangWebModel();
+        $arrBarang = $stockBarang->getStockByIdJenisBarang($jenis_barang);
+        $t = time();
+        ?>
+        <select class="form-control" id="buku_<?= $t; ?>">
+            <?
+            foreach ($arrBarang as $key => $barang) {
+                ?>
+                <option id='<?= $barang . "_" . $t; ?>'
+                        value="<?= $key; ?>"><?= $barang; ?></option>
+                <?
+            }
+            ?>
+        </select>
+        <?
+    }
+
+    public function insertKartuStockBuku()
+
+    {
+        $json = array();
+        $stk_masuk = (int)addslashes($_GET['stk_masuk']);
+        $id_barang = addslashes($_GET['id_barang']);
+        $id_pemilik_barang = addslashes($_GET['pemilik']);
+        $tanggal = addslashes($_GET['tanggal']);
+        $keterangan = addslashes($_GET['keterangan']);
+        $id_nama = addslashes($_GET['id_nama']);
+        $name_barang = addslashes($_GET['name_barang']);
+        $no_buku_mulai = (int)addslashes($_GET['no_buku']);
+        $json['pemilik'] = $id_pemilik_barang;
+        $json['tanggal'] = $tanggal;
+        $json['keterangan'] = $keterangan;
+        $json['id_nama'] = $id_nama;
+
+        $json['no_buku'] = $no_buku_mulai;
+        $json['status_code'] = 1;
+        $json['status_message'] = "Jumla";
+
+        if (!is_int($stk_masuk) || $stk_masuk == 0) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Jumlah tidak boleh 0 atau kosong!";
+            echo json_encode($json);
+            die();
+        }
+
+        if (!is_int($no_buku_mulai) || $no_buku_mulai == 0) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Nomor buku harus diisi!";
+            echo json_encode($json);
+            die();
+        }
+        $barangWeb = new BarangWebModel();
+        $tigaDigitNobuku = $barangWeb->getMyBookNo($id_barang);
+
+
+        if (strlen($no_buku_mulai) == 1) {
+            // 0 ada 4
+            $noKuponAwal = $tigaDigitNobuku . "0000" . $no_buku_mulai;
+        } else if (strlen($no_buku_mulai) == 2) {
+            // 0 ada 3
+            $noKuponAwal = $tigaDigitNobuku . "000" . $no_buku_mulai;
+        } else if (strlen($no_buku_mulai) == 3) {
+            // 0 ada 2
+            $noKuponAwal = $tigaDigitNobuku . "00" . $no_buku_mulai;
+        } else if (strlen($no_buku_mulai) == 4) {
+            // 0 ada 1
+            $noKuponAwal = $tigaDigitNobuku . "0" . $no_buku_mulai;
+        } else {
+            $noKuponAwal = $tigaDigitNobuku . $no_buku_mulai;
+        }
+
+        $noKuponAkhir = ($noKuponAwal + $stk_masuk) - 1;
+        $json["Awal"] = intval($noKuponAwal);
+        $json["Akhir"] = ($noKuponAkhir);
+
+        $stockBukuNo = new StockBuku();
+        $arrStockBukuNo = $stockBukuNo->getWhere("stock_buku_no BETWEEN $noKuponAwal AND $noKuponAkhir");
+
+        if (count($arrStockBukuNo) > 0) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Buku dengan nomor sudah ada!";
+            echo json_encode($json);
+            die();
+        } else {
+            $strNoKuponAwal = "";
+            for ($i = 0; $i < $stk_masuk; $i++) {
+                $stockBuku = new StockBuku();
+
+                if (strlen($noKuponAwal) < 8) {
+                    $json['masuk'][] = ($noKuponAwal);
+                    if (strlen($noKuponAwal) == 1) {
+                        // 0 ada 4
+                        $help = "0000000";
+                    } else if (strlen($noKuponAwal) == 2) {
+                        // 0 ada 3
+                        $help = "000000";
+                    } else if (strlen($noKuponAwal) == 3) {
+                        // 0 ada 2
+                        $help = "00000";
+                    } else if (strlen($noKuponAwal) == 4) {
+                        // 0 ada 1
+                        $help = "0000";
+                    } else if (strlen($noKuponAwal) == 5) {
+                        // 0 ada 1
+                        $help = "000";
+                    } else if (strlen($noKuponAwal) == 6) {
+                        // 0 ada 1
+                        $help = "00";
+                    } else if (strlen($noKuponAwal) == 7) {
+                        // 0 ada 1
+                        $json['masuk'] = $noKuponAwal;
+                        $help = "0";
+                    }
+                    $stockBuku->createNoBuku($id_barang, $help . $noKuponAwal, AccessRight::getMyOrgID(), $name_barang);
+
+                } //                }
+                else {
+                    $json['masuk2'][] = ($noKuponAwal);
+                    $stockBuku->createNoBuku($id_barang, $noKuponAwal, AccessRight::getMyOrgID(), $name_barang);
+                }
+
+
+                $noKuponAwal++;
+                $json['noKuponAwal'][] = $noKuponAwal;
+            }
+        }
+
+
+        $obj = new KartuStockModel();
+        $obj->id_barang = $id_barang;
+        $obj->tanggal_input = $tanggal;
+        $obj->id_pemilik_barang = $id_pemilik_barang;
+        $obj->nama_penerima_barang = $id_nama;
+        $obj->stock_masuk = $stk_masuk;
+        $obj->keterangan = $keterangan;
+        $succ = $obj->save();
+
+        if ($succ) {
+            // Stock KPO
+            $stock_barang = new StockModel();
+            $arrStockBarang = $stock_barang->getWhere("id_barang='$id_barang'");
+//            pr($arrStockBarang);
+            if (count($arrStockBarang) == 0) {
+                $stock_barang->id_barang = $id_barang;
+                $stock_barang->org_id = $id_pemilik_barang;
+                $stock_barang->jumlah_stock = $stk_masuk;
+                $id = $stock_barang->save();
+            } else {
+                $arrStockBarang[0]->jumlah_stock = $arrStockBarang[0]->jumlah_stock + $stk_masuk;
+                $id = $arrStockBarang[0]->save(1);
+            }
+        }
+        if ($id) {
+            $json['id_pemilik_barang'] = $id_pemilik_barang;
+            $json['status_code'] = 1;
+            $json['status_message'] = "Data berhasil di simpan!";
+
+            // isi stock buku dgn penomoran
+            // id barang, cari nomor buku sampai mana
+            // jika belum ketemu, mulai dari 00001
+            // jika ketemu, lanjutkan
+            // set status kpo ke avail
+            // set tanggal masuk kpo
+            // set id kpo
+
+
+//            $levKur = Generic::getLevelAndKurByIdBarang($id_barang);
+//            $json[KEY::$TEXT_KURIKULUM] = $levKur[KEY::$TEXT_KURIKULUM];
+//            $json[KEY::$TEXT_LEVEL] = $levKur[KEY::$TEXT_LEVEL];
+        }
+        echo json_encode($json);
+        die();
+    }
 }

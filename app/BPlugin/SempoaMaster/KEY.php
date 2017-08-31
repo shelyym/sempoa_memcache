@@ -324,4 +324,14 @@ class KEY
 
     public static $AWALAN_FIRST_PAYMENT = "FP";
 
+//$arrBiaya = array("Barang", "Buku", "Perlengkapan");
+
+    public static $JENIS_BARANG_TEXT = "Barang";
+    public static $JENIS_BUKU_TEXT = "Buku";
+    public static $JENIS_PERLENGKAPAN_TEXT = "Perlengkapan";
+
+    public static $JENIS_BARANG = 0;
+    public static $JENIS_BUKU = 1;
+    public static $JENIS_PERLENGKAPAN = 2;
+
 }
