@@ -65,7 +65,9 @@ class StokWeb extends WebService
                 <input type="text" class="form-control" id="stockMasuk_<?= $t; ?>" placeholder="Stock masuk">
 
                 <label id="no_buku_<?= $t; ?>" for="noBuku">No Buku Mulai:</label>
-                <input id="no_buku_masuk_<?= $t; ?>" type="number" min="0" onKeyPress="if(this.value.length==5) return false;" class="form-control" id="no_buku_masuk_<?= $t; ?>"
+                <input id="no_buku_masuk_<?= $t; ?>" type="number" min="0"
+                       onKeyPress="if(this.value.length==5) return false;" class="form-control"
+                       id="no_buku_masuk_<?= $t; ?>"
                        placeholder="No. Buku dimulai" required>
 
 
@@ -139,7 +141,7 @@ class StokWeb extends WebService
                     var name_barang = $('#buku_<?= $t; ?> option:selected').text();
                     var jenis_barang = $('#jenis_barang_<?= $t; ?> option:selected').val();
 
-                    if(jenis_barang != <?=KEY::$JENIS_BUKU;?>){
+                    if (jenis_barang != <?=KEY::$JENIS_BUKU;?>) {
                         $.get("<?= _SPPATH; ?>StockWebHelper/insertKartuStock?id_barang=" + id_barang + "&stk_masuk=" + stk_masuk + "&tanggal=" + tanggal + "&pemilik=" + id_pemilik_barang + "&id_nama=" + name + "&keterangan=" + keterangan + "&name_barang=" + name_barang, function (data) {
                             console.log(data);
                             if (data.status_code) {
@@ -152,7 +154,7 @@ class StokWeb extends WebService
                             }
                         }, 'json');
                     }
-                    else{
+                    else {
                         var no_buku = $('#no_buku_masuk_<?= $t; ?>').val();
                         no_buku = parseInt(no_buku);
                         $.get("<?= _SPPATH; ?>StockWebHelper/insertKartuStockBuku?id_barang=" + id_barang + "&no_buku=" + no_buku + "&stk_masuk=" + stk_masuk + "&tanggal=" + tanggal + "&pemilik=" + id_pemilik_barang + "&id_nama=" + name + "&keterangan=" + keterangan + "&name_barang=" + name_barang, function (data) {
@@ -542,7 +544,6 @@ class StokWeb extends WebService
 
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
-        $t = time();
         $arrJenisBarang = Generic::getLevelByBarangID();
         $arrStatusBuku = Generic::getStatusBuku();
         $stockNo = new StockBuku();
@@ -552,15 +553,19 @@ class StokWeb extends WebService
         } elseif ($myOrgType == KEY::$IBO) {
             $arrStock = $stockNo->getWhere("stock_status_ibo = 1 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
         } elseif ($myOrgType == KEY::$TC) {
+
             $arrStock = $stockNo->getWhere("stock_status_tc = 1 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
         }
         $i = 0;
+        $t = time();
         ?>
 
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
                 <h1>
                     <div class="pull-right" style="font-size: 13px;">
+
+
                         <label for="exampleInputName2">Pilih Level:</label>
                         <select id="pilih_level_<?= $t; ?>">
 
@@ -601,7 +606,8 @@ class StokWeb extends WebService
                      style="text-align: left; font-size: 16px;"><?= "<b>Jumlah buku yang tersedia: " . count($arrStock) . "</b><br>"; ?>
 
                 </div>
-                <table class="table table-bordered table-striped" style="margin-top: 20px;">
+                <table id="container_buku_tersedia_<?= $t; ?>" class="table table-bordered table-striped"
+                       style="margin-top: 20px;">
                     <thead>
                     <tr>
                         <th><b>ID</b></th>
@@ -655,33 +661,135 @@ class StokWeb extends WebService
     }
 
 
+    // persedian tidak tersedia
     public function read_buku_by_no_not_available()
     {
 
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
+
         $t = time();
 
+        $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
+        $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $arrJenisBarang = Generic::getLevelByBarangID();
         $arrStatusBuku = Generic::getStatusBuku();
         $stockNo = new StockBuku();
         $brg_id = key($arrJenisBarang);
         if ($myOrgType == KEY::$KPO) {
-            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 0 AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+            $arrIbos = Generic::getAllMyIBO($myorgid);
+            $ibo_id = isset($_GET['ibo_id']) ? addslashes($_GET['ibo_id']) : Key($arrIbos);
+            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid AND stock_buku_ibo=$ibo_id AND MONTH(stock_buku_tgl_keluar_kpo)='$bln'  AND YEAR(stock_buku_tgl_keluar_kpo)= '$thn'  ORDER by stock_buku_id ASC");
+            $arrStock2 = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
         } elseif ($myOrgType == KEY::$IBO) {
-            $arrStock = $stockNo->getWhere("stock_status_ibo = 0 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+            $arrMyTC = Generic::getAllMyTC(AccessRight::getMyOrgID());
+            $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : Key($arrMyTC);
+            $arrStock = $stockNo->getWhere("stock_status_ibo = 0 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid AND stock_buku_tc=$tc_id AND MONTH(stock_buku_tgl_keluar_ibo)='$bln'  AND YEAR(stock_buku_tgl_keluar_ibo)= '$thn'  ORDER by stock_buku_id ASC");
+            $arrStock2 = $stockNo->getWhere("stock_status_ibo = 0 AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+
         } elseif ($myOrgType == KEY::$TC) {
-            $arrStock = $stockNo->getWhere("stock_status_tc = 0 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
+            //SELECT * FROM 	sempoa__stock_buku where MONTH(`stock_buku_tgl_keluar_tc`)=8 AND YEAR(`stock_buku_tgl_keluar_tc`)=2017
+            $arrStock = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid  AND MONTH(stock_buku_tgl_keluar_tc)='$bln'  AND YEAR(stock_buku_tgl_keluar_tc)= '$thn' ORDER by stock_buku_id ASC");
+            $arrStock2 = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND  stock_buku_tc =$myorgid  ORDER by stock_buku_id ASC");
+
         }
+        $arrkuponHlp = array();
+        foreach ($arrStock2 as $stock) {
+            $arrkuponHlp[] = $stock->stock_buku_no;
 
-
+        }
+        $arrBulan = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
         $i = 0;
         ?>
 
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
                 <h1>
+                    <div class="pull-left" style="font-size: 13px;">
+                        <input class="input-sm" type="text" style="border-radius: 0px;" id="suche_no_buku_2_<?= $t; ?>" placeholder="Search No. Buku">
+                        <script>
+                            $(function () {
+                                var availableTags = <? echo json_encode($arrkuponHlp);?>;
+                                $("#suche_no_buku_2_<?=$t;?>").autocomplete({
+                                    source: availableTags
+                                });
+
+                            });
+                            $("#suche_no_buku_2_<?=$t;?>").change(function () {
+                                var no_buku =  $("#suche_no_buku_2_<?=$t;?>").val();
+                                $('#content_load_buku_<?=$t;?>').load('<?= _SPPATH; ?>StockWebHelper/get_non_available_buku_search?no_buku_search=' + no_buku, function () {
+
+                                }, 'json');
+                            });
+
+                        </script>
+                    </div>
+
                     <div class="pull-right" style="font-size: 13px;">
+
+
+                        <? if ($myOrgType == KEY::$IBO) {
+                            ?>
+                            <label for="exampleInputName2">Pilih TC:</label>
+                            <select id="pilih_TC_<?= $t; ?>">
+
+                                <?
+                                foreach ($arrMyTC as $key => $val) {
+                                    ?>
+                                    <option value="<?= $key; ?>"><?= $val; ?></option>
+                                    <?
+                                }
+                                ?>
+                            </select>
+                            <?
+                        } elseif ($myOrgType == KEY::$KPO) {
+                            ?>
+                            <label for="exampleInputName2">Pilih IBO:</label>
+                            <select id="pilih_IBO_<?= $t; ?>">
+
+                                <?
+                                foreach ($arrIbos as $key => $val) {
+                                    ?>
+                                    <option value="<?= $key; ?>"><?= $val; ?></option>
+                                    <?
+                                }
+                                ?>
+                            </select>
+                            <?
+                        }
+
+                        ?>
+
+                        Bulan :<select id="bulan_<?= $t; ?>">
+                            <?
+                            foreach ($arrBulan as $bln2) {
+                                $sel = "";
+                                if ($bln2 == date("n")) {
+                                    $sel = "selected";
+                                }
+                                ?>
+                                <option value="<?= $bln2; ?>" <?= $sel; ?>><?= $bln2; ?></option>
+                                <?
+                            }
+                            ?>
+                        </select>
+                        Tahun :<select id="tahun_<?= $t; ?>">
+                            <?
+                            for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
+                                $sel = "";
+                                if ($x == date("Y")) {
+                                    $sel = "selected";
+                                }
+                                ?>
+                                <option value="<?= $x; ?>" <?= $sel; ?>><?= $x; ?></option>
+
+                                <?
+                            }
+                            ?>
+                            }
+                            ?>
+                        </select>
+
                         <label for="exampleInputName2">Pilih Level:</label>
                         <select id="pilih_level_<?= $t; ?>">
 
@@ -703,12 +811,15 @@ class StokWeb extends WebService
             <script>
                 $("#submit_pilih_level_<?= $t; ?>").click(function () {
                     var slc = $('#pilih_level_<?= $t; ?>').val();
-                    $('#content_load_buku_<?=$t;?>').load('<?= _SPPATH; ?>StockWebHelper/get_non_available_buku?brg_id=' + slc, function () {
+                    var bln = $('#bulan_<?= $t; ?>').val();
+                    var thn = $('#tahun_<?= $t; ?>').val();
+                    var tc_id = $('#pilih_TC_<?= $t; ?>').val();
+                    var ibo_id = $('#pilih_IBO_<?= $t; ?>').val();
+                    $('#content_load_buku_<?=$t;?>').load('<?= _SPPATH; ?>StockWebHelper/get_non_available_buku?brg_id=' + slc + "&bln=" + bln + "&thn=" + thn + "&tc_id=" + tc_id + "&ibo_id=" + ibo_id, function () {
 
                     }, 'json');
-
-
                 });
+
             </script>
             <div class="clearfix"></div>
             <section class="content">

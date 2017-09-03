@@ -986,17 +986,24 @@ class MuridWebHelper extends WebService
 
                         </tr>
 
+                        <?
+                        if(AccessRight::getMyOrgType() == KEY::$TC){
+                            ?>
+                            <tr>
+                                <td>
+                                    Beli Buku pengganti
+                                </td>
+                                <td colspan="2">
+                                    <button id="beli_buku_<?= $t; ?>"
+                                            class="btn btn-default"><?= Generic::getLevelNameByID($murid->id_level_sekarang); ?>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?
+                        }
 
-                        <tr>
-                            <td>
-                                Beli Buku
-                            </td>
-                            <td colspan="2">
-                                <button id="beli_buku_<?= $t; ?>"
-                                        class="btn btn-default"><?= Generic::getLevelNameByID($murid->id_level_sekarang); ?>
-                                </button>
-                            </td>
-                        </tr>
+                        ?>
+
 
 
                     </table>
@@ -4564,7 +4571,7 @@ class MuridWebHelper extends WebService
                                             style="width: 100px; height: 100px;"
                                             src="<?= _SPPATH . _PHOTOURL . "Sempa_20.png"
                                             ?>"</div>
-                                                                    <div class=" col-md-3" style="text-align:
+                                    <div class=" col-md-3" style="text-align:
                                         center;">Terima Kasih
                                     </div>
                                     <div class="col-md-3" style="text-align: left;"><img
@@ -4573,7 +4580,7 @@ class MuridWebHelper extends WebService
 
                                     <div class="col-md-3" style="text-align: center;">
                                         ....................., <?= $tanggal;
-                                                                         ?><!--</div>-->
+                                        ?><!--</div>-->
 
                                     </div>
                                     <div class="clearfix"></div>

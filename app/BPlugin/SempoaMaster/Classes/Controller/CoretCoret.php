@@ -559,21 +559,20 @@ class CoretCoret extends WebService
         ?>
         <button id="btn_ha">Click</button>
         <script>
-            $("#btn_ha").click(function(){
-               alert("saas");
+            $("#btn_ha").click(function () {
+                alert("saas");
             });
-            </script>
+        </script>
         <?
     }
 
-    public function jenisBiaya(){
+    public function jenisBiaya()
+    {
 
-
-
+        die();
         $buku = new StockBuku();
         $buku->getBukuYgdReservMurid(7, 5, 831, 1, KEY::$JENIS_BUKU);
         pr($buku);
-
 
 
         die();
@@ -582,8 +581,6 @@ class CoretCoret extends WebService
         pr($jumlahBukuIst);
         die();
         $no_mulai = 010;
-
-
 
 
         $stk_masuk = 10;
@@ -617,9 +614,287 @@ class CoretCoret extends WebService
 
         die();
         $arr = $barang->getWhere("1 GROUP BY  jenis_biaya");
-        foreach($arr as $val){
+        foreach ($arr as $val) {
             $res[] = $val->jenis_biaya;
         }
         pr($res);
+    }
+
+    function printRegis()
+    {
+        ?>
+
+        <head>
+            <title>Invoice Iuran Buku</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        </head>
+        <body>
+
+
+        <div class="Invoice_org_tua">
+            <div class="kop_surat">
+                <img src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png" alt="logo_sempoa" class="img-responsive center-block" />
+
+                <div class="container container-table">
+                    <div class="row vertical-center-row">
+                        <div class="text-center col-md-6 col-md-offset-3" style="">
+                            <h4 id="data_tc">
+                                TC Taman Semanan Indah<br>
+                                Ruko Blok F No 7, Taman Semanan Indah Jakarta Barat<br>
+                                Telp. 021-5444398 Fax. 021-5444397 HP 08159923311
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>No. Invoice :</b><br>
+                            <b>Tanggal :</b><br><br>
+                            Telah diterima pembayaran oleh Murid :<br>
+                            <b>Nama Murid :</b><br>
+                            <b>ID Murid :</b>
+                        </div>
+                    </div>
+
+                    <br>
+                </div>
+
+            </div>
+
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="table_invoice">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Keterangan</th>
+                            <th>Harga</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>No Pendaftran</td>
+                            <td>Biaya Registrasi</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Kode Kupon</td>
+                            <td>Iuran Bulanan : Agustus 2017</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>No Buku</td>
+                            <td>Uang Buku Junior 1</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Biaya Perlengkapan</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Jumlah</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        Pembayaran melalui mesin EDC atau via transfer ke :
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="text-center col-md-6 col-md-offset-3" style="">
+                        <h4 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="text-center col-md-6 col-md-offset-3" style="">
+                        <h2>Terima Kasih</h2>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="col-md-6"><img style="display:block; margin:auto; width: 100px; height: 100px " src="<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png">
+                        </div>
+                        <div class="col-md-6"><span><img  style="display:block; margin:auto; width: 100px; height: 100px " src="<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12 text-right">.................., 31 Agustus 2017</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="col-md-8">
+                        Catatan : Setiap Training Centre beroperasional dan memiliki kepemilikan secara mandiri
+                    </div>
+
+                    <div class="col-md-4 text-right">
+                        Training Center
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <hr>
+        <div class="Invoice_tc">
+            <div class="kop_surat">
+                <img src="file:///Users/marselinuskristian/Documents/Sempoa/Picture1.png" alt="logo_sempoa" class="img-responsive center-block" />
+
+                <div class="container container-table">
+                    <div class="row vertical-center-row">
+                        <div class="text-center col-md-6 col-md-offset-3" style="">
+                            <h4 id="data_tc">
+                                TC Taman Semanan Indah<br>
+                                Ruko Blok F No 7, Taman Semanan Indah Jakarta Barat<br>
+                                Telp. 021-5444398 Fax. 021-5444397 HP 08159923311
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>No. Invoice :</b><br>
+                            <b>Tanggal :</b><br><br>
+                            Telah diterima pembayaran oleh Murid :<br>
+                            <b>Nama Murid :</b><br>
+                            <b>ID Murid :</b>
+                        </div>
+                    </div>
+
+                    <br>
+                </div>
+
+            </div>
+
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="table_invoice">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Keterangan</th>
+                            <th>Harga</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>No Pendaftran</td>
+                            <td>Biaya Registrasi</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Kode Kupon</td>
+                            <td>Iuran Bulanan : Agustus 2017</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>No Buku</td>
+                            <td>Uang Buku Junior 1</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Biaya Perlengkapan</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Jumlah</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        Pembayaran melalui mesin EDC atau via transfer ke :
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="text-center col-md-6 col-md-offset-3" style="">
+                        <h4 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="text-center col-md-6 col-md-offset-3" style="">
+                        <h2>Terima Kasih</h2>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="col-md-6"><img style="display:block; margin:auto; width: 100px; height: 100px " src="file:///Users/marselinuskristian/Documents/Sempoa/Sempa%2020.png">
+                        </div>
+                        <div class="col-md-6"><span><img  style="display:block; margin:auto; width: 100px; height: 100px " src="file:///Users/marselinuskristian/Documents/Sempoa/Sempi%2020.png"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12 text-right">.................., 31 Agustus 2017</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="container">
+                <div class="vertical-center-row">
+                    <div class="col-md-8">
+                        Catatan : Setiap Training Centre beroperasional dan memiliki kepemilikan secara mandiri
+                    </div>
+
+                    <div class="col-md-4 text-right">
+                        Training Center
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </body>
+        <?
     }
 }

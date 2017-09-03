@@ -349,12 +349,86 @@ class StockWebHelper extends WebService
         $arrJenisBarang = Generic::getLevelByBarangID();
         $arrStatusBuku = Generic::getStatusBuku();
         $stockNo = new StockBuku();
+        $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
+        $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         if ($myOrgType == KEY::$KPO) {
-            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 0 AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+            $arrIbos = Generic::getAllMyIBO($myorgid);
+            $ibo_id = isset($_GET['ibo_id']) ? addslashes($_GET['ibo_id']) : Key($arrIbos);
+//            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 0 AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid AND MONTH(stock_buku_tgl_keluar_kpo)='$bln'  AND YEAR(stock_buku_tgl_keluar_kpo)= '$thn' ORDER by stock_buku_id ASC");
+            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid AND stock_buku_ibo=$ibo_id AND MONTH(stock_buku_tgl_keluar_kpo)='$bln'  AND YEAR(stock_buku_tgl_keluar_kpo)= '$thn'  ORDER by stock_buku_id ASC");
+
         } elseif ($myOrgType == KEY::$IBO) {
-            $arrStock = $stockNo->getWhere("stock_status_ibo = 0 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+//            $arrStock = $stockNo->getWhere("stock_status_ibo = 0 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+            $arrMyTC = Generic::getAllMyTC(AccessRight::getMyOrgID());
+            $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : Key($arrMyTC);
+            $arrStock = $stockNo->getWhere("stock_status_ibo = 0 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid AND stock_buku_tc=$tc_id  AND MONTH(stock_buku_tgl_keluar_ibo)='$bln'  AND YEAR(stock_buku_tgl_keluar_ibo)= '$thn'  ORDER by stock_buku_id ASC");
+
+
         } elseif ($myOrgType == KEY::$TC) {
-            $arrStock = $stockNo->getWhere("stock_status_tc = 0 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
+//            $arrStock = $stockNo->getWhere("stock_status_tc = 0 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid  AND MONTH(stock_buku_tgl_keluar_tc)='$bln'  AND YEAR(stock_buku_tgl_keluar_tc)= '$thn' ORDER by stock_buku_id ASC");
+
+        }
+        foreach ($arrStock as $val) {
+            $i++;
+            ?>
+            <tr>
+                <td><?= $i; ?></td>
+                <td><?= $val->stock_buku_no; ?></td>
+                <td><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
+                <td><?
+                    if ($myOrgType == KEY::$KPO) {
+                        echo $val->stock_buku_tgl_keluar_kpo;
+                    } elseif ($myOrgType == KEY::$IBO) {
+                        echo $val->stock_buku_tgl_keluar_ibo;
+                    } elseif ($myOrgType == KEY::$TC) {
+                        echo $val->stock_buku_tgl_keluar_tc;
+                    }
+                    ?></td>
+
+                <td><?
+                    if ($myOrgType == KEY::$KPO) {
+                        echo Generic::getTCNamebyID($val->stock_buku_ibo);
+                    } elseif ($myOrgType == KEY::$IBO) {
+                        echo Generic::getTCNamebyID($val->stock_buku_tc);
+                    } elseif ($myOrgType == KEY::$TC) {
+                        echo Generic::getMuridNamebyID($val->stock_murid_id);
+                    }
+                    ?></td>
+                <td><?
+                    if ($myOrgType == KEY::$KPO) {
+                        echo $arrStatusBuku[$val->stock_buku_status_kpo];
+                    } elseif ($myOrgType == KEY::$IBO) {
+                        echo $arrStatusBuku[$val->stock_status_ibo];
+                    } elseif ($myOrgType == KEY::$TC) {
+                        echo $arrStatusBuku[$val->stock_status_tc];
+                    }
+                    ?></td>
+            </tr>
+            <?
+        }
+    }
+
+    public function get_non_available_buku_search()
+    {
+
+        $no_buku_search = $_GET['no_buku_search'];
+        $i = 0;
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrJenisBarang = Generic::getLevelByBarangID();
+        $arrStatusBuku = Generic::getStatusBuku();
+        $stockNo = new StockBuku();
+
+
+        if ($myOrgType == KEY::$KPO) {
+            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_buku_kpo =$myorgid AND stock_buku_no = $no_buku_search ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$IBO) {
+            $arrStock = $stockNo->getWhere("stock_status_ibo = 0 AND stock_buku_ibo =$myorgid  AND stock_buku_no = $no_buku_search  ORDER by stock_buku_id ASC");
+
+        } elseif ($myOrgType == KEY::$TC) {
+            $arrStock = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND stock_buku_no = $no_buku_search  ORDER by stock_buku_id ASC");
+
         }
         foreach ($arrStock as $val) {
             $i++;
