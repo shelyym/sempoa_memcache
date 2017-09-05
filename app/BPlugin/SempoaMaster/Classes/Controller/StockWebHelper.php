@@ -295,6 +295,7 @@ class StockWebHelper extends WebService
 
         $brg_id = $_GET['brg_id'];
         $i = 0;
+        $t = time();
         $myorgid = AccessRight::getMyOrgID();
         $myOrgType = AccessRight::getMyOrgType();
         $arrJenisBarang = Generic::getLevelByBarangID();
@@ -311,10 +312,10 @@ class StockWebHelper extends WebService
             $i++;
             ?>
             <tr>
-                <td><?= $i; ?></td>
-                <td><?= $val->stock_buku_no; ?></td>
-                <td><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
-                <td><?
+                <td id="no_<?= $val->stock_buku_id . $t; ?>"><?= $i; ?></td>
+                <td id="no_buku_<?= $val->stock_buku_id . $t; ?>"><?= $val->stock_buku_no; ?></td>
+                <td id="jenis_buku_level_<?= $val->stock_buku_id . $t; ?>"><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
+                <td id="tanggal_masuk_<?= $val->stock_buku_id . $t; ?>"><?
                     if ($myOrgType == KEY::$KPO) {
                         echo $val->stock_buku_tgl_masuk_kpo;
                     } elseif ($myOrgType == KEY::$IBO) {
@@ -323,8 +324,7 @@ class StockWebHelper extends WebService
                         echo $val->stock_buku_tgl_masuk_tc;
                     }
                     ?></td>
-
-                <td><?
+                <td id="status_<?= $val->stock_buku_id . $t; ?>"><?
                     if ($myOrgType == KEY::$KPO) {
                         echo $arrStatusBuku[$val->stock_buku_status_kpo];
                     } elseif ($myOrgType == KEY::$IBO) {
@@ -333,6 +333,32 @@ class StockWebHelper extends WebService
                         echo $arrStatusBuku[$val->stock_status_tc];
                     }
                     ?></td>
+                <script>
+
+                    $('#status_<?=$val->stock_buku_id . $t;?>').dblclick(function () {
+                        var current = $("#status_<?=$val->stock_buku_id . $t;?>").html();
+                        if (current == '<?=KEY::$BUKU_AVAILABLE_TEXT?>') {
+                            var html = "<select id='select_status_<?= $t; ?>'>" +
+                                "<option value=<?=KEY::$BUKU_AVAILABLE_ALIAS;?>><?=KEY::$BUKU_AVAILABLE_TEXT;?></option>" +
+                                "<option value=<?=KEY::$BUKU_RUSAK_ALIAS;?>><?=KEY::$BUKU_RUSAK_TEXT;?></option></select>";
+                            $("#status_<?=$val->stock_buku_id . $t;?>").html(html);
+                            $('#status_<?=$val->stock_buku_id . $t;?>').change(function () {
+                                var id_status = $('#select_status_<?= $t; ?>').val();
+                                var buku_no = $('#no_buku_<?=$val->stock_buku_id . $t;?>').text();
+                                $.get("<?= _SPPATH; ?>StockWebHelper/setStatusBukuAvailableKeRusak?id_status=" + id_status + "&buku_no=" + buku_no, function (data) {
+
+                                    if (data.status_code) {
+                                        //success
+                                        alert(data.status_message);
+                                        lwrefresh(selected_page);
+                                    } else {
+                                        alert(data.status_message);
+                                    }
+                                }, 'json');
+                            });
+                        }
+                    });
+                </script>
             </tr>
             <?
         }
@@ -351,6 +377,7 @@ class StockWebHelper extends WebService
         $stockNo = new StockBuku();
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
+        $t = time();
         if ($myOrgType == KEY::$KPO) {
             $arrIbos = Generic::getAllMyIBO($myorgid);
             $ibo_id = isset($_GET['ibo_id']) ? addslashes($_GET['ibo_id']) : Key($arrIbos);
@@ -373,10 +400,10 @@ class StockWebHelper extends WebService
             $i++;
             ?>
             <tr>
-                <td><?= $i; ?></td>
-                <td><?= $val->stock_buku_no; ?></td>
-                <td><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
-                <td><?
+                <td id="no_<?= $val->stock_buku_id . $t; ?>"><?= $i; ?></td>
+                <td id="no_buku_<?= $val->stock_buku_id . $t; ?>"><?=$val->stock_buku_no; ?></td>
+                <td id="level_buku_<?= $val->stock_buku_id . $t; ?>"><?=$arrJenisBarang[$val->stock_id_buku]; ?></td>
+                <td id="tgl_keluar_<?= $val->stock_buku_id . $t; ?>"><?
                     if ($myOrgType == KEY::$KPO) {
                         echo $val->stock_buku_tgl_keluar_kpo;
                     } elseif ($myOrgType == KEY::$IBO) {
@@ -386,7 +413,7 @@ class StockWebHelper extends WebService
                     }
                     ?></td>
 
-                <td><?
+                <td id="pembeli_<?= $val->stock_buku_id . $t; ?>"><?
                     if ($myOrgType == KEY::$KPO) {
                         echo Generic::getTCNamebyID($val->stock_buku_ibo);
                     } elseif ($myOrgType == KEY::$IBO) {
@@ -395,7 +422,7 @@ class StockWebHelper extends WebService
                         echo Generic::getMuridNamebyID($val->stock_murid_id);
                     }
                     ?></td>
-                <td><?
+                <td id="status_<?= $val->stock_buku_id . $t; ?>"><?
                     if ($myOrgType == KEY::$KPO) {
                         echo $arrStatusBuku[$val->stock_buku_status_kpo];
                     } elseif ($myOrgType == KEY::$IBO) {
@@ -404,6 +431,32 @@ class StockWebHelper extends WebService
                         echo $arrStatusBuku[$val->stock_status_tc];
                     }
                     ?></td>
+                <script>
+                    $('#status_<?= $val->stock_buku_id . $t; ?>').dblclick(function () {
+                            var current = $("#status_<?=$val->stock_buku_id . $t;?>").html();
+                            if (current == '<?=KEY::$BUKU_NON_AVAILABLE_TEXT;?>') {
+                                var html = "<select id='select_status_<?= $t; ?>'>" +
+                                    "<option value=<?=KEY::$BUKU_NON_AVAILABLE_ALIAS;?>><?=KEY::$BUKU_NON_AVAILABLE_TEXT;?></option>" +
+                                    "<option value=<?=KEY::$BUKU_RUSAK_ALIAS;?>><?=KEY::$BUKU_RUSAK_TEXT;?></option></select>";
+                                $("#status_<?=$val->stock_buku_id . $t;?>").html(html);
+                                $('#status_<?=$val->stock_buku_id . $t;?>').change(function () {
+                                    var id_status = $('#select_status_<?= $t; ?>').val();
+                                    var buku_no = $('#no_buku_<?= $val->stock_buku_id . $t; ?>').text();
+                                    $.get("<?= _SPPATH; ?>StockWebHelper/setStatusBukuNonAvailableKeRusak?id_status=" + id_status + "&buku_no=" + buku_no, function (data) {
+                                        console.log(data);
+                                        if (data.status_code) {
+                                            //success
+                                            alert(data.status_message);
+                                            lwrefresh(selected_page);
+                                        } else {
+                                            alert(data.status_message);
+                                        }
+                                    }, 'json');
+                                });
+                            }
+                        }
+                    );
+                </script>
             </tr>
             <?
         }
@@ -644,6 +697,334 @@ class StockWebHelper extends WebService
 //            $json[KEY::$TEXT_KURIKULUM] = $levKur[KEY::$TEXT_KURIKULUM];
 //            $json[KEY::$TEXT_LEVEL] = $levKur[KEY::$TEXT_LEVEL];
         }
+        echo json_encode($json);
+        die();
+    }
+
+    public function setStatusBukuAvailableKeRusak()
+    {
+        $id_status = $_GET['id_status'];
+        $buku_no = $_GET['buku_no'];
+        $stockBuNo = new StockBuku();
+        $stockBuNo->getWhereOne("stock_buku_no='$buku_no'");
+
+
+//        // Buat surat Retour
+        if (AccessRight::getMyOrgType() == KEY::$TC) {
+            $stockBuNo->stock_status_tc = $id_status;
+            $stockBuNo->stock_buku_status_kpo = $id_status;
+            $stockBuNo->stock_status_ibo = $id_status;
+            $stockBuNo->stock_buku_tgl_status_rusak = leap_mysqldate();
+            $stockBuNo->save(1);
+
+            $retour = new RetourBukuModel();
+            $retour->retour_no = $retour->createRetourNo($stockBuNo->stock_buku_tc, AccessRight::getMyOrgType());
+            $retour->retour_jenis = KEY::$BUKU_AVAILABLE_ALIAS;
+            $retour->retour_status_ibo = 0;
+            $retour->retour_buku_no = $stockBuNo->stock_buku_no;
+            $retour->retour_tgl_keluar_tc = leap_mysqldate();
+            $retour->retour_tgl_masuk_ibo = leap_mysqldate();
+            $retour->retour_kpo = $stockBuNo->stock_buku_kpo;
+            $retour->retour_ibo = $stockBuNo->stock_buku_ibo;
+            $retour->retour_tc = $stockBuNo->stock_buku_tc;
+            $retour->retour_id_buku = $stockBuNo->stock_id_buku;
+            $retour->retour_level_buku = $stockBuNo->stock_grup_level;
+            $retour->retour_respon_tc = Account::getMyName();
+            $succ = $retour->save();
+            $stokBarang = new StockModel();
+            $stokBarang->getWhereOne("org_id=$stockBuNo->stock_buku_tc  AND id_barang =$stockBuNo->stock_id_buku");
+            $stokBarang->jumlah_stock--;
+            $stokBarang->save(1);
+        } elseif (AccessRight::getMyOrgType() == KEY::$IBO) {
+
+            $stockBuNo->stock_status_ibo = $id_status;
+            $stockBuNo->stock_buku_status_kpo = $id_status;
+            $stockBuNo->stock_buku_tgl_status_rusak = leap_mysqldate();
+            $stockBuNo->save(1);
+
+
+            $retour = new RetourBukuModel();
+            $retour->retour_no = $retour->createRetourNo($stockBuNo->stock_buku_ibo, AccessRight::getMyOrgType());
+            $retour->retour_jenis = KEY::$BUKU_AVAILABLE_ALIAS;
+            $retour->retour_status_ibo = 1;
+            $retour->retour_buku_no = $stockBuNo->stock_buku_no;
+            $retour->retour_tgl_keluar_ibo = leap_mysqldate();
+            $retour->retour_tgl_masuk_kpo = leap_mysqldate();
+
+            $retour->retour_kpo = $stockBuNo->stock_buku_kpo;
+            $retour->retour_ibo = $stockBuNo->stock_buku_ibo;
+            $retour->retour_tc = $stockBuNo->stock_buku_tc;
+            $retour->retour_id_buku = $stockBuNo->stock_id_buku;
+            $retour->retour_level_buku = $stockBuNo->stock_grup_level;
+            $retour->retour_respon_ibo = Account::getMyName();
+            $succ = $retour->save();
+            $stokBarang = new StockModel();
+            $stokBarang->getWhereOne("org_id=$stockBuNo->stock_buku_ibo  AND id_barang =$stockBuNo->stock_id_buku");
+            $stokBarang->jumlah_stock--;
+            $stokBarang->save(1);
+
+
+        }
+
+        if ($succ) {
+            $json['status_code'] = 1;
+            $json['status_message'] = "Status berhasil di Update";
+            echo json_encode($json);
+            die();
+        } else {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Status gagal di Update";
+            echo json_encode($json);
+            die();
+        }
+
+    }
+
+    function claim_tc_ibo()
+    {
+        // get
+        $id_retour = $_GET['id_retour'];
+        $org_id_pengclaim = $_GET['org_id_pengclaim'];
+        $org_id_diclaim = $_GET['org_id_diclaim'];
+        $org_type = AccessRight::getMyOrgType();
+
+        $json = array();
+
+        $retour = new RetourBukuModel();
+        $retour->getByID($id_retour);
+
+        if (is_null($retour->retour_id)) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Claim gagal!";
+            echo json_encode($json);
+            die();
+        }
+
+        // kurangin stock buku di ibo
+//        / tambah stock di tc
+        // ambil no buku di stockbuno
+        // claim ke kpo
+
+        // tc beli brg dr ibo, dlm case ini diclaim adalah ibo dan pengclaim adalah tc
+        // stock dikurangin 1
+        // no buku di zuweisen ke tc
+        // status
+        $stokBarangDiClaim = new StockModel();
+        $stokBarangDiClaim->getWhereOne("id_barang=$retour->retour_id_buku AND org_id = $org_id_diclaim");
+        if ($stokBarangDiClaim->jumlah_stock <= 0) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Claim gagal, jumlah persedian barang kosong!";
+            echo json_encode($json);
+            die();
+        } else {
+            $stokBarangDiClaim->jumlah_stock = $stokBarangDiClaim->jumlah_stock - 1;
+            $stokNoBuku = new StockBuku();
+            $nobukubaru = $stokNoBuku->getNoBukuTerkecilByLevelYgAvail($org_type, $org_id_diclaim, $retour->retour_level_buku, $retour->retour_id_buku);
+
+            if ($nobukubaru == "") {
+                $json['org_id_diclaim'] = $org_type . " - " . $org_id_diclaim . " - " . $retour->retour_level_buku . " - " . $retour->retour_id_buku;
+                $json['level'] = $retour->retour_level_buku;
+                $json['id_buku'] = $retour->retour_id_buku;
+                $json['status_code'] = 0;
+                $json['status_message'] = "Claim gagal, jumlah persedian barang kosong!";
+                echo json_encode($json);
+                die();
+            } else {
+                $stokNoBuku->retourBukuKePeminta($org_type, $org_id_pengclaim, $org_id_diclaim, $nobukubaru);
+                // Stock ditambahin 1
+                $stokBarangpengclaim = new StockModel();
+                $stokBarangpengclaim->getWhereOne("id_barang=$retour->retour_id_buku AND org_id = $org_id_pengclaim");
+
+                if (!is_null($stokBarangpengclaim->id_barang)) {
+                    $stokBarangpengclaim->jumlah_stock = $stokBarangpengclaim->jumlah_stock + 1;
+                    $stokBarangpengclaim->save(1);
+                    $stokBarangDiClaim->save(1);
+
+                    if ($org_type == KEY::$IBO) {
+                        $retour->retour_buku_no_pengganti_tc = $nobukubaru;
+                        $retour->retour_status_ibo = 1;
+                        $retour->retour_respon_ibo = Account::getMyName();
+                        $retour->retour_tgl_keluar_ibo = leap_mysqldate();
+                        $retour->retour_tgl_masuk_kpo = leap_mysqldate();
+                    } elseif ($org_type == KEY::$KPO) {
+                        $retour->retour_buku_no_pengganti_ibo = $nobukubaru;
+                        $retour->retour_status_kpo = 1;
+                        $retour->retour_respon_kpo = Account::getMyName();
+                        $retour->retour_tgl_keluar_kpo = leap_mysqldate();
+                    }
+
+                    $retour->save(1);
+                    $json['status_code'] = 1;
+                    $json['status_message'] = "Status berhasil di Update";
+                    echo json_encode($json);
+                    die();
+                }
+            }
+            // ambil buku yg ada no dari ibo dr level yg sama dan di zuweisen ke tc
+        }
+        $json['status_code'] = 1;
+        $json['status_message'] = "Status berhasil di Update";
+        echo json_encode($json);
+        die();
+    }
+
+
+    public function setStatusBukuNonAvailableKeRusak()
+    {
+        $id_status = $_GET['id_status'];
+        $buku_no = $_GET['buku_no'];
+        $stockBuNo = new StockBuku();
+        $stockBuNo->getWhereOne("stock_buku_no='$buku_no'");
+        $json['buku_no'] = $buku_no;
+//        // Buat surat Retour
+        if (AccessRight::getMyOrgType() == KEY::$TC) {
+            $stockBuNo->stock_status_tc = $id_status;
+            $stockBuNo->stock_buku_status_kpo = $id_status;
+            $stockBuNo->stock_status_ibo = $id_status;
+            $stockBuNo->stock_murid = $id_status;
+            $stockBuNo->stock_buku_tgl_status_rusak = leap_mysqldate();
+            $stockBuNo->save(1);
+
+            $retour = new RetourBukuModel();
+            $retour->retour_no = $retour->createRetourNo($stockBuNo->stock_buku_tc, AccessRight::getMyOrgType());
+            $retour->retour_jenis = KEY::$BUKU_NON_AVAILABLE_ALIAS;
+            $retour->retour_status_ibo = 0;
+            $retour->retour_buku_no = $stockBuNo->stock_buku_no;
+            $retour->retour_tgl_keluar_murid = leap_mysqldate();
+            $retour->retour_tgl_masuk_tc = leap_mysqldate();
+            $retour->retour_kpo = $stockBuNo->stock_buku_kpo;
+            $retour->retour_ibo = $stockBuNo->stock_buku_ibo;
+            $retour->retour_tc = $stockBuNo->stock_buku_tc;
+            $retour->retour_murid = $stockBuNo->stock_murid_id;
+            $retour->retour_id_buku = $stockBuNo->stock_id_buku;
+            $retour->retour_level_buku = $stockBuNo->stock_grup_level;
+            $retour->retour_respon_murid = Account::getMyName();
+            $succ = $retour->save();
+//            $stokBarang = new StockModel();
+//            $stokBarang->getWhereOne("org_id=$stockBuNo->stock_buku_tc  AND id_barang =$stockBuNo->stock_id_buku");
+//            $stokBarang->jumlah_stock--;
+//            $stokBarang->save(1);
+        } elseif (AccessRight::getMyOrgType() == KEY::$IBO) {
+
+            $stockBuNo->stock_status_ibo = $id_status;
+            $stockBuNo->stock_buku_status_kpo = $id_status;
+            $stockBuNo->stock_buku_tgl_status_rusak = leap_mysqldate();
+            $stockBuNo->save(1);
+
+
+            $retour = new RetourBukuModel();
+            $retour->retour_no = $retour->createRetourNo($stockBuNo->stock_buku_ibo, AccessRight::getMyOrgType());
+            $retour->retour_jenis = KEY::$BUKU_AVAILABLE_ALIAS;
+            $retour->retour_status_ibo = 1;
+            $retour->retour_buku_no = $stockBuNo->stock_buku_no;
+            $retour->retour_tgl_keluar_ibo = leap_mysqldate();
+            $retour->retour_tgl_masuk_kpo = leap_mysqldate();
+
+            $retour->retour_kpo = $stockBuNo->stock_buku_kpo;
+            $retour->retour_ibo = $stockBuNo->stock_buku_ibo;
+            $retour->retour_tc = $stockBuNo->stock_buku_tc;
+            $retour->retour_id_buku = $stockBuNo->stock_id_buku;
+            $retour->retour_level_buku = $stockBuNo->stock_grup_level;
+            $retour->retour_respon_ibo = Account::getMyName();
+            $succ = $retour->save();
+            $stokBarang = new StockModel();
+            $stokBarang->getWhereOne("org_id=$stockBuNo->stock_buku_ibo  AND id_barang =$stockBuNo->stock_id_buku");
+            $stokBarang->jumlah_stock--;
+            $stokBarang->save(1);
+
+
+        }
+
+        if ($succ) {
+            $json['status_code'] = 1;
+            $json['status_message'] = "Status Buku berhasil di Update ke rusak";
+            echo json_encode($json);
+            die();
+        } else {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Status gagal di Update";
+            echo json_encode($json);
+            die();
+        }
+
+    }
+
+    function claim_murid_tc()
+    {
+        // get
+        $id_retour = $_GET['id_retour'];
+        $json = array();
+
+        $retour = new RetourBukuModel();
+        $retour->getByID($id_retour);
+
+        if (is_null($retour->retour_id)) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Claim gagal!";
+            echo json_encode($json);
+            die();
+        }
+
+        // kurangin stock buku di tc
+        // ambil no buku di stockbuno
+        // claim ke kpo
+
+        // tc beli brg dr ibo, dlm case ini diclaim adalah ibo dan pengclaim adalah tc
+        // stock dikurangin 1
+        // no buku di zuweisen ke tc
+        // status
+        $stokBarangTC = new StockModel();
+        $stokBarangTC->getWhereOne("id_barang=$retour->retour_id_buku AND org_id = $retour->retour_tc");
+        if ($stokBarangTC->jumlah_stock <= 0) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Claim gagal, jumlah persedian barang kosonga!";
+            echo json_encode($json);
+            die();
+        } else {
+            $stokBarangTC->jumlah_stock = $stokBarangTC->jumlah_stock - 1;
+            $stokNoBuku = new StockBuku();
+            $org_type = AccessRight::getMyOrgType();
+            $nobukubaru = $stokNoBuku->getNoBukuTerkecilByLevelYgAvail($org_type, $retour->retour_tc, $retour->retour_level_buku, $retour->retour_id_buku);
+
+            if ($nobukubaru == "") {
+                $json['org_id_diclaim'] = $org_type . " - " . $retour->retour_tc . " - " . $retour->retour_level_buku . " - " . $retour->retour_id_buku;
+//                $json['level'] = $retour->retour_level_buku;
+//                $json['id_buku'] = $retour->retour_id_buku;
+                $json['status_code'] = 0;
+                $json['status_message'] = "Claim gagal, jumlah persedian barang kosong!!!";
+                echo json_encode($json);
+                die();
+            } else {
+                if ($org_type == KEY::$TC) {
+                    $stokNoBuku->retourBukuKePeminta($org_type, $retour->retour_murid, $retour->retour_tc, $nobukubaru);
+                    $retour->retour_buku_no_pengganti_murid = $nobukubaru;
+                    $retour->retour_status_tc = 1;
+                    $retour->retour_status_murid = 1;
+                    $retour->retour_respon_tc = Account::getMyName();
+                    $retour->retour_tgl_keluar_tc = leap_mysqldate();
+                    $retour->retour_tgl_masuk_ibo = leap_mysqldate();
+                    $retour->retour_tgl_masuk_murid = leap_mysqldate();
+
+                } elseif ($org_type == KEY::$IBO) {
+                    $retour->retour_buku_no_pengganti_tc = $nobukubaru;
+                    $retour->retour_status_ibo = 1;
+                    $retour->retour_respon_ibo = Account::getMyName();
+                    $retour->retour_tgl_keluar_ibo = leap_mysqldate();
+                    $retour->retour_tgl_masuk_kpo = leap_mysqldate();
+                }
+                elseif ($org_type == KEY::$KPO) {
+                    $retour->retour_buku_no_pengganti_ibo = $nobukubaru;
+                    $retour->retour_status_kpo = 1;
+                    $retour->retour_respon_kpo = Account::getMyName();
+                    $retour->retour_tgl_keluar_kpo = leap_mysqldate();
+                }
+                $retour->save(1);
+                $stokBarangTC->save(1);
+            }
+            // ambil buku yg ada no dari ibo dr level yg sama dan di zuweisen ke tc
+        }
+        $json['status_code'] = 1;
+        $json['status_message'] = "Status berhasil di Update";
         echo json_encode($json);
         die();
     }

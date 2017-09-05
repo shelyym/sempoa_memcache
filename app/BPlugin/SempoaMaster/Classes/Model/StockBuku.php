@@ -12,10 +12,10 @@ class StockBuku extends Model
     var $main_id = "stock_buku_id";
 
 //Default Coloms for read
-    public $default_read_coloms = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
+    public $default_read_coloms = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_buku_tgl_status_rusak,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
 
 //allowed colom in CRUD filter
-    public $coloumlist = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
+    public $coloumlist = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_buku_tgl_status_rusak,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
     public $stock_buku_id;
     public $stock_buku_no;
     public $stock_name_buku;
@@ -31,6 +31,7 @@ class StockBuku extends Model
     public $stock_buku_tgl_keluar_ibo;
     public $stock_buku_tgl_masuk_tc;
     public $stock_buku_tgl_keluar_tc;
+    public $stock_buku_tgl_status_rusak;
     public $stock_po_pesanan_ibo;
     public $stock_po_pesanan_tc;
     public $stock_invoice_murid;
@@ -64,7 +65,7 @@ class StockBuku extends Model
 
     }
 
-    public function createNoBuku($id_barang, $no_buku, $kpo,$name_barang)
+    public function createNoBuku($id_barang, $no_buku, $kpo, $name_barang)
     {
         $level = Generic::getLevelIdByIdBarang($id_barang);
         $a = new $this();
@@ -82,7 +83,7 @@ class StockBuku extends Model
     public function getBukuYgdReservMurid($level, $org_id_pemilik, $id_murid, $kurikulum, $jenis_biaya)
     {
 
-        $arrIdBarang = Generic::getIdBarangByLevelDanJenisBiaya($level, $kurikulum,$jenis_biaya);
+        $arrIdBarang = Generic::getIdBarangByLevelDanJenisBiaya($level, $kurikulum, $jenis_biaya);
         $res = array();
         foreach ($arrIdBarang as $val) {
             $buno = new StockBuku();
@@ -145,33 +146,113 @@ class StockBuku extends Model
 
     }
 
-    public function getBukuNoByStudentID($student_id){
+    public function getBukuNoByStudentID($student_id)
+    {
         $buno = new $this();
         $arrStudent = $buno->getwhere("stock_murid_id=$student_id ORDER by stock_grup_level DESC");
         return $arrStudent;
     }
 
-    public function getBukuNoByInvoiceID($stock_invoice_murid){
+    public function getBukuNoByInvoiceID($stock_invoice_murid)
+    {
         $buno = new $this();
         $arr = $buno->getWhere("stock_invoice_murid='$stock_invoice_murid'");
         $res = array();
-        foreach($arr as $val){
+        foreach ($arr as $val) {
             $brg = new BarangWebModel();
 //            $brg->getNamaBukuByNoBuku(substr($val->stock_buku_no,0,3));
-            $res[ $val->stock_buku_no] = $val->stock_name_buku;
+            $res[$val->stock_buku_no] = $val->stock_name_buku;
         }
         return $res;
     }
 
-    public function retourBukuMurid($invoice_id){
+    public function retourBukuMurid($invoice_id)
+    {
         $this->getWhereOne("stock_murid=1 AND stock_invoice_murid='$invoice_id'");
 
-        if(!is_null($this->stock_buku_id)){
+        if (!is_null($this->stock_buku_id)) {
             $this->stock_status_tc = 1;
-            $this->stock_murid =0;
+            $this->stock_murid = 0;
             $this->stock_invoice_murid = "";
             $this->stock_murid_id = "";
             $this->save(1);
+
+        }
+    }
+
+    public function getNamaBukuByNoBuku($nobuku)
+    {
+        $this->getWhereOne("stock_buku_no='$nobuku'");
+        return $this->stock_name_buku;
+    }
+
+    public function getNoBukuTerkecilByLevelYgAvail($org_type, $org_id_claim, $level, $id_buku){
+        if ($org_type == KEY::$KPO) {
+            $this->getWhereOne("stock_buku_kpo= $org_id_claim AND stock_id_buku=$id_buku AND stock_grup_level = $level AND stock_buku_status_kpo=1 ORDER BY stock_buku_id ASC ");
+            return $this->stock_buku_no;
+        } elseif ($org_type == KEY::$IBO) {
+            $this->getWhereOne("stock_buku_ibo= $org_id_claim AND stock_id_buku=$id_buku AND stock_grup_level = $level AND stock_status_ibo=1 ORDER BY stock_buku_id ASC ");
+            return $this->stock_buku_no;
+
+        }
+        elseif ($org_type == KEY::$TC) {
+            $this->getWhereOne("stock_buku_tc= $org_id_claim AND stock_id_buku=$id_buku AND stock_grup_level = $level AND stock_status_tc=1 ORDER BY stock_buku_id ASC ");
+            return $this->stock_buku_no;
+
+        }
+    }
+
+    public function retourBukuKePeminta($org_type, $org_id_pengclaim, $org_id_claim, $no_buku)
+    {
+
+        if ($org_type == KEY::$KPO) {
+            $this->getWhereOne("stock_buku_kpo= $org_id_claim AND stock_buku_no=$no_buku  AND stock_status_kpo=1 ORDER BY stock_buku_id ASC ");
+            $this->stock_buku_tc = $org_id_pengclaim;
+            $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
+            $this->stock_buku_tgl_masuk_tc = leap_mysqldate();
+            $this->stock_buku_status_kpo =0;
+            $this->stock_status_ibo =1;
+            $this->stock_status_tc = 0;
+            $this->save(1);
+        } elseif ($org_type == KEY::$IBO) {
+            $this->getWhereOne("stock_buku_ibo= $org_id_claim AND stock_buku_no=$no_buku  AND stock_status_ibo=1 ORDER BY stock_buku_id ASC ");
+            $this->stock_buku_tc = $org_id_pengclaim;
+            $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
+            $this->stock_buku_tgl_masuk_tc = leap_mysqldate();
+            $this->stock_status_kpo =0;
+            $this->stock_status_ibo =0;
+            $this->stock_status_tc = 1;
+            $this->save(1);
+        } elseif ($org_type == KEY::$TC) {
+            $this->getWhereOne("stock_buku_tc= $org_id_claim AND stock_buku_no=$no_buku  AND stock_status_tc=1 ORDER BY stock_buku_id ASC ");
+            $this->stock_murid_id = $org_id_pengclaim;
+            $this->stock_buku_tgl_keluar_tc = leap_mysqldate();
+            $this->stock_buku_tgl_masuk_murid = leap_mysqldate();
+            $this->stock_status_kpo =0;
+            $this->stock_status_ibo =0;
+            $this->stock_status_tc = 0;
+            $this->stock_murid = 1;
+            $this->save(1);
+        }
+    }
+
+
+    public function retourBukuKePeminta_($org_type, $org_id_pengclaim, $org_id_claim, $level, $id_buku)
+    {
+
+        if ($org_type == KEY::$KPO) {
+
+        } elseif ($org_type == KEY::$IBO) {
+//            public $stock_id_buku;
+//            public $stock_grup_level;
+            $this->getWhereOne("stock_buku_ibo= $org_id_claim AND stock_id_buku=$id_buku AND stock_grup_level = $level AND stock_status_ibo=0 ORDER BY stock_buku_id ASC ");
+            $this->stock_buku_tc = $org_id_pengclaim;
+            $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
+            $this->stock_buku_tgl_masuk_tc = leap_mysqldate();
+            $this->stock_status_ibo =0;
+            $this->stock_status_tc = 1;
+            $this->save(1);
+        } elseif ($org_type == KEY::$TC) {
 
         }
     }

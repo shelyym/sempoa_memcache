@@ -318,6 +318,7 @@ class KEY
 
     public static $BUKU_AVAILABLE_TEXT = "Available";
     public static $BUKU_NON_AVAILABLE_TEXT = "Non Available";
+    public static $BUKU_RUSAK_TEXT = "Rusak";
 
     public static $MIN_JUMLAH_KUPON = 10;
     public static $MIN_JUMLAH_BUKU = 10;
@@ -333,5 +334,15 @@ class KEY
     public static $JENIS_BARANG = 0;
     public static $JENIS_BUKU = 1;
     public static $JENIS_PERLENGKAPAN = 2;
+
+    public static $BUKU_NON_AVAILABLE_ALIAS = 0;
+    public static $BUKU_AVAILABLE_ALIAS = 1;
+    public static $BUKU_RUSAK_ALIAS = 99;
+
+    public static $RETOUR_STATUS_CLAIM_ALIAS = 0;
+    public static $RETOUR_STATUS_CLAIMED_ALIAS = 1;
+
+    public static $RETOUR_STATUS_CLAIM_TEXT = "Claim";
+    public static $RETOUR_STATUS_CLAIMED_TEXT = "Claimed";
 
 }

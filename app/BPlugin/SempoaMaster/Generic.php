@@ -2009,4 +2009,19 @@ class Generic
             $res[] = $val->jenis_biaya;
         }
     }
+
+    public static function getAllStatusBuku(){
+        $res = array();
+        $res[KEY::$BUKU_NON_AVAILABLE_ALIAS] = KEY::$BUKU_NON_AVAILABLE_TEXT;
+        $res[KEY::$BUKU_AVAILABLE_ALIAS] = KEY::$BUKU_AVAILABLE_TEXT;
+        $res[KEY::$BUKU_RUSAK_ALIAS] = KEY::$BUKU_RUSAK_TEXT;
+        return $res;
+    }
+
+    public static function getAllStatusRetour(){
+        $res = array();
+        $res[KEY::$RETOUR_STATUS_CLAIM_ALIAS] = KEY::$RETOUR_STATUS_CLAIM_TEXT;
+        $res[KEY::$RETOUR_STATUS_CLAIMED_ALIAS] = KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+        return $res;
+    }
 }

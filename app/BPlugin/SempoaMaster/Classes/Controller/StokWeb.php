@@ -623,10 +623,10 @@ class StokWeb extends WebService
                         $i++;
                         ?>
                         <tr>
-                            <td><?= $i; ?></td>
-                            <td><?= $val->stock_buku_no; ?></td>
-                            <td><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
-                            <td><?
+                            <td id="no_<?= $val->stock_buku_id . $t; ?>"><?= $i; ?></td>
+                            <td id="no_buku_<?= $val->stock_buku_id . $t; ?>"><?= $val->stock_buku_no; ?></td>
+                            <td id="jenis_buku_level_<?= $val->stock_buku_id . $t; ?>"><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
+                            <td id="tanggal_masuk_<?= $val->stock_buku_id . $t; ?>"><?
                                 if ($myOrgType == KEY::$KPO) {
                                     echo $val->stock_buku_tgl_masuk_kpo;
                                 } elseif ($myOrgType == KEY::$IBO) {
@@ -635,7 +635,7 @@ class StokWeb extends WebService
                                     echo $val->stock_buku_tgl_masuk_tc;
                                 }
                                 ?></td>
-                            <td><?
+                            <td id="status_<?= $val->stock_buku_id . $t; ?>"><?
                                 if ($myOrgType == KEY::$KPO) {
                                     echo $arrStatusBuku[$val->stock_buku_status_kpo];
                                 } elseif ($myOrgType == KEY::$IBO) {
@@ -644,6 +644,32 @@ class StokWeb extends WebService
                                     echo $arrStatusBuku[$val->stock_status_tc];
                                 }
                                 ?></td>
+                            <script>
+
+                                $('#status_<?=$val->stock_buku_id . $t;?>').dblclick(function () {
+                                    var current = $("#status_<?=$val->stock_buku_id . $t;?>").html();
+                                    if (current == '<?=KEY::$BUKU_AVAILABLE_TEXT?>') {
+                                        var html = "<select id='select_status_<?= $t; ?>'>" +
+                                            "<option value=<?=KEY::$BUKU_AVAILABLE_ALIAS;?>><?=KEY::$BUKU_AVAILABLE_TEXT;?></option>" +
+                                            "<option value=<?=KEY::$BUKU_RUSAK_ALIAS;?>><?=KEY::$BUKU_RUSAK_TEXT;?></option></select>";
+                                        $("#status_<?=$val->stock_buku_id . $t;?>").html(html);
+                                        $('#status_<?=$val->stock_buku_id . $t;?>').change(function () {
+                                            var id_status = $('#select_status_<?= $t; ?>').val();
+                                            var buku_no = $('#no_buku_<?=$val->stock_buku_id . $t;?>').text();
+                                            $.get("<?= _SPPATH; ?>StockWebHelper/setStatusBukuAvailableKeRusak?id_status=" + id_status + "&buku_no=" + buku_no, function (data) {
+
+                                                if (data.status_code) {
+                                                    //success
+                                                    alert(data.status_message);
+                                                    lwrefresh(selected_page);
+                                                } else {
+                                                    alert(data.status_message);
+                                                }
+                                            }, 'json');
+                                        });
+                                    }
+                                });
+                            </script>
                         </tr>
                         <?
                     }
@@ -706,7 +732,8 @@ class StokWeb extends WebService
             <section class="content-header">
                 <h1>
                     <div class="pull-left" style="font-size: 13px;">
-                        <input class="input-sm" type="text" style="border-radius: 0px;" id="suche_no_buku_2_<?= $t; ?>" placeholder="Search No. Buku">
+                        <input class="input-sm" type="text" style="border-radius: 0px;" id="suche_no_buku_2_<?= $t; ?>"
+                               placeholder="Search No. Buku">
                         <script>
                             $(function () {
                                 var availableTags = <? echo json_encode($arrkuponHlp);?>;
@@ -716,7 +743,7 @@ class StokWeb extends WebService
 
                             });
                             $("#suche_no_buku_2_<?=$t;?>").change(function () {
-                                var no_buku =  $("#suche_no_buku_2_<?=$t;?>").val();
+                                var no_buku = $("#suche_no_buku_2_<?=$t;?>").val();
                                 $('#content_load_buku_<?=$t;?>').load('<?= _SPPATH; ?>StockWebHelper/get_non_available_buku_search?no_buku_search=' + no_buku, function () {
 
                                 }, 'json');
@@ -841,10 +868,10 @@ class StokWeb extends WebService
                         $i++;
                         ?>
                         <tr>
-                            <td><?= $i; ?></td>
-                            <td><?= $val->stock_buku_no; ?></td>
-                            <td><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
-                            <td><?
+                            <td id="no_<?= $val->stock_buku_id . $t; ?>"><?= $i; ?></td>
+                            <td id="no_buku_<?= $val->stock_buku_id . $t; ?>"> <?= $val->stock_buku_no; ?></td>
+                            <td id="level_buku_<?= $val->stock_buku_id . $t; ?>"><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
+                            <td id="tgl_keluar_<?= $val->stock_buku_id . $t; ?>"><?
                                 if ($myOrgType == KEY::$KPO) {
                                     echo $val->stock_buku_tgl_keluar_kpo;
                                 } elseif ($myOrgType == KEY::$IBO) {
@@ -854,7 +881,7 @@ class StokWeb extends WebService
                                 }
                                 ?></td>
 
-                            <td><?
+                            <td id="pembeli_<?= $val->stock_buku_id . $t; ?>"><?
                                 if ($myOrgType == KEY::$KPO) {
                                     echo Generic::getTCNamebyID($val->stock_buku_ibo);
                                 } elseif ($myOrgType == KEY::$IBO) {
@@ -863,8 +890,7 @@ class StokWeb extends WebService
                                     echo Generic::getMuridNamebyID($val->stock_murid_id);
                                 }
                                 ?></td>
-
-                            <td><?
+                            <td id="status_<?= $val->stock_buku_id . $t; ?>"><?
                                 if ($myOrgType == KEY::$KPO) {
                                     echo $arrStatusBuku[$val->stock_buku_status_kpo];
                                 } elseif ($myOrgType == KEY::$IBO) {
@@ -873,6 +899,32 @@ class StokWeb extends WebService
                                     echo $arrStatusBuku[$val->stock_status_tc];
                                 }
                                 ?></td>
+                            <script>
+                                $('#status_<?= $val->stock_buku_id . $t; ?>').dblclick(function () {
+                                        var current = $("#status_<?=$val->stock_buku_id . $t;?>").html();
+                                        if (current == '<?=KEY::$BUKU_NON_AVAILABLE_TEXT;?>') {
+                                            var html = "<select id='select_status_<?= $t; ?>'>" +
+                                                "<option value=<?=KEY::$BUKU_NON_AVAILABLE_ALIAS;?>><?=KEY::$BUKU_NON_AVAILABLE_TEXT;?></option>" +
+                                                "<option value=<?=KEY::$BUKU_RUSAK_ALIAS;?>><?=KEY::$BUKU_RUSAK_TEXT;?></option></select>";
+                                            $("#status_<?=$val->stock_buku_id . $t;?>").html(html);
+                                            $('#status_<?=$val->stock_buku_id . $t;?>').change(function () {
+                                                var id_status = $('#select_status_<?= $t; ?>').val();
+                                                var buku_no = $('#no_buku_<?= $val->stock_buku_id . $t; ?>').text();
+                                                $.get("<?= _SPPATH; ?>StockWebHelper/setStatusBukuNonAvailableKeRusak?id_status=" + id_status + "&buku_no=" + buku_no, function (data) {
+                                                    console.log(data);
+                                                    if (data.status_code) {
+                                                        //success
+                                                        alert(data.status_message);
+                                                        lwrefresh(selected_page);
+                                                    } else {
+                                                        alert(data.status_message);
+                                                    }
+                                                }, 'json');
+                                            });
+                                        }
+                                    }
+                                );
+                            </script>
                         </tr>
                         <?
                     }
@@ -909,5 +961,736 @@ class StokWeb extends WebService
     public function read_buku_by_no_not_available_tc()
     {
         $this->read_buku_by_no_not_available();
+    }
+
+    public function read_buku_by_no_rusak_tc()
+    {
+        $this->read_buku_by_no_rusak();
+    }
+
+    public function read_buku_by_no_rusak()
+    {
+
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrJenisBarang = Generic::getLevelByBarangID();
+        $arrStatusBuku = Generic::getAllStatusBuku();
+        $stockNo = new StockBuku();
+        $brg_id = key($arrJenisBarang);
+        if ($myOrgType == KEY::$KPO) {
+            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 99  AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$IBO) {
+            $arrStock = $stockNo->getWhere("stock_status_ibo = 99  AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$TC) {
+
+            $arrStock = $stockNo->getWhere("(stock_status_tc = 99 OR stock_murid = 99 )AND stock_buku_tc =$myorgid ORDER by stock_buku_tgl_status_rusak DESC");
+        }
+        $i = 0;
+        $t = time();
+        ?>
+        <div id="container_level_<?= $t; ?>">
+            <section class="content-header">
+                <h1>
+                    <div class="pull-right" style="font-size: 13px;">
+
+                    </div>
+                </h1>
+            </section>
+
+            <script>
+
+            </script>
+            <div class="clearfix"></div>
+            <section class="content">
+
+                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped"
+                       style="margin-top: 20px;">
+                    <thead>
+                    <tr>
+                        <th><b>ID</b></th>
+                        <th><b>No. Buku</b></th>
+                        <th><b>Level</b></th>
+                        <th><b>Tanggal Masuk</b></th>
+                        <th><b>Status</b></th>
+                    </tr>
+                    </thead>
+                    <tbody id="content_load_buku_<?= $t; ?>">
+                    <?
+                    foreach ($arrStock as $val) {
+                        $i++;
+                        ?>
+                        <tr>
+                            <td id="no_<?= $t; ?>"><?= $i; ?></td>
+                            <td id="no_buku_<?= $t; ?>"><?= $val->stock_buku_no; ?></td>
+                            <td id="jenis_buku_level_<?= $t; ?>"><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
+                            <td id="tanggal_masuk_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->stock_buku_tgl_status_rusak;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $val->stock_buku_tgl_status_rusak;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->stock_buku_tgl_status_rusak;
+                                }
+                                ?></td>
+                            <td id="status_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $arrStatusBuku[$val->stock_buku_status_kpo];
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $arrStatusBuku[$val->stock_status_ibo];
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $arrStatusBuku[$val->stock_status_tc];
+                                }
+                                ?></td>
+                        </tr>
+                        <?
+                    }
+                    ?>
+                    </tbody>
+                </table>
+
+            </section>
+
+        </div>
+
+
+        <?
+
+    }
+
+    public function read_retour_tc()
+    {
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrStatusRetour = Generic::getAllStatusRetour();
+        $retour = new RetourBukuModel();
+
+        if ($myOrgType == KEY::$KPO) {
+//            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 99  AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$IBO) {
+//            $arrStock = $stockNo->getWhere("stock_status_ibo = 99  AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$TC) {
+
+//            $arrStock = $stockNo->getWhere("stock_status_tc = 99 AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
+            $arrRetour = $retour->getWhere("retour_tc=$myorgid AND retour_tc != 0 AND retour_murid = 0  ORDER by retour_tgl_keluar_tc DESC");
+        }
+        $i = 0;
+        $t = time();
+        ?>
+        <div id="container_level_<?= $t; ?>">
+            <section class="content-header">
+                <h1>
+                    <div class="pull-right" style="font-size: 13px;">
+
+                    </div>
+                </h1>
+            </section>
+
+            <script>
+
+            </script>
+            <div class="clearfix"></div>
+            <section class="content">
+
+                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped"
+                       style="margin-top: 20px;">
+                    <thead>
+                    <tr>
+                        <th><b>ID</b></th>
+                        <th><b>No. Retour</b></th>
+                        <th><b>No. Buku</b></th>
+                        <th><b>No. Buku Pengganti</b></th>
+                        <th><b>Nama Buku</b></th>
+                        <th><b>Tanggal Claim</b></th>
+                        <th><b>Tanggal Claim</b></th>
+                        <th><b>Penanggung Jawab/TC</b></th>
+                        <th><b>Penanggung Jawab/IBO</b></th>
+                        <th><b>Status</b></th>
+                    </tr>
+                    </thead>
+                    <tbody id="content_load_buku_<?= $t; ?>">
+                    <?
+                    foreach ($arrRetour as $val) {
+                        $i++;
+                        ?>
+                        <tr>
+                            <td id="no_<?= $t; ?>"><?= $i; ?></td>
+                            <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
+                            <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
+                            <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no_pengganti_tc; ?></td>
+                            <td id="nama_buku_<?= $t; ?>"><?
+                                $stokNoBuku = new StockBuku();
+                                echo $stokNoBuku->getNamaBukuByNoBuku($val->retour_buku_no); ?></td>
+                            <td id="tgl_masuk_claim_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->retour_tgl_keluar_kpo;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $val->retour_tgl_keluar_ibo;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->retour_tgl_keluar_tc;
+                                }
+                                ?></td>
+                            <td id="tgl_masuk_claim_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->retour_tgl_keluar_kpo;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $val->retour_tgl_keluar_ibo;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->retour_tgl_masuk_ibo;
+                                }
+                                ?></td>
+                            <td id="responsibility_<?= $t; ?>"><?= $val->retour_respon_tc; ?></td>
+                            <td id="responsibility_<?= $t; ?>"><?= $val->retour_respon_ibo; ?></td>
+                            <td id="status_retour_<?= $t; ?>"><?
+                                if ($val->retour_jenis == KEY::$BUKU_AVAILABLE_ALIAS) {
+                                    if ($val->retour_buku_no_pengganti_tc != "") {
+                                        echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                    } else {
+                                        echo KEY::$RETOUR_STATUS_CLAIM_TEXT;
+                                    }
+
+
+                                } else {
+                                    ?>
+                                    <button class="btn btn-default" id="claim_tc_<?= $val->retour_id . $t; ?>">Claim
+                                    </button>
+                                    <?
+                                }
+
+                                ?></td>
+                        </tr>
+                        <?
+                    }
+                    ?>
+                    </tbody>
+                </table>
+
+            </section>
+
+        </div>
+
+
+        <?
+
+    }
+
+    public function read_retour_ibo()
+    {
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrStatusRetour = Generic::getAllStatusRetour();
+        $retour = new RetourBukuModel();
+        $arrRetour = $retour->getWhere("retour_ibo=$myorgid  AND retour_tc != 0  ORDER by retour_tgl_keluar_tc DESC");
+
+        $i = 0;
+        $t = time();
+
+        ?>
+        <div id="container_level_<?= $t; ?>">
+            <section class="content-header">
+                <h1>Retour
+                </h1>
+            </section>
+
+            <script>
+
+            </script>
+            <div class="clearfix"></div>
+            <section class="content">
+
+                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped"
+                       style="margin-top: 20px;">
+                    <thead>
+                    <tr>
+                        <th><b>ID</b></th>
+                        <th><b>No. Retour</b></th>
+                        <th><b>No. Buku</b></th>
+                        <th><b>No. Buku Pengganti</b></th>
+                        <th><b>Nama Buku</b></th>
+                        <th><b>Tanggal Claim dari TC</b></th>
+                        <th><b>Tanggal Buku dikirim ke TC</b></th>
+                        <th><b>TC</b></th>
+                        <th><b>Penanggung Jawab/TC</b></th>
+                        <th><b>Penanggung Jawab/IBO</b></th>
+                        <th><b>Status TC</b></th>
+                        <th><b>Status IBO</b></th>
+                    </tr>
+                    </thead>
+                    <tbody id="content_load_buku_<?= $t; ?>">
+                    <?
+                    foreach ($arrRetour as $val) {
+                        $i++;
+
+                        ?>
+                        <tr>
+                            <td id="no_<?= $t; ?>"><?= $i; ?></td>
+                            <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
+                            <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
+                            <td id="no_buku_pengganti_<?= $t; ?>"><?= $val->retour_buku_no_pengganti_ibo; ?></td>
+                            <td id="nama_buku_<?= $t; ?>"><?
+                                $stokNoBuku = new StockBuku();
+                                echo $stokNoBuku->getNamaBukuByNoBuku($val->retour_buku_no); ?></td>
+                            <td id="tgl_masuk_claim_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->retour_tgl_keluar_kpo;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $val->retour_tgl_masuk_ibo;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->retour_tgl_keluar_tc;
+                                }
+                                ?></td>
+                            <td id="tgl_masuk_claim_atasan_<?= $val->retour_id . $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->retour_tgl_keluar_kpo;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    if ($val->retour_tgl_keluar_ibo != KEY::$TGL_KOSONG)
+                                        echo $val->retour_tgl_keluar_ibo;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->retour_tgl_masuk_ibo;
+                                }
+                                ?></td>
+                            <td id="org_id_<?= $val->retour_id . $t; ?>"><?= Generic::getTCNamebyID($val->retour_tc); ?></td>
+                            <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_tc; ?></td>
+                            <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_ibo; ?></td>
+                            <td id="status_retour_tc_<?= $val->retour_id . $t; ?>"><?
+                                if ($val->retour_jenis == KEY::$BUKU_AVAILABLE_ALIAS) {
+                                    if ($myOrgType == KEY::$IBO) {
+                                        if ($val->retour_buku_no_pengganti_tc != "") {
+                                            echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                        } else {
+                                            ?>
+                                            <button class="btn btn-default" id="claim_ibo_<?= $val->retour_id . $t; ?>">
+                                                Claim
+                                            </button>
+                                            <?
+
+                                        }
+                                    }
+                                }
+                                else{
+                                    if ($val->retour_buku_no_pengganti_tc != "") {
+                                        echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                    } else {
+                                        ?>
+                                        <button class="btn btn-default" id="claim_ibo_<?= $val->retour_id . $t; ?>">
+                                            Claim
+                                        </button>
+                                        <?
+
+                                    }
+                                }
+
+                                ?></td>
+
+
+                            <td id="status_retour_ibo_<?= $val->retour_id . $t; ?>"><?
+                                if ($val->retour_jenis == KEY::$BUKU_AVAILABLE_ALIAS) {
+                                    if ($myOrgType == KEY::$IBO) {
+                                        if ($val->retour_buku_no_pengganti_ibo != "") {
+                                            echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                        } else {
+                                            echo KEY::$RETOUR_STATUS_CLAIM_TEXT;
+                                        }
+                                    }
+                                }
+
+                                ?></td>
+                            <script>
+                                $('#claim_ibo_<?= $val->retour_id . $t; ?>').click(function (data) {
+                                    var id_retour = '<?= $val->retour_id; ?>';
+                                    var org_id_pengclaim = '<?= $val->retour_tc; ?>';
+                                    var org_id_diclaim = '<?= $val->retour_ibo; ?>';
+                                    $.get("<?= _SPPATH; ?>StockWebHelper/claim_tc_ibo?id_retour=" + id_retour + "&org_id_pengclaim=" + org_id_pengclaim + "&org_id_diclaim=" + org_id_diclaim, function (data) {
+                                        console.log(data);
+                                        if (data.status_code) {
+                                            lwrefresh("read_retour_ibo");
+                                        } else {
+                                            alert(data.status_message);
+                                        }
+                                    }, 'json');
+                                });
+                            </script>
+                        </tr>
+                        <?
+                    }
+                    ?>
+                    </tbody>
+                </table>
+
+            </section>
+
+        </div>
+
+
+        <?
+    }
+
+    public function read_retour_kpo()
+    {
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrStatusRetour = Generic::getAllStatusRetour();
+        $retour = new RetourBukuModel();
+
+        if ($myOrgType == KEY::$KPO) {
+
+        }
+        $arrRetour = $retour->getWhere("retour_kpo=$myorgid AND retour_status_kpo = 1  OR retour_status_ibo = 1 ORDER by retour_tgl_keluar_ibo DESC");
+        $i = 0;
+        $t = time();
+        ?>
+        <div id="container_level_<?= $t; ?>">
+            <section class="content-header">
+                <h1>Retour
+                </h1>
+            </section>
+
+            <script>
+
+            </script>
+            <div class="clearfix"></div>
+            <section class="content">
+
+                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped"
+                       style="margin-top: 20px;">
+                    <thead>
+                    <tr>
+                        <th><b>ID</b></th>
+                        <th><b>No. Retour</b></th>
+                        <th><b>No. Buku</b></th>
+                        <th><b>Nama Buku</b></th>
+                        <th><b>Tanggal Claim dari IBO</b></th>
+                        <th><b>Tanggal Buku dikirim ke IBO</b></th>
+                        <th><b>IBO</b></th>
+                        <th><b>Penanggung Jawab/IBO</b></th>
+                        <th><b>Penanggung Jawab/KPO</b></th>
+                        <th><b>Status</b></th>
+                    </tr>
+                    </thead>
+                    <tbody id="content_load_buku_<?= $t; ?>">
+                    <?
+                    foreach ($arrRetour as $val) {
+                        $i++;
+                        ?>
+                        <tr>
+                            <td id="no_<?= $t; ?>"><?= $i; ?></td>
+                            <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
+                            <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
+                            <td id="nama_buku_<?= $t; ?>"><?
+                                $stokNoBuku = new StockBuku();
+                                echo $stokNoBuku->getNamaBukuByNoBuku($val->retour_buku_no); ?></td>
+                            <td id="tgl_masuk_claim_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->retour_tgl_masuk_kpo;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $val->retour_tgl_masuk_ibo;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->retour_tgl_keluar_tc;
+                                }
+                                ?></td>
+                            <td id="tgl_masuk_claim_atasan_<?= $val->retour_id . $t; ?>"><?
+                                if ($val->retour_tgl_masuk_ibo != KEY::$TGL_KOSONG)
+                                    echo $val->retour_tgl_masuk_ibo;
+
+                                ?></td>
+                            <td id="org_id_<?= $val->retour_id . $t; ?>"><?= Generic::getTCNamebyID($val->retour_ibo); ?></td>
+                            <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_ibo; ?></td>
+                            <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_kpo; ?></td>
+                            <td id="status_retour_ibo_<?= $val->retour_id . $t; ?>"><?
+                                if ($val->retour_jenis == KEY::$BUKU_AVAILABLE_ALIAS) {
+                                    if ($myOrgType == KEY::$KPO) {
+                                        if ($val->retour_status_ibo == 1 && $val->retour_status_kpo == 0) {
+                                            ?>
+                                            <button class="btn btn-default" id="claim_kpo_<?= $val->retour_id . $t; ?>">
+                                                Claim
+                                            </button>
+                                            <?
+                                        } else {
+                                            echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                        }
+                                    }
+                                }
+                                else{
+                                    if ($val->retour_status_ibo == 1 && $val->retour_status_kpo == 0) {
+                                        ?>
+                                        <button class="btn btn-default" id="claim_kpo_<?= $val->retour_id . $t; ?>">
+                                            Claim
+                                        </button>
+                                        <?
+                                    } else {
+                                        echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                    }
+                                }
+
+                                ?></td>
+                            <script>
+                                $('#claim_kpo_<?= $val->retour_id . $t; ?>').click(function (data) {
+                                    var id_retour = '<?= $val->retour_id; ?>';
+                                    var org_id_pengclaim = '<?= $val->retour_ibo; ?>';
+                                    var org_id_diclaim = '<?= $val->retour_kpo; ?>';
+                                    $.get("<?= _SPPATH; ?>StockWebHelper/claim_tc_ibo?id_retour=" + id_retour + "&org_id_pengclaim=" + org_id_pengclaim + "&org_id_diclaim=" + org_id_diclaim, function (data) {
+                                        console.log(data);
+                                        if (data.status_code) {
+                                            lwrefresh("read_retour_kpo");
+                                        } else {
+                                            alert(data.status_message);
+                                        }
+                                    }, 'json');
+                                });
+                            </script>
+                        </tr>
+                        <?
+                    }
+                    ?>
+                    </tbody>
+                </table>
+
+            </section>
+
+        </div>
+
+
+        <?
+    }
+
+    public function read_retour_ibo_dr_ibo()
+    {
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrStatusRetour = Generic::getAllStatusRetour();
+        $retour = new RetourBukuModel();
+        $arrRetour = $retour->getWhere("retour_ibo=$myorgid  AND retour_tc = 0  ORDER by retour_tgl_keluar_tc DESC");
+
+        $i = 0;
+        $t = time();
+
+        ?>
+        <div id="container_level_<?= $t; ?>">
+            <section class="content-header">
+                <h1>Retour
+                </h1>
+            </section>
+
+            <script>
+
+            </script>
+            <div class="clearfix"></div>
+            <section class="content">
+
+                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped"
+                       style="margin-top: 20px;">
+                    <thead>
+                    <tr>
+                        <th><b>ID</b></th>
+                        <th><b>No. Retour</b></th>
+                        <th><b>No. Buku</b></th>
+                        <th><b>No. Buku Pengganti</b></th>
+                        <th><b>Nama Buku</b></th>
+                        <th><b>Tanggal Claim dari IBO</b></th>
+                        <th><b>Tanggal Buku dikirim ke IBO</b></th>
+                        <th><b>Penanggung Jawab/IBO</b></th>
+                        <th><b>Penanggung Jawab/KPO</b></th>
+                        <th><b>Status IBO</b></th>
+                    </tr>
+                    </thead>
+                    <tbody id="content_load_buku_<?= $t; ?>">
+                    <?
+                    foreach ($arrRetour as $val) {
+                        $i++;
+
+                        ?>
+                        <tr>
+                            <td id="no_<?= $t; ?>"><?= $i; ?></td>
+                            <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
+                            <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
+                            <td id="no_buku_pengganti_<?= $t; ?>"><?= $val->retour_buku_no_pengganti_ibo; ?></td>
+                            <td id="nama_buku_<?= $t; ?>"><?
+                                $stokNoBuku = new StockBuku();
+                                echo $stokNoBuku->getNamaBukuByNoBuku($val->retour_buku_no); ?></td>
+                            <td id="tgl_masuk_claim_<?= $t; ?>"><?
+                                echo $val->retour_tgl_keluar_ibo;
+                                ?></td>
+                            <td id="tgl_masuk_claim_atasan_<?= $val->retour_id . $t; ?>"><?
+                                echo $val->retour_tgl_masuk_ibo;
+                                ?></td>
+                            <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_ibo; ?></td>
+                            <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_kpo; ?></td>
+                            <td id="status_retour_tc_<?= $val->retour_id . $t; ?>"><?
+                                if ($val->retour_jenis == KEY::$BUKU_AVAILABLE_ALIAS) {
+                                    if ($myOrgType == KEY::$IBO) {
+                                        if ($val->retour_status_ibo == 1 && $val->retour_status_kpo == 0 && $val->retour_tc == 0) {
+                                            echo KEY::$RETOUR_STATUS_CLAIM_TEXT;
+                                        } else {
+                                            echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                        }
+                                    }
+                                }
+
+                                ?></td>
+
+                            <script>
+                                $('#claim_ibo_<?= $val->retour_id . $t; ?>').click(function (data) {
+                                    var id_retour = '<?= $val->retour_id; ?>';
+                                    var org_id_pengclaim = '<?= $val->retour_tc; ?>';
+                                    var org_id_diclaim = '<?= $val->retour_ibo; ?>';
+                                    $.get("<?= _SPPATH; ?>StockWebHelper/claim_tc_ibo?id_retour=" + id_retour + "&org_id_pengclaim=" + org_id_pengclaim + "&org_id_diclaim=" + org_id_diclaim, function (data) {
+                                        console.log(data);
+                                        if (data.status_code) {
+                                            lwrefresh("read_retour_ibo");
+                                        } else {
+                                            alert(data.status_message);
+                                        }
+                                    }, 'json');
+                                });
+                            </script>
+                        </tr>
+                        <?
+                    }
+                    ?>
+                    </tbody>
+                </table>
+
+            </section>
+
+        </div>
+
+
+        <?
+    }
+
+    public function read_retour_tc_murid()
+    {
+        $myorgid = AccessRight::getMyOrgID();
+        $myOrgType = AccessRight::getMyOrgType();
+        $arrStatusRetour = Generic::getAllStatusRetour();
+        $retour = new RetourBukuModel();
+
+        if ($myOrgType == KEY::$KPO) {
+//            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 99  AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$IBO) {
+//            $arrStock = $stockNo->getWhere("stock_status_ibo = 99  AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+        } elseif ($myOrgType == KEY::$TC) {
+
+//            $arrStock = $stockNo->getWhere("stock_status_tc = 99 AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
+            $arrRetour = $retour->getWhere("retour_tc=$myorgid AND retour_tc != 0 AND retour_murid!= 0 ORDER by retour_tgl_masuk_tc DESC");
+        }
+        $i = 0;
+        $t = time();
+        ?>
+        <div id="container_level_<?= $t; ?>">
+            <section class="content-header">
+                <h1>
+                    Retour
+                </h1>
+            </section>
+
+            <script>
+
+            </script>
+            <div class="clearfix"></div>
+            <section class="content">
+
+                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped"
+                       style="margin-top: 20px;">
+                    <thead>
+                    <tr>
+                        <th><b>ID</b></th>
+                        <th><b>No. Retour</b></th>
+                        <th><b>No. Buku</b></th>
+                        <th><b>No. Buku Pengganti</b></th>
+                        <th><b>Nama Buku</b></th>
+                        <th><b>Tanggal Claim</b></th>
+                        <th><b>Tanggal Claim</b></th>
+                        <th><b>Nama Murid</b></th>
+                        <th><b>Penanggung Jawab/TC</b></th>
+                        <th><b>Penanggung Jawab/IBO</b></th>
+                        <th><b>Status</b></th>
+                    </tr>
+                    </thead>
+                    <tbody id="content_load_buku_<?= $t; ?>">
+                    <?
+                    foreach ($arrRetour as $val) {
+                        $i++;
+                        ?>
+                        <tr>
+                            <td id="no_<?= $t; ?>"><?= $i; ?></td>
+                            <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
+                            <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
+                            <td id="no_buku_pengganti<?= $t; ?>"><?= $val->retour_buku_no_pengganti_murid; ?></td>
+                            <td id="nama_buku_<?= $t; ?>"><?
+                                $stokNoBuku = new StockBuku();
+                                echo $stokNoBuku->getNamaBukuByNoBuku($val->retour_buku_no); ?></td>
+                            <td id="tgl_masuk_claim_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->retour_tgl_keluar_kpo;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $val->retour_tgl_keluar_ibo;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->retour_tgl_keluar_murid;
+                                }
+                                ?></td>
+                            <td id="tgl_masuk_claim_<?= $t; ?>"><?
+                                if ($myOrgType == KEY::$KPO) {
+                                    echo $val->retour_tgl_keluar_kpo;
+                                } elseif ($myOrgType == KEY::$IBO) {
+                                    echo $val->retour_tgl_keluar_ibo;
+                                } elseif ($myOrgType == KEY::$TC) {
+                                    echo $val->retour_tgl_keluar_tc;
+                                }
+                                ?></td>
+                            <td id="responsibility_murid_<?= $t; ?>"><?= Generic::getMuridNamebyID($val->retour_murid); ?></td>
+                            <td id="responsibility_tc_<?= $t; ?>"><?= $val->retour_respon_tc; ?></td>
+                            <td id="responsibility_ibo_<?= $t; ?>"><?= $val->retour_respon_ibo; ?></td>
+                            <td id="status_retour_<?= $t; ?>"><?
+                                if ($val->retour_jenis == KEY::$BUKU_AVAILABLE_ALIAS) {
+                                    if ($val->retour_buku_no_pengganti_tc != "") {
+                                        echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                    } else {
+                                        ?>
+                                        <button class="btn btn-default" id="claim_tc_<?= $val->retour_id . $t; ?>">Claim
+                                        </button>
+                                        <?
+                                    }
+
+
+                                } else {
+                                    if ($val->retour_buku_no_pengganti_murid != "") {
+                                        echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                    } else {
+                                        ?>
+                                        <button class="btn btn-default" id="claim_tc_<?= $val->retour_id . $t; ?>">Claim
+                                        </button>
+                                        <?
+                                    }
+
+
+                                }
+
+                                ?></td>
+                            <script>
+                                $("#claim_tc_<?= $val->retour_id . $t; ?>").click(function(){
+                                    var id_retour = '<?= $val->retour_id; ?>';
+                                    $.get("<?= _SPPATH; ?>StockWebHelper/claim_murid_tc?id_retour=" + id_retour, function (data) {
+                                        console.log(data);
+                                        if (data.status_code) {
+                                            lwrefresh("read_retour_ibo");
+                                        } else {
+                                            alert(data.status_message);
+                                        }
+                                    }, 'json');
+                                })
+                            </script>
+                        </tr>
+                        <?
+                    }
+                    ?>
+                    </tbody>
+                </table>
+
+            </section>
+
+        </div>
+
+
+        <?
     }
 }

@@ -556,6 +556,10 @@ class CoretCoret extends WebService
 
     public function prompt()
     {
+        pr(Generic::getAllStatusBuku());
+
+        die();
+
         ?>
         <button id="btn_ha">Click</button>
         <script>
@@ -569,6 +573,8 @@ class CoretCoret extends WebService
     public function jenisBiaya()
     {
 
+        $a = new RetourBukuModel();
+        $a->printColumlistAsAttributes();
         die();
         $buku = new StockBuku();
         $buku->getBukuYgdReservMurid(7, 5, 831, 1, KEY::$JENIS_BUKU);
@@ -637,11 +643,9 @@ class CoretCoret extends WebService
 
         <div class="Invoice_org_tua">
             <div class="kop_surat">
-                <img src="<?= _SPPATH . _PHOTOURL; ?>Picture1.png" alt="logo_sempoa" class="img-responsive center-block" />
-
                 <div class="container container-table">
                     <div class="row vertical-center-row">
-                        <div class="text-center col-md-6 col-md-offset-3" style="">
+                        <div class="text-center col-sm-6 col-sm-offset-3" style="">
                             <h4 id="data_tc">
                                 TC Taman Semanan Indah<br>
                                 Ruko Blok F No 7, Taman Semanan Indah Jakarta Barat<br>
@@ -652,7 +656,7 @@ class CoretCoret extends WebService
                 </div>
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-sm-4">
                             <b>No. Invoice :</b><br>
                             <b>Tanggal :</b><br><br>
                             Telah diterima pembayaran oleh Murid :<br>
@@ -709,7 +713,7 @@ class CoretCoret extends WebService
 
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-sm-4">
                         Pembayaran melalui mesin EDC atau via transfer ke :
                     </div>
                 </div>
@@ -717,7 +721,7 @@ class CoretCoret extends WebService
 
             <div class="container">
                 <div class="vertical-center-row">
-                    <div class="text-center col-md-6 col-md-offset-3" style="">
+                    <div class="text-center col-sm-6 col-sm-offset-3" style="">
                         <h4 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h4>
                     </div>
                 </div>
@@ -734,16 +738,11 @@ class CoretCoret extends WebService
 
             <div class="container">
                 <div class="vertical-center-row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-6">
-                        <div class="col-md-6"><img style="display:block; margin:auto; width: 100px; height: 100px " src="<?= _SPPATH . _PHOTOURL; ?>Sempa_20.png">
-                        </div>
-                        <div class="col-md-6"><span><img  style="display:block; margin:auto; width: 100px; height: 100px " src="<?= _SPPATH . _PHOTOURL; ?>Sempi_20.png"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-sm-3"></div>
+
+                    <div class="col-sm-3">
                         <div class="row">
-                            <div class="col-md-12 text-right">.................., 31 Agustus 2017</div>
+                            <div class="col-sm-12 text-right">.................., 31 Agustus 2017</div>
                         </div>
                     </div>
                 </div>
@@ -765,136 +764,348 @@ class CoretCoret extends WebService
 
         </div>
         <hr>
-        <div class="Invoice_tc">
-            <div class="kop_surat">
-                <img src="file:///Users/marselinuskristian/Documents/Sempoa/Picture1.png" alt="logo_sempoa" class="img-responsive center-block" />
-
-                <div class="container container-table">
-                    <div class="row vertical-center-row">
-                        <div class="text-center col-md-6 col-md-offset-3" style="">
-                            <h4 id="data_tc">
-                                TC Taman Semanan Indah<br>
-                                Ruko Blok F No 7, Taman Semanan Indah Jakarta Barat<br>
-                                Telp. 021-5444398 Fax. 021-5444397 HP 08159923311
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <b>No. Invoice :</b><br>
-                            <b>Tanggal :</b><br><br>
-                            Telah diterima pembayaran oleh Murid :<br>
-                            <b>Nama Murid :</b><br>
-                            <b>ID Murid :</b>
-                        </div>
-                    </div>
-
-                    <br>
-                </div>
-
-            </div>
-
-            <div class="container">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="table_invoice">
-                        <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Keterangan</th>
-                            <th>Harga</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>No Pendaftran</td>
-                            <td>Biaya Registrasi</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Kode Kupon</td>
-                            <td>Iuran Bulanan : Agustus 2017</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>No Buku</td>
-                            <td>Uang Buku Junior 1</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Biaya Perlengkapan</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Jumlah</td>
-                            <td></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        Pembayaran melalui mesin EDC atau via transfer ke :
-                    </div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="vertical-center-row">
-                    <div class="text-center col-md-6 col-md-offset-3" style="">
-                        <h4 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h4>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="vertical-center-row">
-                    <div class="text-center col-md-6 col-md-offset-3" style="">
-                        <h2>Terima Kasih</h2>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="container">
-                <div class="vertical-center-row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-6">
-                        <div class="col-md-6"><img style="display:block; margin:auto; width: 100px; height: 100px " src="file:///Users/marselinuskristian/Documents/Sempoa/Sempa%2020.png">
-                        </div>
-                        <div class="col-md-6"><span><img  style="display:block; margin:auto; width: 100px; height: 100px " src="file:///Users/marselinuskristian/Documents/Sempoa/Sempi%2020.png"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="row">
-                            <div class="col-md-12 text-right">.................., 31 Agustus 2017</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="container">
-                <div class="vertical-center-row">
-                    <div class="col-md-8">
-                        Catatan : Setiap Training Centre beroperasional dan memiliki kepemilikan secara mandiri
-                    </div>
-
-                    <div class="col-md-4 text-right">
-                        Training Center
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <!--        <div class="Invoice_tc">-->
+        <!--            <div class="kop_surat">-->
+        <!--                <img src="file:///Users/marselinuskristian/Documents/Sempoa/Picture1.png" alt="logo_sempoa"-->
+        <!--                     class="img-responsive center-block"/>-->
+        <!---->
+        <!--                <div class="container container-table">-->
+        <!--                    <div class="row vertical-center-row">-->
+        <!--                        <div class="text-center col-md-6 col-md-offset-3" style="">-->
+        <!--                            <h4 id="data_tc">-->
+        <!--                                TC Taman Semanan Indah<br>-->
+        <!--                                Ruko Blok F No 7, Taman Semanan Indah Jakarta Barat<br>-->
+        <!--                                Telp. 021-5444398 Fax. 021-5444397 HP 08159923311-->
+        <!--                            </h4>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--                <div class="container">-->
+        <!--                    <div class="row">-->
+        <!--                        <div class="col-md-4">-->
+        <!--                            <b>No. Invoice :</b><br>-->
+        <!--                            <b>Tanggal :</b><br><br>-->
+        <!--                            Telah diterima pembayaran oleh Murid :<br>-->
+        <!--                            <b>Nama Murid :</b><br>-->
+        <!--                            <b>ID Murid :</b>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!---->
+        <!--                    <br>-->
+        <!--                </div>-->
+        <!---->
+        <!--            </div>-->
+        <!---->
+        <!--            <div class="container">-->
+        <!--                <div class="table-responsive">-->
+        <!--                    <table class="table table-bordered" id="table_invoice">-->
+        <!--                        <thead>-->
+        <!--                        <tr>-->
+        <!--                            <th>No</th>-->
+        <!--                            <th>Keterangan</th>-->
+        <!--                            <th>Harga</th>-->
+        <!--                        </tr>-->
+        <!--                        </thead>-->
+        <!--                        <tbody>-->
+        <!--                        <tr>-->
+        <!--                            <td>No Pendaftran</td>-->
+        <!--                            <td>Biaya Registrasi</td>-->
+        <!--                            <td></td>-->
+        <!--                        </tr>-->
+        <!--                        <tr>-->
+        <!--                            <td>Kode Kupon</td>-->
+        <!--                            <td>Iuran Bulanan : Agustus 2017</td>-->
+        <!--                            <td></td>-->
+        <!--                        </tr>-->
+        <!--                        <tr>-->
+        <!--                            <td>No Buku</td>-->
+        <!--                            <td>Uang Buku Junior 1</td>-->
+        <!--                            <td></td>-->
+        <!--                        </tr>-->
+        <!--                        <tr>-->
+        <!--                            <td></td>-->
+        <!--                            <td>Biaya Perlengkapan</td>-->
+        <!--                            <td></td>-->
+        <!--                        </tr>-->
+        <!--                        <tr>-->
+        <!--                            <td></td>-->
+        <!--                            <td>Jumlah</td>-->
+        <!--                            <td></td>-->
+        <!--                        </tr>-->
+        <!--                        </tbody>-->
+        <!--                    </table>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!---->
+        <!--            <div class="container">-->
+        <!--                <div class="row">-->
+        <!--                    <div class="col-md-4">-->
+        <!--                        Pembayaran melalui mesin EDC atau via transfer ke :-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!---->
+        <!--            <div class="container">-->
+        <!--                <div class="vertical-center-row">-->
+        <!--                    <div class="text-center col-md-6 col-md-offset-3" style="">-->
+        <!--                        <h4 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h4>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!---->
+        <!--            <div class="container">-->
+        <!--                <div class="vertical-center-row">-->
+        <!--                    <div class="text-center col-md-6 col-md-offset-3" style="">-->
+        <!--                        <h2>Terima Kasih</h2>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!---->
+        <!---->
+        <!--            <div class="container">-->
+        <!--                <div class="vertical-center-row">-->
+        <!--                    <div class="col-md-3"></div>-->
+        <!--                    <div class="col-md-6">-->
+        <!--                        <div class="col-md-6"><img style="display:block; margin:auto; width: 100px; height: 100px "-->
+        <!--                                                   src="file:///Users/marselinuskristian/Documents/Sempoa/Sempa%2020.png">-->
+        <!--                        </div>-->
+        <!--                        <div class="col-md-6"><span><img-->
+        <!--                                    style="display:block; margin:auto; width: 100px; height: 100px "-->
+        <!--                                    src="file:///Users/marselinuskristian/Documents/Sempoa/Sempi%2020.png"></span>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                    <div class="col-md-3">-->
+        <!--                        <div class="row">-->
+        <!--                            <div class="col-md-12 text-right">.................., 31 Agustus 2017</div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!---->
+        <!--            <br>-->
+        <!---->
+        <!--            <div class="container">-->
+        <!--                <div class="vertical-center-row">-->
+        <!--                    <div class="col-md-8">-->
+        <!--                        Catatan : Setiap Training Centre beroperasional dan memiliki kepemilikan secara mandiri-->
+        <!--                    </div>-->
+        <!---->
+        <!--                    <div class="col-md-4 text-right">-->
+        <!--                        Training Center-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!---->
+        <!--        </div>-->
         </body>
+        <?
+    }
+
+
+    public function createRetour()
+    {
+
+        $stokNoBuku = new StockBuku();
+//        $level, $id_buku)
+        $nobukubaru = $stokNoBuku->getNoBukuTerkecilByLevelYgAvail("kpo", 2, 10, 2);
+
+        pr($nobukubaru);
+
+        die();
+
+        $a = new RetourBukuModel();
+        pr($a->createRetourNo(5, "tc"));
+        die();
+
+        pr(Account::getMyName());
+
+        die();
+        $retour = new RetourBukuModel();
+
+
+//
+//////        $retour->retour_no
+        $retour->retour_jenis = KEY::$BUKU_AVAILABLE_ALIAS;
+        $succ = $retour->save();
+        $retour->retour_status_ibo = 0;
+        $retour->retour_buku_no = "12121";
+        $retour->retour_tgl_keluar_tc = leap_mysqldate();
+        $retour->retour_kpo = 2;
+        $retour->retour_ibo = 3;
+        $retour->retour_tc = 5;
+        $retour->save();
+    }
+
+    function printregist2()
+    {
+        ?>
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="utf-8">
+            <title>A5</title>
+
+            <!-- Normalize or reset CSS with your favorite library -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+
+            <!-- Load paper.css for happy printing -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.2.3/paper.css">
+
+            <!-- Set page size here: A5, A4 or A3 -->
+            <!-- Set also "landscape" if you need -->
+
+
+            <style>
+
+
+                @page {
+                    size: A6;
+                    margin: 0;
+                }
+
+                @media print {
+                    html, body {
+                        width: 105mm;
+                        height: 148mm;
+                    }
+                }
+                .invoice_orang_tua{
+                    font-size: 12px;
+                }
+
+                #data_tc {
+                    text-align: center;
+                }
+                div.info_invoices{
+                    padding:20px;
+                    font-size:20px;
+                }
+
+                div.nama_siswa{
+                    padding:20px;
+                    font-size:18px;
+                }
+
+
+                table{
+                    font-family: arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin-right: 20px;
+                }
+
+                td,th{
+                    border:1px solid #414141;
+                    text-align:center;
+                    padding:8px;
+                }
+
+                th{
+                    background-color:#dddddd;}
+
+                #sempoasip_pusat {
+                    text-align: center;
+                }
+                #logo_sempoa {
+                    display: block;
+                    margin: auto;
+                }
+                div.penutup_invoices {
+                    text-align: center;
+                    margin-left: 450px;
+                    margin-right: 450px;
+                }
+
+            </style>
+        </head>
+
+        <!-- Set "A5", "A4" or "A3" for class name -->
+        <!-- Set also "landscape" if you need -->
+        <body class="A5">
+
+        <!-- Each sheet element should have the class "sheet" -->
+        <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
+        <section class="sheet padding-10mm">
+
+            <!-- Write HTML just like a web page -->
+            <article>
+
+                <div class="invoice_orang_tua">
+                    <div class="kop_invoices">
+                       <h5 id="data_tc">
+                            TC Taman Semanan Indah<br>
+                            Ruko Blok F No 7, Taman Semanan Indah - Jakarta Barat<br>
+                            Telp. 021 - 5444398, Fax. 021 - 5444397, HP. 08159923311
+                        </h5>
+                        <div class="info_invoices">
+                            <b>No. Invoice :</b><br>
+                            <b>Tanggal :</b>
+                        </div>
+                        <div class="nama_siswa">
+                            <p>
+                                Telah diterima pembayaran oleh Murid :<br>
+                                <b>Nama Murid :</b><br>
+                                <b>ID Murid :</b>
+                            </p>
+                        </div>
+                        <table>
+                            <tr>
+                                <th>No</th>
+                                <th>Keterangan</th>
+                                <th>Harga</th>
+                            </tr>
+                            <tr>
+                                <td>No Pendaftaran</td>
+                                <td>Biaya Registrasi</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Kode Kupon</td>
+                                <td>Iuran Bulanan : Juli 2107</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>No.Buku</td>
+                                <td>Uang Buku Junior 1</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Biaya Perlengkapan Junior</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total</td>
+                                <td></td>
+                            </tr>
+
+                        </table>
+
+<span>
+	<p>Pembayaran melalui mesin EDC atau via transfer ke :</p>
+	<h5 id="sempoasip_pusat">SEMPOA SIP<br>BCA cabang Supermal Karawaci<br>a/c. 1234567890</h5>
+
+	<p style="float: right; margin-right: 20px;">....................., 11 Juli 2017</p>
+</span>
+                        <div>
+                            <p style="float: left;margin-left: 20px;">Catatan : Setiap Training Centre beroperasional
+                                dan memiliki kepemilikan secara mandiri</p>
+                            <p style="float: right;margin-right: 20px;">Training Center</p>
+                        </div>
+                        <br><br><br>
+
+                    </div>
+                </div>
+
+            </article>
+
+        </section>
+
+        </body>
+
+        </html>
         <?
     }
 }
