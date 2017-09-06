@@ -401,8 +401,8 @@ class StockWebHelper extends WebService
             ?>
             <tr>
                 <td id="no_<?= $val->stock_buku_id . $t; ?>"><?= $i; ?></td>
-                <td id="no_buku_<?= $val->stock_buku_id . $t; ?>"><?=$val->stock_buku_no; ?></td>
-                <td id="level_buku_<?= $val->stock_buku_id . $t; ?>"><?=$arrJenisBarang[$val->stock_id_buku]; ?></td>
+                <td id="no_buku_<?= $val->stock_buku_id . $t; ?>"><?= $val->stock_buku_no; ?></td>
+                <td id="level_buku_<?= $val->stock_buku_id . $t; ?>"><?= $arrJenisBarang[$val->stock_id_buku]; ?></td>
                 <td id="tgl_keluar_<?= $val->stock_buku_id . $t; ?>"><?
                     if ($myOrgType == KEY::$KPO) {
                         echo $val->stock_buku_tgl_keluar_kpo;
@@ -432,6 +432,9 @@ class StockWebHelper extends WebService
                     }
                     ?></td>
                 <script>
+                    <?
+                    if ($myOrgType == KEY::$TC) {
+                    ?>
                     $('#status_<?= $val->stock_buku_id . $t; ?>').dblclick(function () {
                             var current = $("#status_<?=$val->stock_buku_id . $t;?>").html();
                             if (current == '<?=KEY::$BUKU_NON_AVAILABLE_TEXT;?>') {
@@ -456,6 +459,10 @@ class StockWebHelper extends WebService
                             }
                         }
                     );
+                    <?
+                    }
+                    ?>
+
                 </script>
             </tr>
             <?
@@ -768,7 +775,7 @@ class StockWebHelper extends WebService
 
         if ($succ) {
             $json['status_code'] = 1;
-            $json['status_message'] = "Status berhasil di Update";
+            $json['status_message'] = "Status Buku berhasil diganti rusak!";
             echo json_encode($json);
             die();
         } else {
@@ -804,7 +811,6 @@ class StockWebHelper extends WebService
 //        / tambah stock di tc
         // ambil no buku di stockbuno
         // claim ke kpo
-
         // tc beli brg dr ibo, dlm case ini diclaim adalah ibo dan pengclaim adalah tc
         // stock dikurangin 1
         // no buku di zuweisen ke tc
@@ -844,13 +850,14 @@ class StockWebHelper extends WebService
                         $retour->retour_buku_no_pengganti_tc = $nobukubaru;
                         $retour->retour_status_ibo = 1;
                         $retour->retour_respon_ibo = Account::getMyName();
+                        $retour->retour_tgl_masuk_tc = leap_mysqldate();
                         $retour->retour_tgl_keluar_ibo = leap_mysqldate();
                         $retour->retour_tgl_masuk_kpo = leap_mysqldate();
                     } elseif ($org_type == KEY::$KPO) {
                         $retour->retour_buku_no_pengganti_ibo = $nobukubaru;
                         $retour->retour_status_kpo = 1;
                         $retour->retour_respon_kpo = Account::getMyName();
-                        $retour->retour_tgl_keluar_kpo = leap_mysqldate();
+                        $retour->retour_tgl_masuk_ibo = leap_mysqldate();
                     }
 
                     $retour->save(1);
@@ -1011,8 +1018,7 @@ class StockWebHelper extends WebService
                     $retour->retour_respon_ibo = Account::getMyName();
                     $retour->retour_tgl_keluar_ibo = leap_mysqldate();
                     $retour->retour_tgl_masuk_kpo = leap_mysqldate();
-                }
-                elseif ($org_type == KEY::$KPO) {
+                } elseif ($org_type == KEY::$KPO) {
                     $retour->retour_buku_no_pengganti_ibo = $nobukubaru;
                     $retour->retour_status_kpo = 1;
                     $retour->retour_respon_kpo = Account::getMyName();

@@ -207,9 +207,8 @@ class StockBuku extends Model
 
         if ($org_type == KEY::$KPO) {
             $this->getWhereOne("stock_buku_kpo= $org_id_claim AND stock_buku_no=$no_buku  AND stock_status_kpo=1 ORDER BY stock_buku_id ASC ");
-            $this->stock_buku_tc = $org_id_pengclaim;
-            $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
-            $this->stock_buku_tgl_masuk_tc = leap_mysqldate();
+            $this->stock_buku_ibo = $org_id_pengclaim;
+            $this->stock_buku_tgl_masuk_ibo = leap_mysqldate();
             $this->stock_buku_status_kpo =0;
             $this->stock_status_ibo =1;
             $this->stock_status_tc = 0;
@@ -217,8 +216,9 @@ class StockBuku extends Model
         } elseif ($org_type == KEY::$IBO) {
             $this->getWhereOne("stock_buku_ibo= $org_id_claim AND stock_buku_no=$no_buku  AND stock_status_ibo=1 ORDER BY stock_buku_id ASC ");
             $this->stock_buku_tc = $org_id_pengclaim;
-            $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
             $this->stock_buku_tgl_masuk_tc = leap_mysqldate();
+            $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
+            $this->stock_buku_tgl_masuk_kpo = leap_mysqldate();
             $this->stock_status_kpo =0;
             $this->stock_status_ibo =0;
             $this->stock_status_tc = 1;

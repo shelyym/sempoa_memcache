@@ -900,6 +900,9 @@ class StokWeb extends WebService
                                 }
                                 ?></td>
                             <script>
+                                <?
+                                if($myOrgType == KEY::$TC){
+                                ?>
                                 $('#status_<?= $val->stock_buku_id . $t; ?>').dblclick(function () {
                                         var current = $("#status_<?=$val->stock_buku_id . $t;?>").html();
                                         if (current == '<?=KEY::$BUKU_NON_AVAILABLE_TEXT;?>') {
@@ -924,6 +927,10 @@ class StokWeb extends WebService
                                         }
                                     }
                                 );
+                                <?
+                                }
+                                ?>
+
                             </script>
                         </tr>
                         <?
@@ -978,9 +985,9 @@ class StokWeb extends WebService
         $stockNo = new StockBuku();
         $brg_id = key($arrJenisBarang);
         if ($myOrgType == KEY::$KPO) {
-            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 99  AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 99  AND stock_buku_kpo =$myorgid ORDER by stock_buku_tgl_status_rusak DESC");
         } elseif ($myOrgType == KEY::$IBO) {
-            $arrStock = $stockNo->getWhere("stock_status_ibo = 99  AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock = $stockNo->getWhere("stock_status_ibo = 99  AND stock_buku_ibo =$myorgid ORDER by stock_buku_tgl_status_rusak DESC");
         } elseif ($myOrgType == KEY::$TC) {
 
             $arrStock = $stockNo->getWhere("(stock_status_tc = 99 OR stock_murid = 99 )AND stock_buku_tc =$myorgid ORDER by stock_buku_tgl_status_rusak DESC");
@@ -991,9 +998,7 @@ class StokWeb extends WebService
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
                 <h1>
-                    <div class="pull-right" style="font-size: 13px;">
-
-                    </div>
+                    Rusak
                 </h1>
             </section>
 
@@ -1079,9 +1084,7 @@ class StokWeb extends WebService
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
                 <h1>
-                    <div class="pull-right" style="font-size: 13px;">
-
-                    </div>
+                    Laporan Retour TC
                 </h1>
             </section>
 
@@ -1097,11 +1100,11 @@ class StokWeb extends WebService
                     <tr>
                         <th><b>ID</b></th>
                         <th><b>No. Retour</b></th>
-                        <th><b>No. Buku</b></th>
+                        <th><b>No. Buku Rusak</b></th>
                         <th><b>No. Buku Pengganti</b></th>
                         <th><b>Nama Buku</b></th>
                         <th><b>Tanggal Claim</b></th>
-                        <th><b>Tanggal Claim</b></th>
+                        <th><b>Tanggal Claimed</b></th>
                         <th><b>Penanggung Jawab/TC</b></th>
                         <th><b>Penanggung Jawab/IBO</b></th>
                         <th><b>Status</b></th>
@@ -1130,13 +1133,8 @@ class StokWeb extends WebService
                                 }
                                 ?></td>
                             <td id="tgl_masuk_claim_<?= $t; ?>"><?
-                                if ($myOrgType == KEY::$KPO) {
-                                    echo $val->retour_tgl_keluar_kpo;
-                                } elseif ($myOrgType == KEY::$IBO) {
+                                if ($val->retour_tgl_keluar_ibo != KEY::$TGL_KOSONG)
                                     echo $val->retour_tgl_keluar_ibo;
-                                } elseif ($myOrgType == KEY::$TC) {
-                                    echo $val->retour_tgl_masuk_ibo;
-                                }
                                 ?></td>
                             <td id="responsibility_<?= $t; ?>"><?= $val->retour_respon_tc; ?></td>
                             <td id="responsibility_<?= $t; ?>"><?= $val->retour_respon_ibo; ?></td>
@@ -1187,7 +1185,7 @@ class StokWeb extends WebService
         ?>
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
-                <h1>Retour
+                <h1>Laporan Retour
                 </h1>
             </section>
 
@@ -1203,8 +1201,9 @@ class StokWeb extends WebService
                     <tr>
                         <th><b>ID</b></th>
                         <th><b>No. Retour</b></th>
-                        <th><b>No. Buku</b></th>
-                        <th><b>No. Buku Pengganti</b></th>
+                        <th><b>No. Buku Rusak</b></th>
+                        <th><b>No. Buku Pengganti utk TC</b></th>
+                        <th><b>No. Buku Pengganti dari KPO</b></th>
                         <th><b>Nama Buku</b></th>
                         <th><b>Tanggal Claim dari TC</b></th>
                         <th><b>Tanggal Buku dikirim ke TC</b></th>
@@ -1225,6 +1224,7 @@ class StokWeb extends WebService
                             <td id="no_<?= $t; ?>"><?= $i; ?></td>
                             <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
                             <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
+                            <td id="no_buku_tc_<?= $t; ?>"><?= $val->retour_buku_no_pengganti_tc; ?></td>
                             <td id="no_buku_pengganti_<?= $t; ?>"><?= $val->retour_buku_no_pengganti_ibo; ?></td>
                             <td id="nama_buku_<?= $t; ?>"><?
                                 $stokNoBuku = new StockBuku();
@@ -1265,8 +1265,7 @@ class StokWeb extends WebService
 
                                         }
                                     }
-                                }
-                                else{
+                                } else {
                                     if ($val->retour_buku_no_pengganti_tc != "") {
                                         echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
                                     } else {
@@ -1340,7 +1339,7 @@ class StokWeb extends WebService
         ?>
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
-                <h1>Retour
+                <h1>Laporan Retour KPO
                 </h1>
             </section>
 
@@ -1357,6 +1356,7 @@ class StokWeb extends WebService
                         <th><b>ID</b></th>
                         <th><b>No. Retour</b></th>
                         <th><b>No. Buku</b></th>
+                        <th><b>No. Buku pengganti utk IBO</b></th>
                         <th><b>Nama Buku</b></th>
                         <th><b>Tanggal Claim dari IBO</b></th>
                         <th><b>Tanggal Buku dikirim ke IBO</b></th>
@@ -1375,6 +1375,7 @@ class StokWeb extends WebService
                             <td id="no_<?= $t; ?>"><?= $i; ?></td>
                             <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
                             <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
+                            <td id="no_buku_pengganti<?= $t; ?>"><?= $val->retour_buku_no_pengganti_ibo; ?></td>
                             <td id="nama_buku_<?= $t; ?>"><?
                                 $stokNoBuku = new StockBuku();
                                 echo $stokNoBuku->getNamaBukuByNoBuku($val->retour_buku_no); ?></td>
@@ -1408,8 +1409,7 @@ class StokWeb extends WebService
                                             echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
                                         }
                                     }
-                                }
-                                else{
+                                } else {
                                     if ($val->retour_status_ibo == 1 && $val->retour_status_kpo == 0) {
                                         ?>
                                         <button class="btn btn-default" id="claim_kpo_<?= $val->retour_id . $t; ?>">
@@ -1466,7 +1466,7 @@ class StokWeb extends WebService
         ?>
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
-                <h1>Retour
+                <h1>Laporan Retour
                 </h1>
             </section>
 
@@ -1483,7 +1483,7 @@ class StokWeb extends WebService
                         <th><b>ID</b></th>
                         <th><b>No. Retour</b></th>
                         <th><b>No. Buku</b></th>
-                        <th><b>No. Buku Pengganti</b></th>
+                        <th><b>No. Buku Pengganti dari KPO</b></th>
                         <th><b>Nama Buku</b></th>
                         <th><b>Tanggal Claim dari IBO</b></th>
                         <th><b>Tanggal Buku dikirim ke IBO</b></th>
@@ -1510,7 +1510,8 @@ class StokWeb extends WebService
                                 echo $val->retour_tgl_keluar_ibo;
                                 ?></td>
                             <td id="tgl_masuk_claim_atasan_<?= $val->retour_id . $t; ?>"><?
-                                echo $val->retour_tgl_masuk_ibo;
+                                if ($val->retour_tgl_masuk_ibo != KEY::$TGL_KOSONG)
+                                    echo $val->retour_tgl_masuk_ibo;
                                 ?></td>
                             <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_ibo; ?></td>
                             <td id="responsibility_<?= $val->retour_id . $t; ?>"><?= $val->retour_respon_kpo; ?></td>
@@ -1579,7 +1580,7 @@ class StokWeb extends WebService
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
                 <h1>
-                    Retour
+                    Retour Murid
                 </h1>
             </section>
 
@@ -1596,14 +1597,16 @@ class StokWeb extends WebService
                         <th><b>ID</b></th>
                         <th><b>No. Retour</b></th>
                         <th><b>No. Buku</b></th>
-                        <th><b>No. Buku Pengganti</b></th>
+                        <th><b>No. Buku Pengganti utk Murid</b></th>
+                        <th><b>No. Buku Pengganti dari IBO</b></th>
                         <th><b>Nama Buku</b></th>
                         <th><b>Tanggal Claim</b></th>
                         <th><b>Tanggal Claim</b></th>
                         <th><b>Nama Murid</b></th>
                         <th><b>Penanggung Jawab/TC</b></th>
                         <th><b>Penanggung Jawab/IBO</b></th>
-                        <th><b>Status</b></th>
+                        <th><b>Status Murid</b></th>
+                        <th><b>Status IBO</b></th>
                     </tr>
                     </thead>
                     <tbody id="content_load_buku_<?= $t; ?>">
@@ -1616,6 +1619,7 @@ class StokWeb extends WebService
                             <td id="no_retour_<?= $t; ?>"><?= $val->retour_no; ?></td>
                             <td id="no_buku_<?= $t; ?>"><?= $val->retour_buku_no; ?></td>
                             <td id="no_buku_pengganti<?= $t; ?>"><?= $val->retour_buku_no_pengganti_murid; ?></td>
+                            <td id="no_buku_pengganti_tc<?= $t; ?>"><?= $val->retour_buku_no_pengganti_tc; ?></td>
                             <td id="nama_buku_<?= $t; ?>"><?
                                 $stokNoBuku = new StockBuku();
                                 echo $stokNoBuku->getNamaBukuByNoBuku($val->retour_buku_no); ?></td>
@@ -1650,8 +1654,6 @@ class StokWeb extends WebService
                                         </button>
                                         <?
                                     }
-
-
                                 } else {
                                     if ($val->retour_buku_no_pengganti_murid != "") {
                                         echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
@@ -1666,13 +1668,37 @@ class StokWeb extends WebService
                                 }
 
                                 ?></td>
+
+                            <td id="status_retour_ibo_<?= $t; ?>"><?
+                                if ($val->retour_jenis == KEY::$BUKU_AVAILABLE_ALIAS) {
+                                    if ($val->retour_buku_no_pengganti_tc != "") {
+                                        echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                    } else {
+                                        ?>
+                                        <button class="btn btn-default" id="claim_tc_<?= $val->retour_id . $t; ?>">Claim
+                                        </button>
+                                        <?
+                                    }
+                                } else {
+                                    if ($val->retour_buku_no_pengganti_tc != "") {
+                                        echo KEY::$RETOUR_STATUS_CLAIMED_TEXT;
+                                    } elseif ($val->retour_buku_no_pengganti_murid == "") {
+
+                                    } else {
+                                        echo KEY::$RETOUR_STATUS_CLAIM_TEXT;
+                                    }
+
+
+                                }
+
+                                ?></td>
                             <script>
-                                $("#claim_tc_<?= $val->retour_id . $t; ?>").click(function(){
+                                $("#claim_tc_<?= $val->retour_id . $t; ?>").click(function () {
                                     var id_retour = '<?= $val->retour_id; ?>';
                                     $.get("<?= _SPPATH; ?>StockWebHelper/claim_murid_tc?id_retour=" + id_retour, function (data) {
                                         console.log(data);
                                         if (data.status_code) {
-                                            lwrefresh("read_retour_ibo");
+                                            lwrefresh("read_retour_tc_murid");
                                         } else {
                                             alert(data.status_message);
                                         }
@@ -1692,5 +1718,15 @@ class StokWeb extends WebService
 
 
         <?
+    }
+
+    public function read_buku_by_no_rusak_ibo()
+    {
+        $this->read_buku_by_no_rusak();
+    }
+
+    public function read_buku_by_no_rusak_kpo()
+    {
+        $this->read_buku_by_no_rusak();
     }
 }

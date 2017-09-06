@@ -10,9 +10,11 @@
  *
  * @author efindiongso
  */
-class BusinessIntelligence extends WebService {
+class BusinessIntelligence extends WebService
+{
 
-    public function view_bi_siswa_ibo() {
+    public function view_bi_siswa_ibo()
+    {
         $kpo_id = AccessRight::getMyOrgID();
         $arrMyIBO = Generic::getAllMyIBO($kpo_id);
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
@@ -133,7 +135,8 @@ class BusinessIntelligence extends WebService {
     }
 
     //put your code here
-    public function get_bi_rekap_siswa() {
+    public function get_bi_rekap_siswa()
+    {
         ?>
         <div class="table-responsive">
             <table class="table table-bordered">
@@ -172,8 +175,6 @@ class BusinessIntelligence extends WebService {
                 </tbody>
             </table>
         </div>
-
-
 
 
         <?
@@ -375,7 +376,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_rekap_siswa_kpo() {
+    public function get_rekap_siswa_kpo()
+    {
         $kpo_id = AccessRight::getMyOrgID();
         $arrMyIBO = Generic::getAllMyIBO($kpo_id);
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
@@ -458,32 +460,36 @@ class BusinessIntelligence extends WebService {
             </script>
 
             <style>
-                .thead .table-sempoa-border{
-                    border:4px ;
+                .thead .table-sempoa-border {
+                    border: 4px;
                     border-style: solid;
                     border-color: burlywood;
 
                 }
-                .tengah{
+
+                .tengah {
                     vertical-align: middle !important;
                 }
-                .total{
-                    text-align:center; font-weight: bold;
+
+                .total {
+                    text-align: center;
+                    font-weight: bold;
                 }
             </style>
-            <div id = "kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive content">
+            <div id="kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive content">
 
                 <table class="table table-bordered table-striped table-sempoa-border" style='background-color: white'>
                     <thead>
                     <tr>
-                        <th class = "tengah" rowspan="2">No.</th>
-                        <th class = "tengah" rowspan="2">Kode TC</th>
-                        <th class = "tengah" rowspan="2">Nama TC</th>
-                        <th class = "tengah" rowspan="2">Nama Director</th>
+                        <th class="tengah" rowspan="2">No.</th>
+                        <th class="tengah" rowspan="2">Kode TC</th>
+                        <th class="tengah" rowspan="2">Nama TC</th>
+                        <th class="tengah" rowspan="2">Nama Director</th>
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+                            <th id="<?= $bln . "_" . $thn; ?>" class="total"
+                                colspan="7"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
                         }
@@ -545,8 +551,8 @@ class BusinessIntelligence extends WebService {
                     ?>
                     </tbody>
                     <tfoot>
-                    <tr >
-                        <td class="total"colspan="4">Total</td>
+                    <tr>
+                        <td class="total" colspan="4">Total</td>
 
                         <td><?= $total_bl; ?></td>
                         <td><?= $total_baru; ?></td>
@@ -572,7 +578,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function getMuridStatusByTC($status, $keytc, $bln, $thn) {
+    public function getMuridStatusByTC($status, $keytc, $bln, $thn)
+    {
         $murid = new MuridModel();
         $statusMurid = new StatusHisMuridModel();
         $q = "SELECT * FROM {$murid->table_name} murid INNER JOIN {$statusMurid->table_name} status ON status.status_murid_id = murid.id_murid WHERE murid.murid_tc_id='$keytc' AND YEAR(status.status_tanggal_mulai ) = $thn AND MONTH(status.status_tanggal_mulai ) = $bln  AND status.status=$status GROUP BY murid.id_murid";
@@ -581,7 +588,8 @@ class BusinessIntelligence extends WebService {
         return count($arrMurid);
     }
 
-    public function getMuridBaruByTC($keytc, $bln, $thn) {
+    public function getMuridBaruByTC($keytc, $bln, $thn)
+    {
         $murid = new MuridModel();
 
         $q = "SELECT * FROM {$murid->table_name} murid WHERE murid.murid_tc_id='$keytc' AND YEAR(murid.tanggal_masuk ) = $thn AND MONTH(murid.tanggal_masuk ) = $bln   ";
@@ -590,21 +598,24 @@ class BusinessIntelligence extends WebService {
         return count($arrMurid);
     }
 
-    function getPenjualanKuponByTC($keytc, $bln, $thn) {
+    function getPenjualanKuponByTC($keytc, $bln, $thn)
+    {
 //        transaksi__kupon_satuan
         $kupon = new KuponSatuan();
         $arrKupon = $kupon->getWhere("kupon_owner_id='$keytc' AND YEAR(kupon_pemakaian_date) = $thn AND MONTH(kupon_pemakaian_date) = $bln");
         return count($arrKupon);
     }
 
-    function getGuruAktivByTC($keytc, $bln, $thn) {
+    function getGuruAktivByTC($keytc, $bln, $thn)
+    {
         $objGuru = new SempoaGuruModel();
         $nonAktiv = KEY::$STATUSGURURESIGN;
         $arrGuru = $objGuru->getWhere("status !='$nonAktiv' AND guru_tc_id='$keytc'");
         return count($arrGuru);
     }
 
-    function getPenjualanBukuByTC($keytc, $bln, $thn) {
+    function getPenjualanBukuByTC($keytc, $bln, $thn)
+    {
 
         $waktu = $bln . "-" . $thn;
         $iuranBuku = new IuranBuku();
@@ -612,7 +623,8 @@ class BusinessIntelligence extends WebService {
         return count($arrIuranBuku);
     }
 
-    function get_rekap_all_siswa() {
+    function get_rekap_all_siswa()
+    {
         $arrAllIBO = Generic::getAllMyIBO(AccessRight::getMyOrgID());
 //        $arrAllIBO = Generic::getAllIBO();
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
@@ -665,18 +677,18 @@ class BusinessIntelligence extends WebService {
         </div>
         <div class="clearfix"></div>
         <div class="table-responsive">
-            <section class="content" id = "kepala_all_siswa_<?= $bln . "_" . $thn; ?>">
+            <section class="content" id="kepala_all_siswa_<?= $bln . "_" . $thn; ?>">
 
-                <table class ='table table-bordered table-striped' style="background-color: white;">
+                <table class='table table-bordered table-striped' style="background-color: white;">
                     <thead>
                     <tr>
-                        <th class = "tengah" rowspan="2">No.</th>
-                        <th class = "tengah" rowspan="2">Wilayah</th>
-                        <th class = "tengah" rowspan="2">Nama IBO</th>
+                        <th class="tengah" rowspan="2">No.</th>
+                        <th class="tengah" rowspan="2">Wilayah</th>
+                        <th class="tengah" rowspan="2">Nama IBO</th>
 
 
-                        <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="7"><?= Generic::getMonthName($bln); ?></th>
-
+                        <th id="<?= $bln . "_" . $thn; ?>" class="total"
+                            colspan="7"><?= Generic::getMonthName($bln); ?></th>
 
 
                     </tr>
@@ -768,7 +780,7 @@ class BusinessIntelligence extends WebService {
                         </tr>
                         <?
                         $i++;
-                        $index ++;
+                        $index++;
                         ?>
                         <?
                     }
@@ -796,7 +808,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    function get_rekap_bulanan_kupon() {
+    function get_rekap_bulanan_kupon()
+    {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $t = time();
@@ -866,7 +879,7 @@ class BusinessIntelligence extends WebService {
         <section class="clearfix">
         </section>
         <section class="content">
-            <div class="table-responsive" id = "content_kupon_<?= $tc_id . $bln . $thn; ?>">
+            <div class="table-responsive" id="content_kupon_<?= $tc_id . $bln . $thn; ?>">
                 <table class="table table-bordered table-striped putih">
                     <thead>
                     <tr>
@@ -925,11 +938,12 @@ class BusinessIntelligence extends WebService {
             </div>
         </section>
         <style>
-            .tengahcolumn{
+            .tengahcolumn {
                 vertical-align: middle !important;
                 font-weight: bold;
             }
-            .putih{
+
+            .putih {
                 background-color: white;
             }
         </style>
@@ -944,11 +958,13 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    function get_status_siswa_tahun_ibo() {
+    function get_status_siswa_tahun_ibo()
+    {
         $kpo_id = AccessRight::getMyOrgID();
     }
 
-    function get_laporan_jumlah_siswa_by_status() {
+    function get_laporan_jumlah_siswa_by_status()
+    {
         $kpo_id = AccessRight::getMyOrgID();
         $arrMyIBO = Generic::getAllMyIBO($kpo_id);
         $t = time();
@@ -1020,15 +1036,16 @@ class BusinessIntelligence extends WebService {
         </section>
         <div class="clearfix"></div>
         <section class="content">
-            <div id = "kepala_status_<?= $bln . "_" . $thn; ?>" class="table-responsive">
+            <div id="kepala_status_<?= $bln . "_" . $thn; ?>" class="table-responsive">
                 <table class="table table-bordered table-striped" style="background-color: white;">
                     <thead>
                     <tr>
-                        <th rowspan="2"  class = "tengah" >Level</th>
+                        <th rowspan="2" class="tengah">Level</th>
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id = "<?= $bln . "_" . $thn; ?>" class = "total" colspan="3"><?= Generic::getMonthName($bln); ?></th>
+                            <th id="<?= $bln . "_" . $thn; ?>" class="total"
+                                colspan="3"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
                         }
@@ -1053,11 +1070,11 @@ class BusinessIntelligence extends WebService {
                     foreach ($arrLevel as $key => $level) {
                         $hlp = new StatusHisMuridModel();
                         $aktiv = $hlp->getJumlahMuridAktivByMonth($ibo_id, $key, $bln, $thn);
-                        $aktivTotal +=$aktiv;
+                        $aktivTotal += $aktiv;
                         $cuti = $hlp->getJumlahMuridCutiByMonth($ibo_id, $key, $bln, $thn);
-                        $cutiTotal +=$cuti;
+                        $cutiTotal += $cuti;
                         $keluar = $hlp->getJumlahMuridKeluarByMonth($ibo_id, $key, $bln, $thn);
-                        $keluarTotal +=$keluar;
+                        $keluarTotal += $keluar;
                         ?>
                         <tr>
                             <td><?= $level; ?></td>
@@ -1072,7 +1089,7 @@ class BusinessIntelligence extends WebService {
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td  class="total tengah">Total</td>
+                        <td class="total tengah">Total</td>
                         <td><?= $aktivTotal; ?></td>
                         <td><?= $cutiTotal; ?></td>
                         <td><?= $keluarTotal; ?></td>
@@ -1095,7 +1112,8 @@ class BusinessIntelligence extends WebService {
 
     // Kupon
 
-    function calcKuponBIByTC($bln, $thn, $tc_id) {
+    function calcKuponBIByTC($bln, $thn, $tc_id)
+    {
 
 
         //transaksi__kupon_request  // id_bundle
@@ -1112,7 +1130,8 @@ class BusinessIntelligence extends WebService {
     }
 
     // Mulai function buat IBO
-    public function get_rekap_siswa_ibo() {
+    public function get_rekap_siswa_ibo()
+    {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $ibo_id = AccessRight::getMyOrgID();
@@ -1121,13 +1140,13 @@ class BusinessIntelligence extends WebService {
         $arrBulan[count($arrBulan) + 1] = KEY::$KEY_MONTH_ALL;
         $arrMyTC = Generic::getAllMyTC($ibo_id);
 
-        $total_bl =  0;
-        $total_baru =  0;
-        $total_keluar =  0;
-        $total_cuti =  0;
-        $total_lulus =  0;
-        $total_aktiv =  0;
-        $total_kupon =  0;
+        $total_bl = 0;
+        $total_baru = 0;
+        $total_keluar = 0;
+        $total_cuti = 0;
+        $total_lulus = 0;
+        $total_aktiv = 0;
+        $total_kupon = 0;
         ?>
 
         <section class="content-header">
@@ -1171,7 +1190,9 @@ class BusinessIntelligence extends WebService {
         </section>
         <div class="clearfix"></div>
         <style type="text/css" media="print">
-            @page { size: landscape; }
+            @page {
+                size: landscape;
+            }
         </style>
         <script>
             $('#submit_rekap_<?= $t; ?>').click(function () {
@@ -1185,38 +1206,42 @@ class BusinessIntelligence extends WebService {
         </script>
 
         <style>
-            .thead .table-sempoa-border{
-                border:4px ;
+            .thead .table-sempoa-border {
+                border: 4px;
                 border-style: solid;
                 border-color: burlywood;
 
             }
-            .tengah{
+
+            .tengah {
                 vertical-align: middle !important;
             }
-            .tengahcolumn{
+
+            .tengahcolumn {
                 vertical-align: middle !important;
                 font-weight: bold;
             }
-            .putih{
+
+            .putih {
                 background-color: white;
             }
         </style>
 
         <section class="content">
 
-            <div id = "kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
-                <table class="table table-bordered table-striped table-sempoa-border putih" >
+            <div id="kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
+                <table class="table table-bordered table-striped table-sempoa-border putih">
                     <thead>
                     <tr>
-                        <th class = "tengah" rowspan="2">No.</th>
-                        <th class = "tengah" rowspan="2">Kode TC</th>
-                        <th class = "tengah" rowspan="2">Nama TC</th>
-                        <th class = "tengah" rowspan="2">Nama Director</th>
+                        <th class="tengah" rowspan="2">No.</th>
+                        <th class="tengah" rowspan="2">Kode TC</th>
+                        <th class="tengah" rowspan="2">Nama TC</th>
+                        <th class="tengah" rowspan="2">Nama Director</th>
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id = "<?= $bln . "_" . $thn; ?>" class = "tengahcolumn" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+                            <th id="<?= $bln . "_" . $thn; ?>" class="tengahcolumn"
+                                colspan="7"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
                         }
@@ -1296,7 +1321,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_rekap_siswa_ibo_tmp() {
+    public function get_rekap_siswa_ibo_tmp()
+    {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $ibo_id = AccessRight::getMyOrgID();
@@ -1348,7 +1374,9 @@ class BusinessIntelligence extends WebService {
         </section>
         <div class="clearfix"></div>
         <style type="text/css" media="print">
-            @page { size: landscape; }
+            @page {
+                size: landscape;
+            }
         </style>
         <script>
             $('#submit_rekap_<?= $t; ?>').click(function () {
@@ -1365,38 +1393,42 @@ class BusinessIntelligence extends WebService {
         </script>
 
         <style>
-            .thead .table-sempoa-border{
-                border:4px ;
+            .thead .table-sempoa-border {
+                border: 4px;
                 border-style: solid;
                 border-color: burlywood;
 
             }
-            .tengah{
+
+            .tengah {
                 vertical-align: middle !important;
             }
-            .tengahcolumn{
+
+            .tengahcolumn {
                 vertical-align: middle !important;
                 font-weight: bold;
             }
-            .putih{
+
+            .putih {
                 background-color: white;
             }
         </style>
 
         <section class="content">
 
-            <div id = "kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
-                <table class="table table-bordered table-striped table-sempoa-border putih" >
+            <div id="kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
+                <table class="table table-bordered table-striped table-sempoa-border putih">
                     <thead>
                     <tr>
-                        <th class = "tengah" rowspan="2">No.</th>
-                        <th class = "tengah" rowspan="2">Kode TC</th>
-                        <th class = "tengah" rowspan="2">Nama TC</th>
-                        <th class = "tengah" rowspan="2">Nama Director</th>
+                        <th class="tengah" rowspan="2">No.</th>
+                        <th class="tengah" rowspan="2">Kode TC</th>
+                        <th class="tengah" rowspan="2">Nama TC</th>
+                        <th class="tengah" rowspan="2">Nama Director</th>
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id = "<?= $bln . "_" . $thn; ?>" class = "tengahcolumn" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+                            <th id="<?= $bln . "_" . $thn; ?>" class="tengahcolumn"
+                                colspan="7"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
                         }
@@ -1417,13 +1449,13 @@ class BusinessIntelligence extends WebService {
                     <tbody id="load_<?= $bln . "_" . $thn; ?>">
                     <?
                     $i = 1;
-                    $total_bl =0;
-                    $total_baru =0;
-                    $total_keluar =0;
-                    $total_cuti =0;
-                    $total_lulus =0;
-                    $total_aktiv =0;
-                    $total_kupon =0;
+                    $total_bl = 0;
+                    $total_baru = 0;
+                    $total_keluar = 0;
+                    $total_cuti = 0;
+                    $total_lulus = 0;
+                    $total_aktiv = 0;
+                    $total_kupon = 0;
                     foreach ($arrMyTC as $id_tc => $tc) {
                         $orgTC = new SempoaOrg();
                         $orgTC->getByID($id_tc);
@@ -1483,7 +1515,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_rekap_kupon_tc() {
+    public function get_rekap_kupon_tc()
+    {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $ibo_id = AccessRight::getMyOrgID();
@@ -1542,23 +1575,24 @@ class BusinessIntelligence extends WebService {
                 }, 'json');
             });</script>
         <style>
-            .tengahcolumn{
+            .tengahcolumn {
                 vertical-align: middle !important;
                 font-weight: bold;
             }
         </style>
         <section class="content">
 
-            <div id = "kupon_terjual_<?= $bln . "_" . $thn; ?>" class="table-responsive">
+            <div id="kupon_terjual_<?= $bln . "_" . $thn; ?>" class="table-responsive">
                 <table class="table table-bordered table-sempoa-border table-striped" style="background-color: white;">
                     <thead>
                     <tr>
-                        <td class ="tengahcolumn" rowspan="2">No.</td>
-                        <td class ="tengahcolumn"  rowspan="2">Nama TC</td>
+                        <td class="tengahcolumn" rowspan="2">No.</td>
+                        <td class="tengahcolumn" rowspan="2">Nama TC</td>
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id = "<?= $bln . "_" . $thn; ?>"  colspan="2" style ="text-align:center; font-weight: bold;"><?= Generic::getMonthName($bln); ?></th>
+                            <th id="<?= $bln . "_" . $thn; ?>" colspan="2"
+                                style="text-align:center; font-weight: bold;"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
                         }
@@ -1580,8 +1614,8 @@ class BusinessIntelligence extends WebService {
                         $birekap = new RekapSiswaIBOModel();
                         $birekap->getWhereOne("bi_rekap_tc_id=$keyTC AND bi_rekap_bln=$bln AND bi_rekap_tahun=$thn");
 
-                        $totalTerjual +=$birekap->bi_rekap_kupon;
-                        $totalAktiv +=$birekap->bi_rekap_aktiv;
+                        $totalTerjual += $birekap->bi_rekap_kupon;
+                        $totalAktiv += $birekap->bi_rekap_aktiv;
                         ?>
                         <tr>
                             <td><?= $i; ?></td>
@@ -1631,7 +1665,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_absen_guru_tc() {
+    public function get_absen_guru_tc()
+    {
 
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $ibo_id = AccessRight::getMyOrgID();
@@ -1694,7 +1729,7 @@ class BusinessIntelligence extends WebService {
                 <span id="export_<?= $t; ?>" class="glyphicon glyphicon-export" aria-hidden="true"></span>
                 <script>
 
-                    $('#tahun_<?= $t; ?>').change(function(){
+                    $('#tahun_<?= $t; ?>').change(function () {
                         var thn = $('#tahun_<?= $t; ?>').val();
                         getWeekInYear(thn);
 
@@ -1742,7 +1777,7 @@ class BusinessIntelligence extends WebService {
                         <th colspan="15" style="text-align:center; font-weight: bold">Absen Coach</th>
                     </tr>
                     <tr>
-                        <th rowspan="2"class="tengah" >No.</th>
+                        <th rowspan="2" class="tengah">No.</th>
                         <th rowspan="2" class="tengah">Nama Guru</th>
                         <th colspan="12" style="text-align:center; font-weight: bold">Jadwal Mengajar</th>
                     </tr>
@@ -1870,7 +1905,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_laporan_belajar_murid_tc() {
+    public function get_laporan_belajar_murid_tc()
+    {
         $arrMyTC = Generic::getAllMyTC(AccessRight::getMyOrgID());
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : Key($arrMyTC);
         $t = time();
@@ -1914,7 +1950,7 @@ class BusinessIntelligence extends WebService {
         </section>
         <div class="clearfix"></div>
         <style>
-            .guru_coach{
+            .guru_coach {
                 background-color: #f6f6f6;
                 font-weight: bold;
             }
@@ -1933,7 +1969,7 @@ class BusinessIntelligence extends WebService {
                     <th>Lama Belajar</th>
                 </tr>
                 </thead>
-                <tbody id ='container_coach_bulanan<?= $t; ?>'>
+                <tbody id='container_coach_bulanan<?= $t; ?>'>
                 <?
                 $i = 1;
                 $sudah = array();
@@ -2007,7 +2043,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_laporan_jumlah_siswa_buku_kupon() {
+    public function get_laporan_jumlah_siswa_buku_kupon()
+    {
         $kpo_id = AccessRight::getMyOrgID();
         $arrMyIBO = Generic::getAllMyIBO($kpo_id);
         $ibo_id = isset($_GET['ibo_id']) ? addslashes($_GET['ibo_id']) : key($arrMyIBO);
@@ -2082,9 +2119,9 @@ class BusinessIntelligence extends WebService {
         <div class="clearfix">
         </div>
         <section class="content">
-            <div class="table-responsive" id = "kepala_jumlah_buku_<?= $t . "_" . $thn; ?>">
-                <table  class="table table-bordered table-striped" style="background-color: white;">
-                    <thead >
+            <div class="table-responsive" id="kepala_jumlah_buku_<?= $t . "_" . $thn; ?>">
+                <table class="table table-bordered table-striped" style="background-color: white;">
+                    <thead>
                     <tr>
                         <th></th>
                         <?
@@ -2098,7 +2135,7 @@ class BusinessIntelligence extends WebService {
 
                     </tr>
                     </thead>
-                    <tbody >
+                    <tbody>
                     <?
                     foreach ($arrKey as $val) {
                         ?>
@@ -2135,7 +2172,6 @@ class BusinessIntelligence extends WebService {
                             ?>
 
 
-
                         </tr>
                         <?
                     }
@@ -2149,7 +2185,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_laporan_perkembangan_ibo() {
+    public function get_laporan_perkembangan_ibo()
+    {
         $ibo_id = AccessRight::getMyOrgID();
         $arrMyIBO = Generic::getAllMyIBO($ibo_id);
 
@@ -2228,15 +2265,15 @@ class BusinessIntelligence extends WebService {
 
                             <? foreach ($arrTahun as $valThn) {
                                 ?>
-                                <th >TC</th>
-                                <th >Coach</th>
-                                <th >Siswa</th>
+                                <th>TC</th>
+                                <th>Coach</th>
+                                <th>Siswa</th>
                                 <?
                             }
                             ?>
                         </tr>
                         </thead>
-                        <tbody >
+                        <tbody>
                         <?
                         $i = 1;
                         foreach ($arrMyIBO as $keyIBO => $iboname) {
@@ -2291,8 +2328,6 @@ class BusinessIntelligence extends WebService {
                                     ?>
 
 
-
-
                                 </tr>
                                 <?
                             }
@@ -2314,7 +2349,8 @@ class BusinessIntelligence extends WebService {
     }
 
     // BI Level TC
-    public function get_laporan_belajar_murid_tc_lvl_tc() {
+    public function get_laporan_belajar_murid_tc_lvl_tc()
+    {
 
         $tc_id = AccessRight::getMyOrgID();
         $t = time();
@@ -2343,7 +2379,7 @@ class BusinessIntelligence extends WebService {
         </section>
         <div class="clearfix"></div>
         <style>
-            .guru_coach{
+            .guru_coach {
                 background-color: #f6f6f6;
                 font-weight: bold;
             }
@@ -2362,7 +2398,7 @@ class BusinessIntelligence extends WebService {
                     <th>Lama Belajar</th>
                 </tr>
                 </thead>
-                <tbody id ='container_coach_bulanan<?= $t; ?>'>
+                <tbody id='container_coach_bulanan<?= $t; ?>'>
                 <?
                 $i = 1;
                 $sudah = array();
@@ -2436,7 +2472,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_absen_guru_tc_lvl_tc() {
+    public function get_absen_guru_tc_lvl_tc()
+    {
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $arrWeek = Generic::getDateRangeByWeek(date("Y"));
         krsort($arrWeek);
@@ -2482,7 +2519,7 @@ class BusinessIntelligence extends WebService {
                 <button id="submit_absen_couch_<?= $t; ?>">submit</button>
                 <span id="export_<?= $t; ?>" class="glyphicon glyphicon-export" aria-hidden="true"></span>
                 <script>
-                    $('#tahun_<?= $t; ?>').change(function(){
+                    $('#tahun_<?= $t; ?>').change(function () {
                         var thn = $('#tahun_<?= $t; ?>').val();
                         getWeekInYear(thn);
 
@@ -2528,7 +2565,7 @@ class BusinessIntelligence extends WebService {
                         <th colspan="15" style="text-align:center; font-weight: bold">Absen Coach</th>
                     </tr>
                     <tr>
-                        <th rowspan="2"class="tengah" >No.</th>
+                        <th rowspan="2" class="tengah">No.</th>
                         <th rowspan="2" class="tengah">Nama Guru</th>
                         <th colspan="12" style="text-align:center; font-weight: bold">Jadwal Mengajar</th>
                     </tr>
@@ -2656,7 +2693,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_rekap_kupon_tc_lvl_tc() {
+    public function get_rekap_kupon_tc_lvl_tc()
+    {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = AccessRight::getMyOrgID();
@@ -2713,23 +2751,24 @@ class BusinessIntelligence extends WebService {
                 }, 'json');
             });</script>
         <style>
-            .tengahcolumn{
+            .tengahcolumn {
                 vertical-align: middle !important;
                 font-weight: bold;
             }
         </style>
         <section class="content">
 
-            <div id = "kupon_terjual_<?= $bln . "_" . $thn; ?>" class="table-responsive">
+            <div id="kupon_terjual_<?= $bln . "_" . $thn; ?>" class="table-responsive">
                 <table class="table table-bordered table-sempoa-border table-striped" style="background-color: white;">
                     <thead>
                     <tr>
-                        <td class ="tengahcolumn" rowspan="2">No.</td>
+                        <td class="tengahcolumn" rowspan="2">No.</td>
                         <td class="tengahcolumn" rowspan="2">Nama TC</td>
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id = "<?= $bln . "_" . $thn; ?>"  colspan="2" style ="text-align:center; font-weight: bold;"><?= Generic::getMonthName($bln); ?></th>
+                            <th id="<?= $bln . "_" . $thn; ?>" colspan="2"
+                                style="text-align:center; font-weight: bold;"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
                         }
@@ -2751,8 +2790,8 @@ class BusinessIntelligence extends WebService {
                     $birekap = new RekapSiswaIBOModel();
                     $birekap->getWhereOne("bi_rekap_tc_id=$tc_id AND bi_rekap_bln=$bln AND bi_rekap_tahun=$thn");
 
-                    $totalTerjual +=$birekap->bi_rekap_kupon;
-                    $totalAktiv +=$birekap->bi_rekap_aktiv;
+                    $totalTerjual += $birekap->bi_rekap_kupon;
+                    $totalAktiv += $birekap->bi_rekap_aktiv;
                     ?>
                     <tr>
                         <td><?= $i; ?></td>
@@ -2801,7 +2840,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_rekap_siswa_ibo_lvl_tc() {
+    public function get_rekap_siswa_ibo_lvl_tc()
+    {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = AccessRight::getMyOrgID();
@@ -2851,7 +2891,9 @@ class BusinessIntelligence extends WebService {
         </section>
         <div class="clearfix"></div>
         <style type="text/css" media="print">
-            @page { size: landscape; }
+            @page {
+                size: landscape;
+            }
         </style>
         <script>
             $('#submit_rekap_<?= $t; ?>').click(function () {
@@ -2865,38 +2907,42 @@ class BusinessIntelligence extends WebService {
         </script>
 
         <style>
-            .thead .table-sempoa-border{
-                border:4px ;
+            .thead .table-sempoa-border {
+                border: 4px;
                 border-style: solid;
                 border-color: burlywood;
 
             }
-            .tengah{
+
+            .tengah {
                 vertical-align: middle !important;
             }
-            .tengahcolumn{
+
+            .tengahcolumn {
                 vertical-align: middle !important;
                 font-weight: bold;
             }
-            .putih{
+
+            .putih {
                 background-color: white;
             }
         </style>
 
         <section class="content">
 
-            <div id = "kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
-                <table class="table table-bordered table-striped table-sempoa-border putih" >
+            <div id="kepala_<?= $bln . "_" . $thn; ?>" class="table-responsive">
+                <table class="table table-bordered table-striped table-sempoa-border putih">
                     <thead>
                     <tr>
-                        <th class = "tengah" rowspan="2">No.</th>
-                        <th class = "tengah" rowspan="2">Kode TC</th>
+                        <th class="tengah" rowspan="2">No.</th>
+                        <th class="tengah" rowspan="2">Kode TC</th>
                         <th class="tengah" rowspan="2">Nama TC</th>
-                        <th class = "tengah" rowspan="2">Nama Director</th>
+                        <th class="tengah" rowspan="2">Nama Director</th>
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id = "<?= $bln . "_" . $thn; ?>" class = "tengahcolumn" colspan="7"><?= Generic::getMonthName($bln); ?></th>
+                            <th id="<?= $bln . "_" . $thn; ?>" class="tengahcolumn"
+                                colspan="7"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
                         }
@@ -2976,7 +3022,8 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
-    public function get_rekap_bulanan_kupon_lvl_tc(){
+    public function get_rekap_bulanan_kupon_lvl_tc()
+    {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $t = time();
@@ -3032,7 +3079,7 @@ class BusinessIntelligence extends WebService {
         <section class="clearfix">
         </section>
         <section class="content">
-            <div class="table-responsive" id = "content_kupon_<?= $tc_id . $bln . $thn; ?>">
+            <div class="table-responsive" id="content_kupon_<?= $tc_id . $bln . $thn; ?>">
                 <table class="table table-bordered table-striped putih">
                     <thead>
                     <tr>
@@ -3083,11 +3130,12 @@ class BusinessIntelligence extends WebService {
             </div>
         </section>
         <style>
-            .tengahcolumn{
+            .tengahcolumn {
                 vertical-align: middle !important;
                 font-weight: bold;
             }
-            .putih{
+
+            .putih {
                 background-color: white;
             }
         </style>
@@ -3102,4 +3150,117 @@ class BusinessIntelligence extends WebService {
         <?
     }
 
+    public function get_laporan_murid_by_status_tc()
+    {
+        $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
+        $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
+        $status_murid = isset($_GET['status_murid']) ? addslashes($_GET['status_murid']) : 1;
+        $t = time();
+        $arrBulan = Generic::getAllMonthsWithAll();
+        $tc_id = AccessRight::getMyOrgID();
+        $arrStatus = Generic::getAllStatusMurid();
+
+        if($status_murid == 1){
+            $status_murid = "A";
+        }
+        elseif($status_murid == 0){
+            $status_murid = "N";
+        }
+        elseif($status_murid == 2){
+            $status_murid = "C";
+        }
+        elseif($status_murid == 3){
+            $status_murid = "K";
+        }
+        elseif($status_murid == 4){
+            $status_murid = "L";
+        }
+        $logStatusMurid = new LogStatusMurid();
+        $arrLogStatusMurid = $logStatusMurid->getWhere("log_bln=$bln AND log_thn=$thn AND log_tc_id=$tc_id AND log_status='$status_murid'");
+
+        ?>
+
+        <section class="content-header">
+            <h1>Rekapitulasi Murid</h1>
+            <div class="box-tools pull-right">
+                Status :<select id="status_<?= $t; ?>">
+                    <?
+                    foreach ($arrStatus as $key=>$status) {
+                        $sel = "";
+                        if ($key == 1) {
+                            $sel = "selected";
+                        }
+                        ?>
+                        <option value="<?= $key; ?>" <?= $sel; ?>><?= $status; ?></option>
+                        <?
+                    }
+                    ?>
+                </select>
+
+                Bulan :<select id="bulan_<?= $t; ?>">
+                    <?
+                    foreach ($arrBulan as $bln2) {
+                        $sel = "";
+                        if ($bln2 == date("n")) {
+                            $sel = "selected";
+                        }
+                        ?>
+                        <option value="<?= $bln2; ?>" <?= $sel; ?>><?= $bln2; ?></option>
+                        <?
+                    }
+                    ?>
+                </select>
+                Tahun :<select id="tahun_<?= $t; ?>">
+                    <?
+                    for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
+                        $sel = "";
+                        if ($x == date("Y")) {
+                            $sel = "selected";
+                        }
+                        ?>
+                        <option value="<?= $x; ?>" <?= $sel; ?>><?= $x; ?></option>
+
+                        <?
+                    }
+                    ?>
+                    }
+                    ?>
+                </select>
+                <button id="submit_rekap_siswa_status_<?= $t; ?>">submit</button>
+                <? Generic::exportLogo(); ?>
+                <script>
+                    $('#submit_rekap_siswa_status_<?= $t; ?>').click(function () {
+                        var tc_id = $('#pilih_TC_<?= $t; ?>').val();
+                        var bln = $('#bulan_<?= $t; ?>').val();
+                        var thn = $('#tahun_<?= $t; ?>').val();
+                        var status = $('#status_<?= $t; ?>').val();
+                        $('#content_murid_<?= $tc_id . $bln . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/load_laporan_perkembangan_ibo?tc_id=" + tc_id + "&bln=" + bln + "&thn=" + thn +"&status="+status, function () {
+
+                        }, 'json');
+                    });
+                </script>
+            </div>
+        </section>
+        <section class="clearfix">
+        </section>
+        <section class="content">
+        <div class="table-responsive" id="content_kupon_<?= $tc_id . $bln . $thn; ?>">
+            <table class="table table-bordered table-striped putih">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Bulan</th>
+                    <th>Stock</th>
+                    <th>Kupon Masuk</th>
+                    <th>Transaksi Bulan ini</th>
+                    <th>Stock Akhir</th>
+                </tr>
+                </thead>
+            </table>
+            <tbody id="content_murid_<?= $tc_id . $bln . $thn; ?>">
+
+            </tbody>
+        </div>
+        <?
+    }
 }
