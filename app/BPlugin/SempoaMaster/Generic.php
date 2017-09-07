@@ -2024,4 +2024,24 @@ class Generic
         $res[KEY::$RETOUR_STATUS_CLAIMED_ALIAS] = KEY::$RETOUR_STATUS_CLAIMED_TEXT;
         return $res;
     }
+
+    public static function getAllMuridByTC($tc_id){
+        $murid = new MuridModel();
+        $arrMurid = $murid->getWhere("murid_tc_id=$tc_id");
+        $res = array();
+        foreach($arrMurid as $val){
+            $res[$val->id_murid] = $val->nama_siswa;
+        }
+        return $res;
+
+    }
+
+    public static function getNoBukuByIuranBulananID($id_invoice){
+        $ib = new IuranBuku();
+        $ib->getWhereOne("bln_no_invoice='$id_invoice'");
+        $id_ib = $ib->bln_id;
+        $stockBuku = new StockBuku();
+        $stockBuku->getWhereOne("stock_invoice_murid=$id_ib");
+        return $stockBuku->stock_buku_no;
+    }
 }

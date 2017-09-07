@@ -1749,6 +1749,7 @@ class BIWebHelper extends WebService
         </style>
         <?
     }
+
     function loadRekapKuponTC()
     {
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
@@ -3574,15 +3575,35 @@ class BIWebHelper extends WebService
         <?
     }
 
-    public function loadMuridByStatusTC(){
-        $tc_id = addslashes($_GET['tc_id']);
+    public function loadMuridByStatusTC()
+    {
+        $tc_id = AccessRight::getMyOrgID();
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
-        $status_murid  = isset($_GET['status']) ? addslashes($_GET['status']) : 1;
-        $logStatusMurid = new LogStatusMurid();
-        $arrLogStatusMurid = $logStatusMurid->getWhere("log_bln='$bln' AND log_thn='$thn' AND log_tc_id=$tc_id AND log_status='$status_murid'");
+        $status_murid = isset($_GET['status']) ? addslashes($_GET['status']) : 1;
+        $arrNamaMurid = Generic::getAllMuridByTC($tc_id);
+        $statusHistory = new StatusHisMuridModel();
 
-        pr($arrLogStatusMurid);
+        if($status_murid != 1){
+            $arrStatusHistory = $statusHistory->getWhere("MONTH(status_tanggal_mulai)=$bln AND YEAR(status_tanggal_mulai) = $thn AND status_tc_id = $tc_id AND status = $status_murid ");
+
+        }
+        else{
+//            $arrStatusHistory = $statusHistory->getWhere("status_tanggal_akhir='1970-01-01 07:00:00' AND status_tc_id = $tc_id AND status = $status_murid ");
+            $arrStatusHistory = $statusHistory->getWhere("(MONTH(status_tanggal_akhir)>$bln AND YEAR(status_tanggal_akhir)= $thn OR status_tanggal_akhir='1970-01-01 07:00:00' )AND status_tc_id = $tc_id AND status = $status_murid ");
+
+        }
+        $i = 1;
+        foreach ($arrStatusHistory as $val) {
+            ?>
+            <tr>
+                <td><?= $i++; ?></td>
+                <td><?= $arrNamaMurid[$val->status_murid_id]; ?></td>
+                <td><?= Generic::getLevelNameByID($val->status_level_murid); ?></td>
+                <td><?= ($val->status_tanggal_mulai); ?></td>
+            </tr>
+            <?
+        }
     }
 
 }

@@ -45,7 +45,8 @@ class MuridWebHelper extends WebService
         }
         ?>
 
-        <div style="background-color: #FFFFFF; padding: 20px; margin-top: 20px;" xmlns="http://www.w3.org/1999/html">
+        <div style="background-color: #FFFFFF; padding: 20px; margin-top: 20px;" xmlns="http://www.w3.org/1999/html"
+             xmlns="http://www.w3.org/1999/html">
 
 
             <section class="content-header">
@@ -948,7 +949,7 @@ class MuridWebHelper extends WebService
 //                $obj->removeAutoCrudClick = array("pay_firsttime");
                                     echo "<button class='btn btn-default' onclick=\"openLw('Payment_Murid','" . _SPPATH . "MuridWebHelper/firsttime_payment?id_murid=" . $murid->id_murid . "','fade');\">Payment First Time</button>";
                                 } else {
-                                    echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $murid->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                    echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $murid->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
                                 }
                                 ?>
@@ -2209,12 +2210,12 @@ class MuridWebHelper extends WebService
 
 
                                                     if (($mk->bln_date == $month . "-" . $year)) {
-                                                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
                                                     } else {
                                                         ?>
                                                         <a target="_blank"
-                                                           href="<?= _SPPATH; ?>MuridWebHelper/printSPP?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
+                                                           href="<?= _SPPATH; ?>MuridWebHelper/printSPP2?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
 
                                                         <span class="glyphicon glyphicon-print"
                                                               aria-hidden="true"></span>
@@ -2463,12 +2464,12 @@ class MuridWebHelper extends WebService
 //                                                echo $mk->bln_kupon_id;
                                             } else {
                                                 if ($murid->id_level_masuk == $val->bln_buku_level) {
-                                                    echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                                    echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
                                                 } else {
                                                     ?>
                                                     <a target="_blank"
-                                                       href="<?= _SPPATH; ?>MuridWebHelper/printBuku?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
+                                                       href="<?= _SPPATH; ?>MuridWebHelper/printBuku2?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
 
                                                         <span class="glyphicon glyphicon-print"
                                                               aria-hidden="true"></span>
@@ -2727,12 +2728,12 @@ class MuridWebHelper extends WebService
                         } else {
 
                             if (($mk->bln_date == $month . "-" . $year)) {
-                                echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
                             } else {
                                 ?>
                                 <a target="_blank"
-                                   href="<?= _SPPATH; ?>MuridWebHelper/printSPP?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
+                                   href="<?= _SPPATH; ?>MuridWebHelper/printSPP2?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&bln=<?= $mk->bln_date; ?>&id=<?= $mk->bln_kupon_id; ?>">
 
                                     <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
                                 </a>
@@ -4464,27 +4465,23 @@ class MuridWebHelper extends WebService
                 #data_tc {
                     text-align: center;
                 }
-                div.info_invoices{
-                    padding:20px;
-                    font-size:20px;
+
+                div.info_invoices {
                     font-size: 12px;
                 }
 
-                div.nama_siswa{
-                    padding:20px;
+                div.nama_siswa {
                     font-size: 12px;
                 }
 
-
-                table{
+                table {
                     font-family: arial, sans-serif;
                     border-collapse: collapse;
                     width: 100%;
-                    margin-right: 20px;
                     font-size: 12px;
                 }
 
-                td,th{
+                td, th {
 
                     border: 1px solid #414141;
                     text-align: center;
@@ -4492,22 +4489,26 @@ class MuridWebHelper extends WebService
                     font-size: 12px;
                 }
 
-                th{
-                    background-color:#dddddd;}
+                th {
+                    background-color: #dddddd;
+                }
 
                 #sempoasip_pusat {
                     text-align: center;
                 }
+
                 #logo_sempoa {
                     display: block;
                     margin: auto;
                 }
+
                 div.penutup_invoices {
                     text-align: center;
                     margin-left: 450px;
                     margin-right: 450px;
                 }
-                .container{
+
+                .container {
                     font-size: 12px;
                 }
             </style>
@@ -4519,7 +4520,7 @@ class MuridWebHelper extends WebService
             <!-- Write HTML just like a web page -->
             <article>
 
-                <div class="container">
+                <div class="container" style="margin-left: 20px; margin-right: 20px;">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="invoice_orang_tua">
@@ -4548,8 +4549,8 @@ class MuridWebHelper extends WebService
                                             <th>Harga</th>
                                         </tr>
                                         <tr>
-                                            <td><?=$iuranBulanan->bln_kupon_id;?></td>
-                                            <td>Iuran Bulanan : <?=$iuranBulanan->bln_date;?></td>
+                                            <td><?= $iuranBulanan->bln_kupon_id; ?></td>
+                                            <td>Iuran Bulanan : <?= $iuranBulanan->bln_date; ?></td>
                                             <td><?= idr($jenisbm->harga); ?></td>
                                         </tr>
                                         <tr>
@@ -4577,7 +4578,7 @@ class MuridWebHelper extends WebService
                                     <div class="clearfix"></div>
                                     <br><br>
                                     <div>
-                                        <p style="border-right: 20px; float: left;margin-left: 20px;">Catatan :
+                                        <p style="border-right: 20px; float: left;">Catatan :
                                             Setiap Training
                                             Centre
                                             beroperasional dan
@@ -5064,6 +5065,9 @@ class MuridWebHelper extends WebService
                 $bln = $val['kapan'];
             }
         }
+
+        $date = new DateTime($pay->murid_pay_date);
+        $tanggal = $date->format("d-m-Y");
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -5098,7 +5102,7 @@ class MuridWebHelper extends WebService
             <br>
             <div class="info_invoices">
                 <b>No. Invoice :<?= $pay->bln_no_invoice; ?></b> <br>
-                <b>Tanggal : <?= $pay->murid_pay_date; ?></b>
+                <b>Tanggal : <?= $tanggal; ?></b>
             </div>
             <br>
             <br>
@@ -5147,6 +5151,199 @@ class MuridWebHelper extends WebService
         </html>
         <?
     }
+
+
+    function printRegister2()
+    {
+
+        $id_murid = addslashes($_GET['id_murid']);
+        $murid = new MuridModel();
+        $murid->getByID($id_murid);
+        $arrjenisBiayaSPP = Generic::getJenisBiayaType();
+        $jenisBiayaSPP = $arrjenisBiayaSPP[$murid->id_level_sekarang];
+        $pay = new PaymentFirstTimeLog();
+        $pay->getByID($id_murid);
+        $arrPay = unserialize($pay->murid_biaya_serial);
+        foreach ($arrPay as $key => $val) {
+
+            if ($val['id_biaya'] == KEY::$BIAYA_REGISTRASI) {
+                $Registrasi = $val['harga'];
+            }
+            if ($val['id_biaya'] == KEY::$BIAYA_IURAN_BUKU) {
+                $ibuku = $val['harga'];
+            }
+            if ($val['id_biaya'] == $jenisBiayaSPP) {
+                $SPP = $val['harga'];
+            }
+            if ($val['id_biaya'] == KEY::$BIAYA_PERLENGKAPAN_JUNIOR) {
+                $harga = $val['harga'];
+                $level = "Junior";
+            }
+            if ($val['id_biaya'] == KEY::$BIAYA_PERLENGKAPAN_FOUNDATION) {
+                $harga = $val['harga'];
+                $level = "Foundation";
+            }
+
+            if ($key == "kupon") {
+                $nomor = $val['nomor'];
+                $bln = $val['kapan'];
+            }
+        }
+        $tc = new SempoaOrg();
+        $tc->getWhereOne("org_id=$murid->murid_tc_id");
+        $date = new DateTime($pay->murid_pay_date);
+        $tanggal = $date->format("d-m-Y");
+        ?>
+
+        <html>
+
+        <head>
+            <style>
+
+                @page {
+                    size: A6;
+                    margin: 0;
+                }
+
+                @media print {
+                    html, body {
+                        width: 105mm;
+                        height: 148mm;
+                    }
+                }
+
+                #data_tc {
+                    text-align: center;
+                }
+
+                div.info_invoices {
+
+                }
+
+                div.nama_siswa {
+
+                }
+
+                table {
+                    font-family: arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin-right: 20px;
+                    font-size: 12px;
+                }
+
+                td, th {
+                    border: 1px solid #414141;
+                    text-align: center;
+                    padding: 8px;
+                }
+
+                th {
+                    background-color: #dddddd;
+                }
+
+                #sempoasip_pusat {
+                    text-align: center;
+                }
+
+
+                .invoice_orang_tua {
+                    margin-left: 20px;
+                    margin-right: 20px;
+                    font-size: 12px;
+                }
+
+                div.penutup_invoices {
+                    text-align: center;
+                    margin-left: 450px;
+                    margin-right: 450px;
+                }
+            </style>
+        </head>
+
+        <body>
+        <section class="sheet padding-10mm">
+            <article>
+                <div class="invoice_orang_tua">
+                    <div class="kop_invoices">
+
+                        <h4 id="data_tc">
+                            <?= $tc->nama; ?><br>
+                            <?= $tc->alamat; ?><br>
+                            Telp. <?= $tc->nomor_telp; ?>, Fax. <?= $tc->tc_no_fax_office; ?>,
+                            HP. <?= $tc->tc_no_hp_office; ?>
+                        </h4>
+                        <div class="info_invoices">
+                            <b>No. Invoice : <?= $pay->bln_no_invoice; ?></b> <br>
+                            <b>Tanggal : <?= $tanggal; ?></b>
+                        </div>
+                        <div class="nama_siswa">
+                            <p>
+                                Telah diterima pembayaran oleh Murid :<br>
+                                <b>Nama Murid : <?= Generic::getMuridNamebyID($pay->murid_id); ?></b><br>
+                                <b>No Murid : <?= ($murid->kode_siswa); ?></b><br>
+                            </p>
+                        </div>
+                        <table>
+                            <tr>
+                                <th>No</th>
+                                <th>Keterangan</th>
+                                <th>Harga</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Biaya Registrasi</td>
+                                <td style="text-align:right;"><?= idr($Registrasi); ?></td>
+                            </tr>
+                            <tr>
+                                <td><?= $nomor; ?></td>
+                                <td>Iuran Bulanan : <?= $bln; ?> </td>
+                                <td style="text-align:right;"><?= idr($SPP); ?></td>
+                            </tr>
+                            <tr>
+                                <td><?=Generic:: getNoBukuByIuranBulananID($pay->bln_no_invoice);?></td>
+                                <td>Uang Buku <?= Generic::getLevelNameByID($murid->id_level_masuk); ?></td>
+                                <td style="text-align:right;"><?=idr($ibuku); ?></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Biaya Perlengkapan <?= $level; ?></td>
+                                <td style="text-align:right;"><?= idr($harga); ?></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="text-align:right;padding-right:15px;font-style:bold;">Jumlah Total</td>
+                                <td style="text-align:right;"><?= idr($pay->murid_pay_value); ?></td>
+                            </tr>
+
+                        </table>
+
+<span>
+	<p>Pembayaran melalui mesin EDC atau via transfer ke :</p>
+	<h4 id="sempoasip_pusat">SEMPOA SIP<br><?= $tc->tc_nama_bank; ?> <?= $tc->tc_cabang_bank; ?>
+        <br><?= $tc->tc_acc_bank; ?></h4>
+
+	<p style="float: right; margin-right: 20px;">....................., <?= $tanggal; ?></p>
+</span>
+                        <br><br>
+                        <div>
+                            <p style="float: left;">Catatan : Setiap Training Centre beroperasional
+                                dan
+                                memiliki kepemilikan secara mandiri</p>
+                            <p style="float: right;">Training Center</p>
+                        </div>
+                        <br><br>
+                    </div>
+
+                </div>
+            </article>
+        </section>
+
+        </body>
+        </html>
+        <?
+    }
+
 
     public static function read_murid_tc_page()
     {
@@ -5272,7 +5469,7 @@ class MuridWebHelper extends WebService
                                     if ($valMurid->pay_firsttime == '0') {
                                         echo "<button onclick=\"openLw('Payment_Murid','" . _SPPATH . "MuridWebHelper/firsttime_payment?id_murid=" . $valMurid->id_murid . "','fade');\">Payment First Time</button>";
                                     } else {
-                                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $valMurid->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $valMurid->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
                                     }
 
@@ -5624,7 +5821,7 @@ class MuridWebHelper extends WebService
                                     if ($valMurid->pay_firsttime == '0') {
                                         echo "<button onclick=\"openLw('Payment_Murid','" . _SPPATH . "MuridWebHelper/firsttime_payment?id_murid=" . $valMurid->id_murid . "','fade');\">Payment First Time</button>";
                                     } else {
-                                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $valMurid->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                        echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $valMurid->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
                                     }
 
@@ -5734,12 +5931,12 @@ class MuridWebHelper extends WebService
 //                                                echo $mk->bln_kupon_id;
                         } else {
                             if ($murid->id_level_masuk == $val->bln_buku_level) {
-                                echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                                echo "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $id . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
                             } else {
                                 ?>
                                 <a target="_blank"
-                                   href="<?= _SPPATH; ?>MuridWebHelper/printBuku?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
+                                   href="<?= _SPPATH; ?>MuridWebHelper/printBuku2?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
 
                                                         <span class="glyphicon glyphicon-print"
                                                               aria-hidden="true"></span>

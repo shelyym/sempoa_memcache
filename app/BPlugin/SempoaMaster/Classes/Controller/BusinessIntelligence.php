@@ -3160,32 +3160,26 @@ class BusinessIntelligence extends WebService
         $tc_id = AccessRight::getMyOrgID();
         $arrStatus = Generic::getAllStatusMurid();
 
-        if($status_murid == 1){
-            $status_murid = "A";
+        $arrNamaMurid = Generic::getAllMuridByTC($tc_id);
+        $statusHistory = new StatusHisMuridModel();
+        if($status_murid != 1){
+            $arrStatusHistory = $statusHistory->getWhere("MONTH(status_tanggal_mulai)=$bln AND YEAR(status_tanggal_mulai) = $thn AND status_tc_id = $tc_id AND status = $status_murid ");
+
         }
-        elseif($status_murid == 0){
-            $status_murid = "N";
+        else{
+            $arrStatusHistory = $statusHistory->getWhere("(MONTH(status_tanggal_akhir)>$bln AND YEAR(status_tanggal_akhir)= $thn OR status_tanggal_akhir='1970-01-01 07:00:00' )AND status_tc_id = $tc_id AND status = $status_murid ");
+            $arrStatusHistory = $statusHistory->getWhere("(MONTH(status_tanggal_akhir)>$bln AND YEAR(status_tanggal_akhir)= $thn OR status_tanggal_akhir='1970-01-01 07:00:00' )AND status_tc_id = $tc_id AND status = $status_murid ");
+
         }
-        elseif($status_murid == 2){
-            $status_murid = "C";
-        }
-        elseif($status_murid == 3){
-            $status_murid = "K";
-        }
-        elseif($status_murid == 4){
-            $status_murid = "L";
-        }
-        $logStatusMurid = new LogStatusMurid();
-        $arrLogStatusMurid = $logStatusMurid->getWhere("log_bln=$bln AND log_thn=$thn AND log_tc_id=$tc_id AND log_status='$status_murid'");
 
         ?>
 
         <section class="content-header">
-            <h1>Rekapitulasi Murid</h1>
+            <h1>Rekapitulasi Status Murid</h1>
             <div class="box-tools pull-right">
                 Status :<select id="status_<?= $t; ?>">
                     <?
-                    foreach ($arrStatus as $key=>$status) {
+                    foreach ($arrStatus as $key => $status) {
                         $sel = "";
                         if ($key == 1) {
                             $sel = "selected";
@@ -3227,14 +3221,13 @@ class BusinessIntelligence extends WebService
                     ?>
                 </select>
                 <button id="submit_rekap_siswa_status_<?= $t; ?>">submit</button>
-                <? Generic::exportLogo(); ?>
+<!--                --><?// Generic::exportLogo(); ?>
                 <script>
                     $('#submit_rekap_siswa_status_<?= $t; ?>').click(function () {
-                        var tc_id = $('#pilih_TC_<?= $t; ?>').val();
                         var bln = $('#bulan_<?= $t; ?>').val();
                         var thn = $('#tahun_<?= $t; ?>').val();
                         var status = $('#status_<?= $t; ?>').val();
-                        $('#content_murid_<?= $tc_id . $bln . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/load_laporan_perkembangan_ibo?tc_id=" + tc_id + "&bln=" + bln + "&thn=" + thn +"&status="+status, function () {
+                        $('#content_murid_<?= $tc_id . $bln . $thn; ?>').load("<?= _SPPATH; ?>BIWebHelper/loadMuridByStatusTC?bln=" + bln + "&thn=" + thn + "&status=" + status, function () {
 
                         }, 'json');
                     });
@@ -3249,17 +3242,28 @@ class BusinessIntelligence extends WebService
                 <thead>
                 <tr>
                     <th>No.</th>
-                    <th>Bulan</th>
-                    <th>Stock</th>
-                    <th>Kupon Masuk</th>
-                    <th>Transaksi Bulan ini</th>
-                    <th>Stock Akhir</th>
+                    <th>Nama Murid</th>
+                    <th>Level</th>
+                    <th>Tanggal sesuai Status</th>
                 </tr>
                 </thead>
-            </table>
-            <tbody id="content_murid_<?= $tc_id . $bln . $thn; ?>">
 
-            </tbody>
+                <tbody id="content_murid_<?= $tc_id . $bln . $thn; ?>">
+                <?
+                $i = 1;
+                foreach ($arrStatusHistory as $val) {
+                    ?>
+                    <tr>
+                        <td><?= $i++; ?></td>
+                        <td><?= $arrNamaMurid[$val->status_murid_id]; ?></td>
+                        <td><?= Generic::getLevelNameByID($val->status_level_murid); ?></td>
+                        <td><?= ($val->status_tanggal_mulai); ?></td>
+                    </tr>
+                    <?
+                }
+                ?>
+                </tbody>
+            </table>
         </div>
         <?
     }

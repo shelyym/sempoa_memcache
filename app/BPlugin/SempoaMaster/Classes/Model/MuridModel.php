@@ -236,7 +236,7 @@ class MuridModel extends SempoaModel
 //                $obj->removeAutoCrudClick = array("pay_firsttime");
                 $obj->pay_firsttime = "<button onclick=\"openLw('Payment_Murid','" . _SPPATH . "MuridWebHelper/firsttime_payment?id_murid=" . $obj->id_murid . "','fade');\">Payment First Time</button>";
             } else {
-                $obj->pay_firsttime = "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister?id_murid=" . $obj->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
+                $obj->pay_firsttime = "<a target=\"_blank\" href=" . _SPPATH . "MuridWebHelper/printRegister2?id_murid=" . $obj->id_murid . "><span  style=\"vertical-align:middle\" class=\"glyphicon glyphicon-print\"  aria-hidden=\"true\"></span>
                                             </a>";
             }
 
