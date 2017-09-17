@@ -995,6 +995,23 @@ class StokWeb extends WebService
         $i = 0;
         $t = time();
         ?>
+        <style>
+            .table-fixed thead {
+                width: 97%;
+            }
+            .table-fixed tbody {
+                height: 230px;
+                overflow-y: auto;
+                width: 100%;
+            }
+            .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+                display: block;
+            }
+            .table-fixed tbody td, .table-fixed thead > tr> th {
+                float: left;
+                border-bottom-width: 0;
+            }
+        </style>
         <div id="container_level_<?= $t; ?>">
             <section class="content-header">
                 <h1>
@@ -1008,7 +1025,7 @@ class StokWeb extends WebService
             <div class="clearfix"></div>
             <section class="content">
 
-                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped"
+                <table id="container_buku_rusak_<?= $t; ?>" class="table table-bordered table-striped "
                        style="margin-top: 20px;">
                     <thead>
                     <tr>

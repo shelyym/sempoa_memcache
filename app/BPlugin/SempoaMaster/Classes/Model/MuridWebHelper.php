@@ -1257,6 +1257,7 @@ class MuridWebHelper extends WebService
 
                         }
                         else {
+//                            alert("level: " + id_level );
                             // Cancel ganti ke kurikulum baru
                             if (confirm("Anda akan membeli buku baru dan kurikulum Anda akan diganti ke kurikulum baru?")) {
                                 $.get("<?= _SPPATH; ?>MuridWebHelper/naik_kelas?id_murid=" + id_murid + "&id_level=" + id_level + "&kur=" + kur + "&gantiKur=1", function (data2) {
@@ -2469,7 +2470,7 @@ class MuridWebHelper extends WebService
                                                 } else {
                                                     ?>
                                                     <a target="_blank"
-                                                       href="<?= _SPPATH; ?>MuridWebHelper/printBuku2?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
+                                                       href="<?= _SPPATH; ?>MuridWebHelper/printBuku2?id_invoice=<?=$val->bln_id;?>&nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
 
                                                         <span class="glyphicon glyphicon-print"
                                                               aria-hidden="true"></span>
@@ -3271,6 +3272,137 @@ class MuridWebHelper extends WebService
     }
 
     public function naik_kelas()
+    {
+
+        $id_murid = addslashes($_GET['id_murid']);
+        $id_level = addslashes($_GET['id_level']);
+        $kur = addslashes($_GET['kur']);
+        $gantiKur = addslashes($_GET['gantiKur']);
+
+        $json = array();
+
+        // Cek, apakah masih ada invoice buku yang belum di bayar
+        $objIuranBuku = new IuranBuku();
+        $jumlahIuran = $objIuranBuku->getJumlah("bln_murid_id='$id_murid'  AND bln_status=0");
+
+        if ($jumlahIuran > 0) {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Masih ada taggihan buku yang belum dibayar!";
+            echo json_encode($json);
+            die();
+        }
+
+
+        // Check Kurikulum
+        if ($kur == KEY::$KURIKULUM_LAMA) {
+            $objIuranBuku = new IuranBuku();
+
+
+            // Ganti Kurikulum lama ke Kurikulum Baru
+            if ($gantiKur == 1) {
+//                $next_level = Generic::getMyNextLevel($id_level);
+                $next_level = Generic::getMyNextLevelKurLamaSpezial($id_level);
+                if(is_null($next_level->id_level)){
+                    $json['status_code'] = 0;
+                    $json['status_message'] = "Tidak bisa naik ke level!";
+                    echo json_encode($json);
+                    die();
+                }
+                $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$next_level->id_level'");
+            }
+
+            // Tidak ganti kurikulum
+            // Ikut level Kurikulum baru
+            // Buku level lama
+            else {
+                $next_level = Generic::getMyNextLevel($id_level);
+                $id_level_lama = Generic::convertLevelBaruKeLama($id_level);
+                $id_next_level_lama = Generic::getMyNextLevelLama($id_level_lama);
+//                pr($id_level_lama . " " . $id_next_level_lama->id_level_lama);
+                // hitung buku lama
+                $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$next_level->id_level'");
+
+            }
+
+
+        } // Kurikulum Baru
+        else {
+            $next_level = Generic::getMyNextLevel($id_level);
+            $objIuranBuku = new IuranBuku();
+            $cnt = $objIuranBuku->getJumlah("bln_murid_id='$id_murid' AND bln_buku_level= '$next_level->id_level'");
+        }
+
+
+        if ($cnt > 0) {
+//             continue;
+            $json['status_code'] = 0;
+            $json['status_message'] = "Invoice sdh tercetak";
+            echo json_encode($json);
+            die();
+        } else {
+
+            $objMurid = new MuridModel();
+            $objMurid->getByID($id_murid);
+            $bln = date("n");
+            $thn = date("Y");
+            $objIuranBuku->bln_murid_id = $objMurid->id_murid;
+            $objIuranBuku->bln_date_pembayaran = leap_mysqldate();
+            $objIuranBuku->bln_date = $bln . "-" . $thn;
+            $objIuranBuku->bln_mon = $bln;
+            $objIuranBuku->bln_tahun = $thn;
+            $objIuranBuku->bln_tc_id = $objMurid->murid_tc_id;
+            $objIuranBuku->bln_kpo_id = $objMurid->murid_kpo_id;
+            $objIuranBuku->bln_ibo_id = $objMurid->murid_ibo_id;
+            $objIuranBuku->bln_ak_id = $objMurid->murid_ak_id;
+
+            // Kurikulum lama
+
+            if ($kur == KEY::$KURIKULUM_LAMA) {
+                //berarti Anda memilih buku Kurikulum baru dan kurikulum akan disesuaikan
+                if ($gantiKur == 1) {
+                    $objIuranBuku->bln_buku_level = $next_level->id_level;
+                } else {
+
+                    $objIuranBuku->bln_buku_level = $next_level->id_level;
+                }
+
+            } else {
+                $objIuranBuku->bln_buku_level = $next_level->id_level;
+            }
+
+            $objIuranBuku->bln_kur = $kur;
+            if ($kur == 1) {
+                $objIuranBuku->bln_ganti_kur = $gantiKur;
+            }
+
+            $succ = $objIuranBuku->save();
+            if ($succ) {
+                // Create Nilai
+                $nilaiMurid = new NilaiModel();
+                $arrNilai = $nilaiMurid->getWhere("nilai_murid_id ='$id_murid' AND nilai_level='$objMurid->id_level_sekarang'");
+                if (count($arrNilai) == 0) {
+                    $nilaiMurid->nilai_murid_id = $id_murid;
+                    $nilaiMurid->nilai_level = $objMurid->id_level_sekarang;
+                    $nilaiMurid->nilai_create_date = leap_mysqldate();
+                    $nilaiMurid->nilai_org_id = AccessRight::getMyOrgID();
+                    $nilaiMurid->save();
+                }
+                $json['status_code'] = 1;
+                $json['status_message'] = "Invoice tercetak!";
+                echo json_encode($json);
+                die();
+            }
+            $json['status_code'] = 0;
+            $json['status_message'] = "Invoice sdh tercetak";
+            echo json_encode($json);
+            die();
+        }
+        //1 . buat log naik level
+        // 2. ganti level di table murid
+        //3. buat invoice iuran buku
+    }
+
+    public function naik_kelas_lama_ke_baru()
     {
 
         $id_murid = addslashes($_GET['id_murid']);
@@ -4604,6 +4736,8 @@ class MuridWebHelper extends WebService
 
     function printBuku2()
     {
+
+        $invoice_id = addslashes($_GET['id_invoice']);
         $nama = addslashes($_GET['nama']);
         $bln = addslashes($_GET['bln']);
         $id_murid = addslashes($_GET['id_murid']);
@@ -4621,6 +4755,7 @@ class MuridWebHelper extends WebService
         $tc->getWhereOne("org_id=$murid->murid_tc_id");
         $bukuDgnNo = new StockBuku();
         $arbukuDgnNo = $bukuDgnNo->getWhere("stock_invoice_murid=$iuranBuku->bln_id");
+        $arbukuDgnNo = $bukuDgnNo->getWhere("stock_invoice_murid=$invoice_id");
 
         ?>
 
@@ -5936,7 +6071,7 @@ class MuridWebHelper extends WebService
                             } else {
                                 ?>
                                 <a target="_blank"
-                                   href="<?= _SPPATH; ?>MuridWebHelper/printBuku2?nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
+                                   href="<?= _SPPATH; ?>MuridWebHelper/printBuku2?id_invoice=<?=$val->bln_id;?>&nama=<?= Generic::getMuridNamebyID($id); ?>&id_murid=<?= $id; ?>&tgl=<?= $val->bln_date_pembayaran; ?>&level=<?= Generic::getLevelNameByID($val->bln_buku_level); ?>">
 
                                                         <span class="glyphicon glyphicon-print"
                                                               aria-hidden="true"></span>
