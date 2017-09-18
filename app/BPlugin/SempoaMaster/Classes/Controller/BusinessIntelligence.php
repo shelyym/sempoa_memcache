@@ -1591,7 +1591,7 @@ class BusinessIntelligence extends WebService
                         <?
                         if ($bln != "All") {
                             ?>
-                            <th id="<?= $bln . "_" . $thn; ?>" colspan="2"
+                            <th id="<?= $bln . "_" . $thn; ?>" colspan="4"
                                 style="text-align:center; font-weight: bold;"><?= Generic::getMonthName($bln); ?></th>
 
                             <?
@@ -1600,6 +1600,8 @@ class BusinessIntelligence extends WebService
                     </tr>
                     <tr>
                         <th>Kupon Terjual</th>
+                        <th>Sisa Kupon</th>
+                        <th>Kupon yang dibeli</th>
                         <th>A</th>
                     </tr>
                     </thead>
@@ -1608,6 +1610,8 @@ class BusinessIntelligence extends WebService
                     $i = 1;
                     $totalTerjual = 0;
                     $totalAktiv = 0;
+                    $totalSisaKupon = 0;
+                    $totalKuponYgDbeli =0;
                     $content = array();
                     //                        pr($arrMyTC);
                     foreach ($arrMyTC as $keyTC => $tc) {
@@ -1627,7 +1631,16 @@ class BusinessIntelligence extends WebService
                                     echo $birekap->bi_rekap_kupon;
                                 }
                                 ?></td>
-
+                            <td><?
+                                $a = Generic::getSisaKuponTC($keyTC);
+                                $totalSisaKupon +=$a;
+                                echo $a;
+                                ?></td>
+                            <td><?
+                                $b= Generic::getJumlahKuponYangDibeliByBulanTahun($keyTC, $bln, $thn);
+                                $totalKuponYgDbeli +=$b;
+                                echo $b;
+                               ?></td>
                             <td><?
                                 if ($birekap->bi_rekap_aktiv == "") {
                                     echo 0;
@@ -1645,6 +1658,8 @@ class BusinessIntelligence extends WebService
                     <tr>
                         <td colspan="2" style="text-align:center; font-weight: bold">Total</td>
                         <td><?= $totalTerjual ?></td>
+                        <td><?= $totalSisaKupon ?></td>
+                        <td><?= $totalKuponYgDbeli ?></td>
                         <td><?= $totalAktiv ?></td>
                     </tr>
                     </tfoot>
@@ -3162,11 +3177,10 @@ class BusinessIntelligence extends WebService
 
         $arrNamaMurid = Generic::getAllMuridByTC($tc_id);
         $statusHistory = new StatusHisMuridModel();
-        if($status_murid != 1){
+        if ($status_murid != 1) {
             $arrStatusHistory = $statusHistory->getWhere("MONTH(status_tanggal_mulai)=$bln AND YEAR(status_tanggal_mulai) = $thn AND status_tc_id = $tc_id AND status = $status_murid ");
 
-        }
-        else{
+        } else {
             $arrStatusHistory = $statusHistory->getWhere("(MONTH(status_tanggal_akhir)>$bln AND YEAR(status_tanggal_akhir)= $thn OR status_tanggal_akhir='1970-01-01 07:00:00' )AND status_tc_id = $tc_id AND status = $status_murid ");
             $arrStatusHistory = $statusHistory->getWhere("(MONTH(status_tanggal_akhir)>$bln AND YEAR(status_tanggal_akhir)= $thn OR status_tanggal_akhir='1970-01-01 07:00:00' )AND status_tc_id = $tc_id AND status = $status_murid ");
 
@@ -3221,7 +3235,8 @@ class BusinessIntelligence extends WebService
                     ?>
                 </select>
                 <button id="submit_rekap_siswa_status_<?= $t; ?>">submit</button>
-<!--                --><?// Generic::exportLogo(); ?>
+                <!--                --><?// Generic::exportLogo();
+                ?>
                 <script>
                     $('#submit_rekap_siswa_status_<?= $t; ?>').click(function () {
                         var bln = $('#bulan_<?= $t; ?>').val();

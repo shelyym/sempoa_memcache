@@ -1761,11 +1761,7 @@ class BIWebHelper extends WebService
         $objRekapKupon = new BIRekapKuponModel();
         $arrRekap = $objRekapKupon->getWhere("bi_kupon_tc_id=$tc_id AND bi_kupon_bln=$bln AND bi_kupon_thn=$thn");
 
-        $arrAllAK = Generic::getAllAK();
-        $arrKPO = Generic::getAllMyKPO($ak_id);
-        foreach ($arrKPO as $kpo_id) {
-            $arrIBO = Generic::getAllMyIBO($kpo_id);
-        }
+
         ?>
         <table class="table table-bordered table-striped content_kupon_<?= $tc_id . $bln . $thn; ?>"
                style="background-color: white;">
@@ -2089,7 +2085,7 @@ class BIWebHelper extends WebService
                 if ($bln != KEY::$KEY_MONTH_ALL) {
                     ?>
                     <th id="<?= $bln . "_" . $thn; ?>" style="text-align:center; font-weight: bold;"
-                        colspan="2"><?= Generic::getMonthName($bln); ?></th>
+                        colspan="4"><?= Generic::getMonthName($bln); ?></th>
 
                     <?
                 } else {
@@ -2097,7 +2093,7 @@ class BIWebHelper extends WebService
                         if ($valbln != KEY::$KEY_MONTH_ALL) {
                             ?>
                             <th id="<?= $valbln . "_" . $thn; ?>" class="tengahcolumn"
-                                colspan="2"><?= Generic::getMonthName($valbln); ?></th>
+                                colspan="4"><?= Generic::getMonthName($valbln); ?></th>
 
                             <?
                         }
@@ -2110,6 +2106,8 @@ class BIWebHelper extends WebService
                 if ($bln != KEY::$KEY_MONTH_ALL) {
                     ?>
                     <th>Kupon Terjual</th>
+                    <th>Sisa Kupon</th>
+                    <th>Kupon yang dibeli</th>
                     <th>A</th>
                     <?
                 } else {
@@ -2117,6 +2115,8 @@ class BIWebHelper extends WebService
                         if ($valbln != KEY::$KEY_MONTH_ALL) {
                             ?>
                             <th>Kupon Terjual</th>
+                            <th>Sisa Kupon</th>
+                            <th>Kupon yang dibeli</th>
                             <th>A</th>
                             <?
                         }
@@ -2134,6 +2134,8 @@ class BIWebHelper extends WebService
                 $i = 1;
                 $totalTerjual = 0;
                 $totalAktiv = 0;
+                $totalSisaKupon = 0;
+                $totalKuponYgDbeli = 0;
                 $content = array();
 //                        pr($arrMyTC);
                 foreach ($arrMyTC as $keyTC => $tc) {
@@ -2153,7 +2155,14 @@ class BIWebHelper extends WebService
                                 echo $birekap->bi_rekap_kupon;
                             }
                             ?></td>
-
+                        <td><?
+                            $a = Generic::getSisaKuponTC($keyTC);
+                            $totalSisaKupon +=$a;
+                            echo $a;?></td>
+                        <td><?
+                            $b= Generic::getJumlahKuponYangDibeliByBulanTahun($keyTC, $bln, $thn);
+                            $totalKuponYgDbeli +=$b;
+                            echo $b;?></td>
                         <td><?
                             if ($birekap->bi_rekap_aktiv == "") {
                                 echo 0;
@@ -2169,6 +2178,8 @@ class BIWebHelper extends WebService
                 $i = 1;
                 $totalTerjual = array();
                 $totalAktiv = array();
+                $totalSisaKuponArr =  array();
+                $totalKuponYgDbeliArr =  array();
                 foreach ($arrMyTC as $keyTC => $tc) {
                     ?>
                     <tr>
@@ -2192,7 +2203,17 @@ class BIWebHelper extends WebService
                                         echo $birekap->bi_rekap_kupon;
                                     }
                                     ?></td>
+                                <td><?
+                                    $a=  Generic::getSisaKuponTC($keyTC);
+                                    $totalSisaKuponArr[$valbln]+=$a;
+                                    echo $a;
+                                   ?></td>
+                                <td><?
+                                    $b = Generic::getJumlahKuponYangDibeliByBulanTahun($keyTC, $valbln, $thn);
+                                    $totalKuponYgDbeliArr[$valbln] += $b;
+                                    echo $b;
 
+                                    ?></td>
                                 <td><?
                                     if ($birekap->bi_rekap_aktiv == "") {
                                         echo 0;
@@ -2219,6 +2240,8 @@ class BIWebHelper extends WebService
                 if ($bln != KEY::$KEY_MONTH_ALL) {
                     ?>
                     <td><?= $totalTerjual ?></td>
+                    <td><?= $totalSisaKupon ?></td>
+                    <td><?= $totalKuponYgDbeli ?></td>
                     <td><?= $totalAktiv ?></td>
                     <?
                 } else {
@@ -2226,6 +2249,8 @@ class BIWebHelper extends WebService
                         if ($valbln != KEY::$KEY_MONTH_ALL) {
                             ?>
                             <td><?= $totalTerjual[$valbln] ?></td>
+                            <td><?= $totalSisaKuponArr[$valbln] ?></td>
+                            <td><?= $totalKuponYgDbeliArr[$valbln] ?></td>
                             <td><?= $totalAktiv[$valbln] ?></td>
                             <?
                         }

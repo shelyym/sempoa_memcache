@@ -2076,4 +2076,20 @@ class Generic
         $stockBuku->getWhereOne("stock_invoice_murid=$id_ib");
         return $stockBuku->stock_buku_no;
     }
+
+    public static function getSisaKuponTC($tc_id){
+        $kuponSatuan = new KuponSatuan();
+        $jumlah = $kuponSatuan->getJumlah("kupon_owner_id='$tc_id' AND kupon_status=0 ORDER by kupon_id ASC");
+        return $jumlah;
+    }
+
+    public static function getJumlahKuponYangDibeliByBulanTahun($tc_id, $bln, $thn){
+        $kuponRequest = new RequestModel();
+        $arrKuponRequest = $kuponRequest->getWhere("req_pengirim_org_id='$tc_id' AND req_status = 1 AND MONTH(req_date)=$bln AND YEAR(req_date) =$thn ");
+        $jumlah =0;
+        foreach($arrKuponRequest as $val){
+            $jumlah += $val->req_jumlah;
+        }
+        return $jumlah;
+    }
 }

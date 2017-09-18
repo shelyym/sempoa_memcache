@@ -37,7 +37,7 @@ class SempoaExport
             $xsl = new GeneralExcel();
             $xsl->id = "bulan";
             $xsl->name = Generic::getMonthName($bln);
-            $xsl->anzahlcolumn = 2;
+            $xsl->anzahlcolumn = 4;
             $xsl->zeile = $zeile;
             $xsl->awal = 0;
             $xsl->textAllign = "center";
@@ -64,6 +64,24 @@ class SempoaExport
             $xsl->zeile = $zeile + 1;
             $xsl->awal = 0;
             array_push($header, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "skt";
+            $xsl->name = "Sisa Kupon";
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $zeile + 1;
+            $xsl->awal = 0;
+            array_push($header, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "kt";
+            $xsl->name = "Kupon yang dibeli";
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $zeile + 1;
+            $xsl->awal = 0;
+            array_push($header, $xsl);
+
+
             $xsl = new GeneralExcel();
             $xsl->id = "a";
             $xsl->name = "A";
@@ -120,21 +138,39 @@ class SempoaExport
         $arrAllmonth = Generic::getAllMonths();
         $totalTerjual = 0;
         $totalAktiv = 0;
+        $totalSisaKupon = 0;
+        $totalKuponYgDbeli = 0;
         $arrtotalTerjual = array();
         $arrtotalAktiv = array();
+        $totalSisaKuponArr =  array();
+        $totalKuponYgDbeliArr =  array();
+
         foreach ($arrAllmonth as $key => $val) {
             $arrtotalTerjual[$val] = 0;
             $arrtotalAktiv[$val] = 0;
+            $totalSisaKuponArr[$val] = 0;
+            $totalKuponYgDbeliArr[$val] = 0;
         }
+
         foreach ($arrMyTC as $keyTC => $tc) {
             if ($bln != KEY::$KEY_MONTH_ALL) {
-
                 $birekap = new RekapSiswaIBOModel();
                 $birekap->getWhereOne("bi_rekap_tc_id=$keyTC AND bi_rekap_bln=$bln AND bi_rekap_tahun=$thn");
 
                 $totalTerjual += $birekap->bi_rekap_kupon;
                 $totalAktiv += $birekap->bi_rekap_aktiv;
 
+
+                $sisaKupon = Generic::getSisaKuponTC($keyTC);
+                if($sisaKupon ==""){
+                    $sisaKupon = 0;
+                }
+                $totalSisaKupon += $sisaKupon;
+                $kuponygdibeli = Generic::getJumlahKuponYangDibeliByBulanTahun($keyTC, $bln, $thn);
+                if($kuponygdibeli ==""){
+                    $kuponygdibeli = 0;
+                }
+                $totalKuponYgDbeli += $kuponygdibeli;
 
                 $xsl = new GeneralExcel();
                 $xsl->id = "no";
@@ -153,14 +189,43 @@ class SempoaExport
                 array_push($content, $xsl);
                 $xsl = new GeneralExcel();
                 $xsl->id = "kpn";
-                $xsl->name = $birekap->bi_rekap_kupon;
+                if($birekap->bi_rekap_kupon ==""){
+                    $xsl->name = 0;
+                }
+                else{
+                    $xsl->name = $birekap->bi_rekap_kupon;
+                }
+
                 $xsl->anzahlcolumn = 1;
                 $xsl->zeile = $i;
                 $xsl->awal = 0;
                 array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "Sisa Kupon";
+                $xsl->name = $sisaKupon;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "Kupon yang dibeli";
+                $xsl->name = $kuponygdibeli;
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->awal = 0;
+                array_push($content, $xsl);
+
+
                 $xsl = new GeneralExcel();
                 $xsl->id = "A";
-                $xsl->name = $birekap->bi_rekap_aktiv;
+                if($birekap->bi_rekap_aktiv ==""){
+                    $xsl->name = 0;
+                }
+                else{
+                    $xsl->name = $birekap->bi_rekap_aktiv;
+                }
                 $xsl->anzahlcolumn = 1;
                 $xsl->zeile = $i;
                 $xsl->awal = 0;
@@ -223,6 +288,7 @@ class SempoaExport
             }
         }
 
+        // Footer
         if ($bln != KEY::$KEY_MONTH_ALL) {
             $xsl = new GeneralExcel();
             $xsl->id = "totalTerjual";
@@ -232,12 +298,29 @@ class SempoaExport
             $xsl->awal = 4;
             $xsl->mulaiColumn = "C";
             array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalSisaAktiv";
+            $xsl->name = $totalSisaKupon;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 5;
+            array_push($content, $xsl);
+
+            $xsl = new GeneralExcel();
+            $xsl->id = "totalyangdibeli";
+            $xsl->name = $totalKuponYgDbeli;
+            $xsl->anzahlcolumn = 1;
+            $xsl->zeile = $i;
+            $xsl->awal = 6;
+            array_push($content, $xsl);
+
             $xsl = new GeneralExcel();
             $xsl->id = "totalAktiv";
             $xsl->name = $totalAktiv;
             $xsl->anzahlcolumn = 1;
             $xsl->zeile = $i;
-            $xsl->awal = 5;
+            $xsl->awal = 7;
 //        $xsl->mulaiColumn = "A";
             array_push($content, $xsl);
         } else {
@@ -252,6 +335,23 @@ class SempoaExport
                 $xsl->mulaiColumn = $mulaiColumn;
                 $mulaiColumn++;
                 array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalSisaAktiv";
+                $xsl->name = $totalSisaKuponArr[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->mulaiColumn = $mulaiColumn;
+                array_push($content, $xsl);
+
+                $xsl = new GeneralExcel();
+                $xsl->id = "totalyangdibeli";
+                $xsl->name = $totalKuponYgDbeliArr[$val];
+                $xsl->anzahlcolumn = 1;
+                $xsl->zeile = $i;
+                $xsl->mulaiColumn = $mulaiColumn;
+                array_push($content, $xsl);
+
                 $xsl = new GeneralExcel();
                 $xsl->id = "totalAktiv";
                 $xsl->name = $arrtotalAktiv[$val];

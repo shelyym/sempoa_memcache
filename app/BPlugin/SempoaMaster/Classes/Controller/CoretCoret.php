@@ -970,47 +970,51 @@ class CoretCoret extends WebService
                         height: 148mm;
                     }
                 }
-                .invoice_orang_tua{
+
+                .invoice_orang_tua {
                     font-size: 12px;
                 }
 
                 #data_tc {
                     text-align: center;
                 }
-                div.info_invoices{
-                    padding:20px;
-                    font-size:20px;
+
+                div.info_invoices {
+                    padding: 20px;
+                    font-size: 20px;
                 }
 
-                div.nama_siswa{
-                    padding:20px;
-                    font-size:18px;
+                div.nama_siswa {
+                    padding: 20px;
+                    font-size: 18px;
                 }
 
-
-                table{
+                table {
                     font-family: arial, sans-serif;
                     border-collapse: collapse;
                     width: 100%;
                     margin-right: 20px;
                 }
 
-                td,th{
-                    border:1px solid #414141;
-                    text-align:center;
-                    padding:8px;
+                td, th {
+                    border: 1px solid #414141;
+                    text-align: center;
+                    padding: 8px;
                 }
 
-                th{
-                    background-color:#dddddd;}
+                th {
+                    background-color: #dddddd;
+                }
 
                 #sempoasip_pusat {
                     text-align: center;
                 }
+
                 #logo_sempoa {
                     display: block;
                     margin: auto;
                 }
+
                 div.penutup_invoices {
                     text-align: center;
                     margin-left: 450px;
@@ -1033,7 +1037,7 @@ class CoretCoret extends WebService
 
                 <div class="invoice_orang_tua">
                     <div class="kop_invoices">
-                       <h5 id="data_tc">
+                        <h5 id="data_tc">
                             TC Taman Semanan Indah<br>
                             Ruko Blok F No 7, Taman Semanan Indah - Jakarta Barat<br>
                             Telp. 021 - 5444398, Fax. 021 - 5444397, HP. 08159923311
@@ -1107,5 +1111,104 @@ class CoretCoret extends WebService
 
         </html>
         <?
+    }
+
+    public function tablefix()
+    {
+        ?>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <title>Invoice <?= Lang::t("Iuran Buku") ?></title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        </head>
+        <style>
+            .table-fixed thead {
+                width: 97%;
+            }
+            .table-fixed tbody {
+                height: 230px;
+                overflow-y: auto;
+                width: 100%;
+            }
+            .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+                display: block;
+            }
+            .table-fixed tbody td, .table-fixed thead > tr> th {
+                float: left;
+                border-bottom-width: 0;
+            }
+        </style>
+        <body>
+        <div class="container">
+            <div class="row">
+                <div class="panel panel-default">
+
+                    <table class="table table-fixed">
+                        <thead>
+                        <tr>
+                            <th class="col-xs-2">#</th><th class="col-xs-8">Name</th><th class="col-xs-2">Points</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="col-xs-2">1</td><td class="col-xs-8">Mike Adams</td><td class="col-xs-2">23</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">2</td><td class="col-xs-8">Holly Galivan</td><td class="col-xs-2">44</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">3</td><td class="col-xs-8">Mary Shea</td><td class="col-xs-2">86</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">4</td><td class="col-xs-8">Jim Adams</td><td>23</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">5</td><td class="col-xs-8">Henry Galivan</td><td class="col-xs-2">44</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">6</td><td class="col-xs-8">Bob Shea</td><td class="col-xs-2">26</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">7</td><td class="col-xs-8">Andy Parks</td><td class="col-xs-2">56</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">8</td><td class="col-xs-8">Bob Skelly</td><td class="col-xs-2">96</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">9</td><td class="col-xs-8">William Defoe</td><td class="col-xs-2">13</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">10</td><td class="col-xs-8">Will Tripp</td><td class="col-xs-2">16</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">11</td><td class="col-xs-8">Bill Champion</td><td class="col-xs-2">44</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-2">12</td><td class="col-xs-8">Lastly Jane</td><td class="col-xs-2">6</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </body>
+        </html>
+        <?
+    }
+
+    public function testNaikLevelKur(){
+        $level = 6;
+        $level = 7;
+        $level = 2;
+//        $level = 8;
+//        $level = 9;
+//        $level = 6;
+        $help = Generic::getMyNextLevelKurLamaSpezial($level);
+        pr($help);
     }
 }
