@@ -1113,6 +1113,42 @@ class Generic
         return $help;
     }
 
+    public static function getMyNextLevelKurLamaSpezial($myLevel)
+    {
+        $objLevel = new SempoaLevel();
+        $arrAll = $objLevel->getAll();
+        $keymylevel = "";
+
+        if ($myLevel == 7 || $myLevel == 8) {
+            // 7
+            echo "masuk 1";
+            foreach ($arrAll as $key => $level) {
+                if ($level->id_level == $myLevel) {
+                    $keymylevel = $key;
+                    break;
+                }
+            }
+            $help = $arrAll[$key];
+
+        }  elseif ($myLevel >=1 && $myLevel < 7) {
+            echo "masuk 3";
+            foreach ($arrAll as $key => $level) {
+                if ($level->id_level == $myLevel) {
+                    $keymylevel = $key;
+                    break;
+                }
+            }
+            $help = $arrAll[$key + 1];
+
+        }
+        else{
+            return "";
+        }
+        return $help;
+
+
+    }
+
     public static function getMyNextLevelLama($myLevel)
     {
         $objLevel = new SempoaLevelLama();
@@ -1844,13 +1880,13 @@ class Generic
         $arrBarangIds = Generic::getAllBuku();
         $arrKur = Generic::returnKurikulum();
         $res = array();
-        foreach($arrBarangIds as $val){
+        foreach ($arrBarangIds as $val) {
             $obj = new BarangWebModel();
             $obj->getWhereOne("id_barang_harga=$val");
             if (!(is_null($obj->id_barang_harga))) {
                 $kur = $obj->jenis_kurikulum;
 
-                $res[$val]= ($obj->nama_barang) . " - " . $arrKur[$kur];
+                $res[$val] = ($obj->nama_barang) . " - " . $arrKur[$kur];
             }
         }
         return $res;
@@ -1875,142 +1911,135 @@ class Generic
     }
 
 
-    public static function getStatusBuku(){
+    public static function getStatusBuku()
+    {
 
         $res[KEY::$BUKU_NON_AVAILABLE] = KEY::$BUKU_NON_AVAILABLE_TEXT;
         $res[KEY::$BUKU_AVAILABLE] = KEY::$BUKU_AVAILABLE_TEXT;
         return $res;
     }
 
-    public static function getLevelIdByIdBarang($id_barang){
+    public static function getLevelIdByIdBarang($id_barang)
+    {
         $objBarang = new BarangWebModel();
         $objBarang->getWhereOne("id_barang_harga=$id_barang");
         return $objBarang->level;
     }
 
-    public static function getIdBarangByLevel($level, $kurikulum){
+    public static function getIdBarangByLevel($level, $kurikulum)
+    {
         $barang = new BarangWebModel();
         $arrBarang = $barang->getWhere("level=$level AND jenis_kurikulum=$kurikulum");
 
         $res = array();
-        foreach($arrBarang as $val){
+        foreach ($arrBarang as $val) {
             $res[] = $val->id_barang_harga;
         }
         return $res;
     }
 
 
-    public static function getIdBarangByLevelDanJenisBiaya($level, $kurikulum, $jenisBiaya){
+    public static function getIdBarangByLevelDanJenisBiaya($level, $kurikulum, $jenisBiaya)
+    {
         $barang = new BarangWebModel();
         $arrBarang = $barang->getWhere("level=$level AND jenis_kurikulum=$kurikulum AND jenis_biaya=$jenisBiaya");
 
         $res = array();
-        foreach($arrBarang as $val){
+        foreach ($arrBarang as $val) {
             $res[] = $val->id_barang_harga;
         }
         return $res;
     }
 
-    public static function recalculationStock(){
+    public static function recalculationStock()
+    {
 
     }
 
 
-    public static function convertLevelLamaKeBaru($levelLama){
-        if($levelLama == 1){
+    public static function convertLevelLamaKeBaru($levelLama)
+    {
+        if ($levelLama == 1) {
             return 1;
         }
-        if($levelLama == 2){
+        if ($levelLama == 2) {
             return 2;
         }
-        if($levelLama == 3){
+        if ($levelLama == 3) {
             return 3;
         }
-        if($levelLama == 4){
+        if ($levelLama == 4) {
             return 4;
         }
-        if($levelLama == 5){
+        if ($levelLama == 5) {
             return 6;
-        }
-        elseif($levelLama == 6){
+        } elseif ($levelLama == 6) {
             return 7;
-        }
-        elseif($levelLama == 7){
+        } elseif ($levelLama == 7) {
             return 8;
-        }
-        elseif($levelLama == 8){
+        } elseif ($levelLama == 8) {
             return 9;
-        }
-        elseif($levelLama == 9){
+        } elseif ($levelLama == 9) {
             return 10;
-        }
-        elseif($levelLama == 10){
+        } elseif ($levelLama == 10) {
             return 11;
-        }
-        elseif($levelLama == 11){
+        } elseif ($levelLama == 11) {
             return 12;
-        }
-        elseif($levelLama == 12){
+        } elseif ($levelLama == 12) {
             return 13;
-        }
-        elseif($levelLama == 13){
+        } elseif ($levelLama == 13) {
             return 14;
         }
 
     }
 
-    public static function convertLevelBaruKeLama($levelBaru){
-        if($levelBaru == 1){
+    public static function convertLevelBaruKeLama($levelBaru)
+    {
+        if ($levelBaru == 1) {
             return 1;
         }
-        if($levelBaru == 2){
+        if ($levelBaru == 2) {
             return 2;
         }
-        if($levelBaru == 3){
+        if ($levelBaru == 3) {
             return 3;
         }
-        if($levelBaru == 4){
+        if ($levelBaru == 4) {
             return 4;
         }
-        if($levelBaru == 6){
+        if ($levelBaru == 6) {
             return 5;
-        }
-        elseif($levelBaru == 7){
+        } elseif ($levelBaru == 7) {
             return 6;
-        }
-        elseif($levelBaru == 8){
+        } elseif ($levelBaru == 8) {
             return 7;
-        }
-        elseif($levelBaru == 9){
+        } elseif ($levelBaru == 9) {
             return 8;
-        }
-        elseif($levelBaru == 10){
+        } elseif ($levelBaru == 10) {
             return 9;
-        }
-        elseif($levelBaru == 11){
+        } elseif ($levelBaru == 11) {
             return 10;
-        }
-        elseif($levelBaru == 12){
+        } elseif ($levelBaru == 12) {
             return 11;
-        }
-        elseif($levelBaru == 13){
+        } elseif ($levelBaru == 13) {
             return 12;
-        }
-        elseif($levelBaru == 14){
+        } elseif ($levelBaru == 14) {
             return 13;
         }
 
     }
 
-    public static function getJenisBarang_(){
+    public static function getJenisBarang_()
+    {
         $barang = new BarangWebModel();
         $arr = $barang->getWhere("1 GROUP BY  jenis_biaya");
-        foreach($arr as $val){
+        foreach ($arr as $val) {
             $res[] = $val->jenis_biaya;
         }
     }
 
-    public static function getAllStatusBuku(){
+    public static function getAllStatusBuku()
+    {
         $res = array();
         $res[KEY::$BUKU_NON_AVAILABLE_ALIAS] = KEY::$BUKU_NON_AVAILABLE_TEXT;
         $res[KEY::$BUKU_AVAILABLE_ALIAS] = KEY::$BUKU_AVAILABLE_TEXT;
@@ -2018,25 +2047,28 @@ class Generic
         return $res;
     }
 
-    public static function getAllStatusRetour(){
+    public static function getAllStatusRetour()
+    {
         $res = array();
         $res[KEY::$RETOUR_STATUS_CLAIM_ALIAS] = KEY::$RETOUR_STATUS_CLAIM_TEXT;
         $res[KEY::$RETOUR_STATUS_CLAIMED_ALIAS] = KEY::$RETOUR_STATUS_CLAIMED_TEXT;
         return $res;
     }
 
-    public static function getAllMuridByTC($tc_id){
+    public static function getAllMuridByTC($tc_id)
+    {
         $murid = new MuridModel();
         $arrMurid = $murid->getWhere("murid_tc_id=$tc_id");
         $res = array();
-        foreach($arrMurid as $val){
+        foreach ($arrMurid as $val) {
             $res[$val->id_murid] = $val->nama_siswa;
         }
         return $res;
 
     }
 
-    public static function getNoBukuByIuranBulananID($id_invoice){
+    public static function getNoBukuByIuranBulananID($id_invoice)
+    {
         $ib = new IuranBuku();
         $ib->getWhereOne("bln_no_invoice='$id_invoice'");
         $id_ib = $ib->bln_id;
