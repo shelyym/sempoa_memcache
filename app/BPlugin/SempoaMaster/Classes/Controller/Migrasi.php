@@ -1372,7 +1372,7 @@ class Migrasi extends WebService
                 $stockTc = new StockModel();
                 $stockTc->org_id = $key;
                 $stockTc->id_barang = $val->stock_id_buku;
-                $stockTc->jumlah_stock = $stockNobukuHlp->getJumlah("stock_buku_tc=$key AND stock_id_buku=$val->stock_id_buku AND stock_status_ibo=1");
+                $stockTc->jumlah_stock = $stockNobukuHlp->getJumlah("stock_buku_ibo=$key AND stock_id_buku=$val->stock_id_buku AND stock_status_ibo=1");
                 pr($val->stock_id_buku . " - " . $stockTc->jumlah_stock);
                 $stockTc->save();
             }
