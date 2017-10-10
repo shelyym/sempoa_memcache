@@ -1357,4 +1357,38 @@ class Migrasi extends WebService
         }
 
     }
+
+    public function hitungUlangJumlaStockIBO()
+    {
+
+        $arrTc[3] = "ibo";
+        foreach ($arrTc as $key => $tc) {
+            pr($key . "=>" . $tc);
+            $stockNobuku = new StockBuku();
+            $arrStockNoBukuGroup = $stockNobuku->getWhere("stock_buku_ibo=$key GROUP BY stock_id_buku");
+            foreach ($arrStockNoBukuGroup as $val) {
+                $stockNobukuHlp = new StockBuku();
+//                pr($stockNobukuHlp->getJumlah("stock_buku_tc=$key AND stock_id_buku=$val->stock_id_buku"));
+                $stockTc = new StockModel();
+                $stockTc->org_id = $key;
+                $stockTc->id_barang = $val->stock_id_buku;
+                $stockTc->jumlah_stock = $stockNobukuHlp->getJumlah("stock_buku_tc=$key AND stock_id_buku=$val->stock_id_buku AND stock_status_ibo=1");
+                pr($val->stock_id_buku . " - " . $stockTc->jumlah_stock);
+                $stockTc->save();
+            }
+//            pr($arrStockNoBukuGroup);
+
+//            die();
+//            $stockTc = new StockModel();
+//            $arrStock = $stockTc->getWhere("org_id=$key");
+////            pr($arrStock);
+//            foreach($arrStock as $val){
+//                pr($val->id_barang);
+//                $stockNobuku = new StockBuku();
+//                pr("Jumlah: " . $stockNobuku->getJumlah("stock_id_buku=$val->id_barang AND stock_buku_tc=$key"));
+//                //$stock_id_buku
+//            }
+        }
+
+    }
 }
