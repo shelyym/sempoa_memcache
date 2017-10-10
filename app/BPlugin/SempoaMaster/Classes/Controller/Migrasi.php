@@ -1327,7 +1327,7 @@ class Migrasi extends WebService
     public function hitungUlangJumlaStock()
     {
         $arrTc = Generic::getAllMyTC(3);
-
+        $arrTc[3] = "ibo";
         foreach ($arrTc as $key => $tc) {
             pr($key . "=>" . $tc);
             $stockNobuku = new StockBuku();
