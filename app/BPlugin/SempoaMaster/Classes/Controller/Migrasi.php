@@ -380,8 +380,7 @@ class Migrasi extends WebService
                             $arrTC[$keyorg_id] = $objTC;
                         }
 
-                    }
-                    else{
+                    } else {
                         pr($guru);
                         $arrTCKosong[] = $keyorg_id . " => tc tidak ada";
                     }
@@ -480,7 +479,7 @@ class Migrasi extends WebService
             }
         }
 
-        if(count($arrTCKosong)>0){
+        if (count($arrTCKosong) > 0) {
             pr($arrTCKosong);
         }
         pr($count);
@@ -1135,7 +1134,7 @@ class Migrasi extends WebService
             if (is_null($objTC->org_id)) {
                 $arrTcTdkada[] = $keyorg_id . " =>tc tdk ditemukan";
                 pr("key" . $keyorg_id);
-                pr("<b>" .$keyorg_id . " =>tc tdk ditemukan</b>" );
+                pr("<b>" . $keyorg_id . " =>tc tdk ditemukan</b>");
             } else {
 
                 foreach ($muridObj as $murid) {
@@ -1233,7 +1232,7 @@ class Migrasi extends WebService
 
         }
 
-        if(count($arrTcTdkada) != 0){
+        if (count($arrTcTdkada) != 0) {
             pr($arrTcTdkada);
         }
         pr($arrMigrasi);
@@ -1325,4 +1324,37 @@ class Migrasi extends WebService
 //        pr($arrMuridAsli);
     }
 
+    public function hitungUlangJumlaStock()
+    {
+        $arrTc = Generic::getAllMyTC(3);
+
+        foreach ($arrTc as $key => $tc) {
+            pr($key . "=>" . $tc);
+            $stockNobuku = new StockBuku();
+            $arrStockNoBukuGroup = $stockNobuku->getWhere("stock_buku_tc=$key GROUP BY stock_id_buku");
+            foreach ($arrStockNoBukuGroup as $val) {
+                $stockNobukuHlp = new StockBuku();
+//                pr($stockNobukuHlp->getJumlah("stock_buku_tc=$key AND stock_id_buku=$val->stock_id_buku"));
+                $stockTc = new StockModel();
+                $stockTc->org_id = $key;
+                $stockTc->id_barang = $val->stock_id_buku;
+                $stockTc->jumlah_stock = $stockNobukuHlp->getJumlah("stock_buku_tc=$key AND stock_id_buku=$val->stock_id_buku AND stock_status_tc=1");
+                pr($val->stock_id_buku . " - " . $stockTc->jumlah_stock);
+                $stockTc->save();
+            }
+//            pr($arrStockNoBukuGroup);
+
+//            die();
+//            $stockTc = new StockModel();
+//            $arrStock = $stockTc->getWhere("org_id=$key");
+////            pr($arrStock);
+//            foreach($arrStock as $val){
+//                pr($val->id_barang);
+//                $stockNobuku = new StockBuku();
+//                pr("Jumlah: " . $stockNobuku->getJumlah("stock_id_buku=$val->id_barang AND stock_buku_tc=$key"));
+//                //$stock_id_buku
+//            }
+        }
+
+    }
 }

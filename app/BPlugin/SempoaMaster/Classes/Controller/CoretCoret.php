@@ -1202,6 +1202,13 @@ class CoretCoret extends WebService
     }
 
     public function testNaikLevelKur(){
+
+
+        $s = new StockBuku();
+        $s->printColumlistAsAttributes();
+
+
+        die();
         $level = 6;
         $level = 7;
         $level = 2;

@@ -10,12 +10,13 @@ class StockBuku extends Model
 {
     var $table_name = "sempoa__stock_buku";
     var $main_id = "stock_buku_id";
+    public $crud_setting = array("add" => 1, "search" => 1, "viewall" => 1, "export" => 1, "toggle" => 1, "import" => 1, "webservice" => 1);
 
 //Default Coloms for read
-    public $default_read_coloms = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_buku_tgl_status_rusak,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
+    public $default_read_coloms = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_buku_tgl_status_rusak,stock_po_pesanan_ibo,stock_po_pesanan_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc,stock_murid_id";
 
 //allowed colom in CRUD filter
-    public $coloumlist = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_murid_id,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_po_pesanan_ibo,stock_buku_tgl_keluar_tc,stock_buku_tgl_status_rusak,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc";
+    public $coloumlist = "stock_buku_id,stock_buku_no,stock_name_buku,stock_id_buku,stock_grup_level,stock_buku_status_kpo,stock_status_ibo,stock_status_tc,stock_murid,stock_buku_tgl_masuk_kpo,stock_buku_tgl_keluar_kpo,stock_buku_tgl_masuk_ibo,stock_buku_tgl_keluar_ibo,stock_buku_tgl_masuk_tc,stock_buku_tgl_keluar_tc,stock_buku_tgl_status_rusak,stock_po_pesanan_ibo,stock_po_pesanan_tc,stock_invoice_murid,stock_buku_kpo,stock_buku_ibo,stock_buku_tc,stock_murid_id";
     public $stock_buku_id;
     public $stock_buku_no;
     public $stock_name_buku;
@@ -186,7 +187,8 @@ class StockBuku extends Model
         return $this->stock_name_buku;
     }
 
-    public function getNoBukuTerkecilByLevelYgAvail($org_type, $org_id_claim, $level, $id_buku){
+    public function getNoBukuTerkecilByLevelYgAvail($org_type, $org_id_claim, $level, $id_buku)
+    {
         if ($org_type == KEY::$KPO) {
             $this->getWhereOne("stock_buku_kpo= $org_id_claim AND stock_id_buku=$id_buku AND stock_grup_level = $level AND stock_buku_status_kpo=1 ORDER BY stock_buku_id ASC ");
             return $this->stock_buku_no;
@@ -194,8 +196,7 @@ class StockBuku extends Model
             $this->getWhereOne("stock_buku_ibo= $org_id_claim AND stock_id_buku=$id_buku AND stock_grup_level = $level AND stock_status_ibo=1 ORDER BY stock_buku_id ASC ");
             return $this->stock_buku_no;
 
-        }
-        elseif ($org_type == KEY::$TC) {
+        } elseif ($org_type == KEY::$TC) {
             $this->getWhereOne("stock_buku_tc= $org_id_claim AND stock_id_buku=$id_buku AND stock_grup_level = $level AND stock_status_tc=1 ORDER BY stock_buku_id ASC ");
             return $this->stock_buku_no;
 
@@ -209,8 +210,8 @@ class StockBuku extends Model
             $this->getWhereOne("stock_buku_kpo= $org_id_claim AND stock_buku_no=$no_buku  AND stock_status_kpo=1 ORDER BY stock_buku_id ASC ");
             $this->stock_buku_ibo = $org_id_pengclaim;
             $this->stock_buku_tgl_masuk_ibo = leap_mysqldate();
-            $this->stock_buku_status_kpo =0;
-            $this->stock_status_ibo =1;
+            $this->stock_buku_status_kpo = 0;
+            $this->stock_status_ibo = 1;
             $this->stock_status_tc = 0;
             $this->save(1);
         } elseif ($org_type == KEY::$IBO) {
@@ -219,8 +220,8 @@ class StockBuku extends Model
             $this->stock_buku_tgl_masuk_tc = leap_mysqldate();
             $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
             $this->stock_buku_tgl_masuk_kpo = leap_mysqldate();
-            $this->stock_status_kpo =0;
-            $this->stock_status_ibo =0;
+            $this->stock_status_kpo = 0;
+            $this->stock_status_ibo = 0;
             $this->stock_status_tc = 1;
             $this->save(1);
         } elseif ($org_type == KEY::$TC) {
@@ -228,8 +229,8 @@ class StockBuku extends Model
             $this->stock_murid_id = $org_id_pengclaim;
             $this->stock_buku_tgl_keluar_tc = leap_mysqldate();
             $this->stock_buku_tgl_masuk_murid = leap_mysqldate();
-            $this->stock_status_kpo =0;
-            $this->stock_status_ibo =0;
+            $this->stock_status_kpo = 0;
+            $this->stock_status_ibo = 0;
             $this->stock_status_tc = 0;
             $this->stock_murid = 1;
             $this->save(1);
@@ -249,7 +250,7 @@ class StockBuku extends Model
             $this->stock_buku_tc = $org_id_pengclaim;
             $this->stock_buku_tgl_keluar_ibo = leap_mysqldate();
             $this->stock_buku_tgl_masuk_tc = leap_mysqldate();
-            $this->stock_status_ibo =0;
+            $this->stock_status_ibo = 0;
             $this->stock_status_tc = 1;
             $this->save(1);
         } elseif ($org_type == KEY::$TC) {

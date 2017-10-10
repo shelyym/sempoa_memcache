@@ -1746,4 +1746,27 @@ class StokWeb extends WebService
     {
         $this->read_buku_by_no_rusak();
     }
+
+
+    public function create_no_buku(){
+        $_GET['cmd'] = 'edit';
+        $this->read_no_buku();
+    }
+
+    public function read_no_buku(){
+        $obj = new StockBuku();
+        $crud = new CrudCustom();
+        $crud->ar_add = AccessRight::hasRight("create_no_buku");
+        $crud->ar_edit = AccessRight::hasRight("update_no_buku");
+        $crud->ar_delete = AccessRight::hasRight("delete_no_buku");
+        $crud->run_custom($obj, "StokWeb", "read_no_buku");
+    }
+
+    public function delete_no_buku(){
+
+    }
+
+    public function update_no_buku(){
+
+    }
 }
