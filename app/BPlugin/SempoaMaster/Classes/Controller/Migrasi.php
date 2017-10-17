@@ -1331,7 +1331,7 @@ class Migrasi extends WebService
         foreach ($arrTc as $key => $tc) {
             pr($key . "=>" . $tc);
             $stockNobuku = new StockBuku();
-            $arrStockNoBukuGroup = $stockNobuku->getWhere("stock_buku_tc=$key GROUP BY stock_id_buku");
+            $arrStockNoBukuGroup = $stockNobuku->getWhere("stock_buku_tc=$key ORDER BY stock_grup_level GROUP BY stock_id_buku");
             foreach ($arrStockNoBukuGroup as $val) {
                 $stockNobukuHlp = new StockBuku();
 //                pr($stockNobukuHlp->getJumlah("stock_buku_tc=$key AND stock_id_buku=$val->stock_id_buku"));
@@ -1365,7 +1365,7 @@ class Migrasi extends WebService
         foreach ($arrTc as $key => $tc) {
             pr($key . "=>" . $tc);
             $stockNobuku = new StockBuku();
-            $arrStockNoBukuGroup = $stockNobuku->getWhere("stock_buku_ibo=$key GROUP BY stock_id_buku");
+            $arrStockNoBukuGroup = $stockNobuku->getWhere("stock_buku_ibo=$key ORDER BY stock_grup_level GROUP BY stock_id_buku");
             foreach ($arrStockNoBukuGroup as $val) {
                 $stockNobukuHlp = new StockBuku();
 //                pr($stockNobukuHlp->getJumlah("stock_buku_tc=$key AND stock_id_buku=$val->stock_id_buku"));
