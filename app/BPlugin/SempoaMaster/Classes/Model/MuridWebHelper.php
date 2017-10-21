@@ -481,13 +481,23 @@ class MuridWebHelper extends WebService
 
                 // StockBarang
 
-                $arrIDBuku = explode(",", $id_buku);
-                foreach ($arrIDBuku as $val) {
-                    $stockBarangBuku = new StockModel();
-                    $stockBarangBuku->getWhereOne("id_barang = '$val' AND org_id='$org'");
-                    $stockBarangBuku->jumlah_stock = $stockBarangBuku->jumlah_stock - 1;
-                    $stockBarangBuku->save(1);
-                }
+                // StockBarang
+                $stockBarangBuku = new StockModel();
+                $stockBarangBuku->getWhereOne("id_barang = '$id_buku' AND org_id='$org'");
+                $stockBarangBuku->jumlah_stock = $stockBarangBuku->jumlah_stock - 1;
+                $stockBarangBuku->save();
+                $stockBarang = new StockModel();
+                $stockBarang->getWhereOne("id_barang = $id_perlengkapan AND org_id=$org");
+                $stockBarang->jumlah_stock = $stockBarang->jumlah_stock - 1;
+                $stockBarang->save();
+
+//                $arrIDBuku = explode(",", $id_buku);
+//                foreach ($arrIDBuku as $val) {
+//                    $stockBarangBuku = new StockModel();
+//                    $stockBarangBuku->getWhereOne("id_barang = '$val' AND org_id='$org'");
+//                    $stockBarangBuku->jumlah_stock = $stockBarangBuku->jumlah_stock - 1;
+//                    $stockBarangBuku->save(1);
+//                }
 
                 $objIuranBuku = new IuranBuku();
                 $bln = date("n");
