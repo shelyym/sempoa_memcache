@@ -45,14 +45,13 @@ class StockWebHelper extends WebService
         $obj->nama_penerima_barang = $id_nama;
         $obj->stock_masuk = $stk_masuk;
         $obj->keterangan = $keterangan;
-        $succ = $obj->save();
-
-        if ($succ) {
+        if ($obj->save()) {
             // Stock KPO
             $stock_barang = new StockModel();
-            $arrStockBarang = $stock_barang->getWhere("id_barang='$id_barang'");
+            $arrStockBarang = $stock_barang->getWhere("id_barang='$id_barang' AND org_id=$id_pemilik_barang");
 //            pr($arrStockBarang);
             if (count($arrStockBarang) == 0) {
+                $stock_barang = new StockModel();
                 $stock_barang->id_barang = $id_barang;
                 $stock_barang->org_id = $id_pemilik_barang;
                 $stock_barang->jumlah_stock = $stk_masuk;
@@ -669,14 +668,15 @@ class StockWebHelper extends WebService
         $obj->nama_penerima_barang = $id_nama;
         $obj->stock_masuk = $stk_masuk;
         $obj->keterangan = $keterangan;
-        $succ = $obj->save();
+//        $succ = $obj->save();
 
-        if ($succ) {
+        if ($obj->save()) {
             // Stock KPO
             $stock_barang = new StockModel();
-            $arrStockBarang = $stock_barang->getWhere("id_barang='$id_barang'");
+            $arrStockBarang = $stock_barang->getWhere("id_barang='$id_barang' AND org_id=$id_pemilik_barang");
 //            pr($arrStockBarang);
             if (count($arrStockBarang) == 0) {
+                $stock_barang = new StockModel();
                 $stock_barang->id_barang = $id_barang;
                 $stock_barang->org_id = $id_pemilik_barang;
                 $stock_barang->jumlah_stock = $stk_masuk;
@@ -684,12 +684,16 @@ class StockWebHelper extends WebService
             } else {
                 $arrStockBarang[0]->jumlah_stock = $arrStockBarang[0]->jumlah_stock + $stk_masuk;
                 $id = $arrStockBarang[0]->save(1);
+                if($arrStockBarang[0]->save(1)){
+                    $json['id_pemilik_barang'] = $id_pemilik_barang;
+                    $json['status_code'] = 1;
+                    $json['status_message'] = "Data berhasil di simpan!";
+                }
+
             }
         }
         if ($id) {
-            $json['id_pemilik_barang'] = $id_pemilik_barang;
-            $json['status_code'] = 1;
-            $json['status_message'] = "Data berhasil di simpan!";
+
 
             // isi stock buku dgn penomoran
             // id barang, cari nomor buku sampai mana
