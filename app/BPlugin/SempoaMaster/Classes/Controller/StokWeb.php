@@ -549,12 +549,12 @@ class StokWeb extends WebService
         $stockNo = new StockBuku();
         $brg_id = key($arrJenisBarang);
         if ($myOrgType == KEY::$KPO) {
-            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 1 AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 1 AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid ORDER by stock_buku_no ASC");
         } elseif ($myOrgType == KEY::$IBO) {
-            $arrStock = $stockNo->getWhere("stock_status_ibo = 1 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock = $stockNo->getWhere("stock_status_ibo = 1 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid ORDER by stock_buku_no ASC");
         } elseif ($myOrgType == KEY::$TC) {
 
-            $arrStock = $stockNo->getWhere("stock_status_tc = 1 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock = $stockNo->getWhere("stock_status_tc = 1 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid ORDER by stock_buku_no ASC");
         }
         $i = 0;
         $t = time();
@@ -706,17 +706,22 @@ class StokWeb extends WebService
             $arrIbos = Generic::getAllMyIBO($myorgid);
             $ibo_id = isset($_GET['ibo_id']) ? addslashes($_GET['ibo_id']) : Key($arrIbos);
             $arrStock = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_id_buku = $brg_id AND stock_buku_kpo =$myorgid AND stock_buku_ibo=$ibo_id AND MONTH(stock_buku_tgl_keluar_kpo)='$bln'  AND YEAR(stock_buku_tgl_keluar_kpo)= '$thn'  ORDER by stock_buku_id ASC");
-            $arrStock2 = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+//            $arrStock2 = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_buku_kpo =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock2 = $stockNo->getWhere("stock_buku_status_kpo = 0  AND stock_buku_kpo =$myorgid ORDER by stock_buku_no ASC");
+
+
         } elseif ($myOrgType == KEY::$IBO) {
             $arrMyTC = Generic::getAllMyTC(AccessRight::getMyOrgID());
             $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : Key($arrMyTC);
             $arrStock = $stockNo->getWhere("stock_status_ibo = 0 AND stock_id_buku = $brg_id AND stock_buku_ibo =$myorgid AND stock_buku_tc=$tc_id AND MONTH(stock_buku_tgl_keluar_ibo)='$bln'  AND YEAR(stock_buku_tgl_keluar_ibo)= '$thn'  ORDER by stock_buku_id ASC");
-            $arrStock2 = $stockNo->getWhere("stock_status_ibo = 0 AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+//            $arrStock2 = $stockNo->getWhere("stock_status_ibo = 0 AND stock_buku_ibo =$myorgid ORDER by stock_buku_id ASC");
+            $arrStock2 = $stockNo->getWhere("stock_status_ibo = 0 AND stock_buku_ibo =$myorgid ORDER by stock_buku_no ASC");
 
         } elseif ($myOrgType == KEY::$TC) {
             //SELECT * FROM 	sempoa__stock_buku where MONTH(`stock_buku_tgl_keluar_tc`)=8 AND YEAR(`stock_buku_tgl_keluar_tc`)=2017
             $arrStock = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND stock_id_buku = $brg_id AND stock_buku_tc =$myorgid  AND MONTH(stock_buku_tgl_keluar_tc)='$bln'  AND YEAR(stock_buku_tgl_keluar_tc)= '$thn' ORDER by stock_buku_id ASC");
-            $arrStock2 = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND  stock_buku_tc =$myorgid  ORDER by stock_buku_id ASC");
+//            $arrStock2 = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND  stock_buku_tc =$myorgid  ORDER by stock_buku_id ASC");
+            $arrStock2 = $stockNo->getWhere("stock_status_tc = 0 AND stock_murid =1 AND  stock_buku_tc =$myorgid  ORDER by stock_buku_no ASC");
 
         }
         $arrkuponHlp = array();

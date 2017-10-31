@@ -88,7 +88,8 @@ class StockBuku extends Model
         $res = array();
         foreach ($arrIdBarang as $val) {
             $buno = new StockBuku();
-            $buno->getWhereOne("stock_id_buku=$val AND stock_status_tc=1 AND stock_buku_tc=$org_id_pemilik ORDER BY stock_buku_id ASC");
+//            $buno->getWhereOne("stock_id_buku=$val AND stock_status_tc=1 AND stock_buku_tc=$org_id_pemilik ORDER BY stock_buku_id ASC");
+            $buno->getWhereOne("stock_id_buku=$val AND stock_status_tc=1 AND stock_buku_tc=$org_id_pemilik ORDER BY stock_buku_no ASC");
 
             if (is_null($buno->stock_buku_id)) {
 
