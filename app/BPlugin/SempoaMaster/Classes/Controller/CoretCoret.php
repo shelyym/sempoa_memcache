@@ -1281,6 +1281,7 @@ class CoretCoret extends WebService
                 $kartuStock->getWhereOne("stock_id_buku=$val->id_barang AND stock_status_tc=1 AND stock_buku_tc=$val->org_id");
                 if (!is_null($kartuStock->stock_buku_id)) {
                     $jumlah = $kartuStock->getJumlah("stock_id_buku=$val->id_barang AND stock_status_tc=1 AND stock_buku_tc=$val->org_id");
+                    $bweiter = true;
                 } else {
                     $bweiter = false;
                 }
