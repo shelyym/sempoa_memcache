@@ -1130,15 +1130,18 @@ class CoretCoret extends WebService
             .table-fixed thead {
                 width: 97%;
             }
+
             .table-fixed tbody {
                 height: 230px;
                 overflow-y: auto;
                 width: 100%;
             }
+
             .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
                 display: block;
             }
-            .table-fixed tbody td, .table-fixed thead > tr> th {
+
+            .table-fixed tbody td, .table-fixed thead > tr > th {
                 float: left;
                 border-bottom-width: 0;
             }
@@ -1151,45 +1154,71 @@ class CoretCoret extends WebService
                     <table class="table table-fixed">
                         <thead>
                         <tr>
-                            <th class="col-xs-2">#</th><th class="col-xs-8">Name</th><th class="col-xs-2">Points</th>
+                            <th class="col-xs-2">#</th>
+                            <th class="col-xs-8">Name</th>
+                            <th class="col-xs-2">Points</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td class="col-xs-2">1</td><td class="col-xs-8">Mike Adams</td><td class="col-xs-2">23</td>
+                            <td class="col-xs-2">1</td>
+                            <td class="col-xs-8">Mike Adams</td>
+                            <td class="col-xs-2">23</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">2</td><td class="col-xs-8">Holly Galivan</td><td class="col-xs-2">44</td>
+                            <td class="col-xs-2">2</td>
+                            <td class="col-xs-8">Holly Galivan</td>
+                            <td class="col-xs-2">44</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">3</td><td class="col-xs-8">Mary Shea</td><td class="col-xs-2">86</td>
+                            <td class="col-xs-2">3</td>
+                            <td class="col-xs-8">Mary Shea</td>
+                            <td class="col-xs-2">86</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">4</td><td class="col-xs-8">Jim Adams</td><td>23</td>
+                            <td class="col-xs-2">4</td>
+                            <td class="col-xs-8">Jim Adams</td>
+                            <td>23</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">5</td><td class="col-xs-8">Henry Galivan</td><td class="col-xs-2">44</td>
+                            <td class="col-xs-2">5</td>
+                            <td class="col-xs-8">Henry Galivan</td>
+                            <td class="col-xs-2">44</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">6</td><td class="col-xs-8">Bob Shea</td><td class="col-xs-2">26</td>
+                            <td class="col-xs-2">6</td>
+                            <td class="col-xs-8">Bob Shea</td>
+                            <td class="col-xs-2">26</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">7</td><td class="col-xs-8">Andy Parks</td><td class="col-xs-2">56</td>
+                            <td class="col-xs-2">7</td>
+                            <td class="col-xs-8">Andy Parks</td>
+                            <td class="col-xs-2">56</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">8</td><td class="col-xs-8">Bob Skelly</td><td class="col-xs-2">96</td>
+                            <td class="col-xs-2">8</td>
+                            <td class="col-xs-8">Bob Skelly</td>
+                            <td class="col-xs-2">96</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">9</td><td class="col-xs-8">William Defoe</td><td class="col-xs-2">13</td>
+                            <td class="col-xs-2">9</td>
+                            <td class="col-xs-8">William Defoe</td>
+                            <td class="col-xs-2">13</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">10</td><td class="col-xs-8">Will Tripp</td><td class="col-xs-2">16</td>
+                            <td class="col-xs-2">10</td>
+                            <td class="col-xs-8">Will Tripp</td>
+                            <td class="col-xs-2">16</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">11</td><td class="col-xs-8">Bill Champion</td><td class="col-xs-2">44</td>
+                            <td class="col-xs-2">11</td>
+                            <td class="col-xs-8">Bill Champion</td>
+                            <td class="col-xs-2">44</td>
                         </tr>
                         <tr>
-                            <td class="col-xs-2">12</td><td class="col-xs-8">Lastly Jane</td><td class="col-xs-2">6</td>
+                            <td class="col-xs-2">12</td>
+                            <td class="col-xs-8">Lastly Jane</td>
+                            <td class="col-xs-2">6</td>
                         </tr>
                         </tbody>
                     </table>
@@ -1201,7 +1230,8 @@ class CoretCoret extends WebService
         <?
     }
 
-    public function testNaikLevelKur(){
+    public function testNaikLevelKur()
+    {
 
 
         $s = new StockBuku();
@@ -1217,5 +1247,36 @@ class CoretCoret extends WebService
 //        $level = 6;
         $help = Generic::getMyNextLevelKurLamaSpezial($level);
         pr($help);
+    }
+
+    public function hitungUlangStockTC()
+    {
+        $kartuStock = new StockModel();
+        $arrKaruStock = $kartuStock->getAll();
+        foreach ($arrKaruStock as $val) {
+            $kartuStock = new StockBuku();
+
+            if ($val->org_id == 2) {
+                $jumlah = $kartuStock->getJumlah("stock_id_buku=$val->id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo=$val->org_id");
+                pr("KPO");
+            } elseif ($val->org_id == 3) {
+                $jumlah = $kartuStock->getJumlah("stock_id_buku=$val->id_barang AND stock_status_ibo=1 AND stock_buku_ibo=$val->org_id");
+                pr("IBO");
+            } else {
+                $jumlah = $kartuStock->getJumlah("stock_id_buku=$val->id_barang AND stock_status_tc=1 AND stock_buku_tc=$val->org_id");
+
+            }
+
+            $kartuStock = new StockModel();
+            $kartuStock->getWhereOne("org_id=$val->org_id AND id_barang=$val->id_barang");
+            if(!is_null($kartuStock->stock_id)){
+                $kartuStock->jumlah_stock = $jumlah;
+                $kartuStock->save(1);
+                echo "save!";
+            }
+            pr($val->org_id . " - " . $val->id_barang);
+            pr($jumlah);
+        }
+//        pr($arrKaruStock);
     }
 }
