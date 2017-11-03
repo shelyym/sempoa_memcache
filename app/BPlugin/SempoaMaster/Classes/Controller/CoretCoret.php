@@ -1251,8 +1251,64 @@ class CoretCoret extends WebService
 
     public function hitungUlangStockTC()
     {
+        $bweiter = true;
         $kartuStock = new StockModel();
         $arrKaruStock = $kartuStock->getAll();
+        foreach ($arrKaruStock as $val) {
+            $kartuStock = new StockBuku();
+
+            if ($val->org_id == 2) {
+                $kartuStock->getWhereOne("stock_id_buku=$val->id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo=$val->org_id");
+                if (!is_null($kartuStock->stock_buku_id)) {
+                    $jumlah = $kartuStock->getJumlah("stock_id_buku=$val->id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo=$val->org_id");
+                    $bweiter = true;
+                    pr("KPO");
+                } else {
+                    $bweiter = false;
+                }
+
+            } elseif ($val->org_id == 3) {
+                $kartuStock->getWhereOne("stock_id_buku=$val->id_barang AND stock_status_ibo=1 AND stock_buku_ibo=$val->org_id");
+                if (!is_null($kartuStock->stock_buku_id)) {
+                    $jumlah = $kartuStock->getJumlah("stock_id_buku=$val->id_barang AND stock_status_ibo=1 AND stock_buku_ibo=$val->org_id");
+                    $bweiter = true;
+                    pr("IBO");
+                } else {
+                    $bweiter = false;
+                }
+
+            } else {
+                $kartuStock->getWhereOne("stock_id_buku=$val->id_barang AND stock_status_tc=1 AND stock_buku_tc=$val->org_id");
+                if (!is_null($kartuStock->stock_buku_id)) {
+                    $jumlah = $kartuStock->getJumlah("stock_id_buku=$val->id_barang AND stock_status_tc=1 AND stock_buku_tc=$val->org_id");
+                } else {
+                    $bweiter = false;
+                }
+            }
+
+            if ($bweiter) {
+                $kartuStock = new StockModel();
+                $kartuStock->getWhereOne("org_id=$val->org_id AND id_barang=$val->id_barang");
+                if (!is_null($kartuStock->stock_id)) {
+                    $kartuStock->jumlah_stock = $jumlah;
+                    $kartuStock->save(1);
+                    echo "save!";
+                }
+                pr($val->org_id . " - " . $val->id_barang);
+                pr($jumlah);
+            }
+
+        }
+    }
+
+    public function hitungUlangStockTC2()
+    {
+
+        $kartuStock = new StockBuku();
+
+
+        $kartuStock = new StockModel();
+        $arrKaruStock = $kartuStock->getWhere();
         foreach ($arrKaruStock as $val) {
             $kartuStock = new StockBuku();
 
@@ -1269,7 +1325,7 @@ class CoretCoret extends WebService
 
             $kartuStock = new StockModel();
             $kartuStock->getWhereOne("org_id=$val->org_id AND id_barang=$val->id_barang");
-            if(!is_null($kartuStock->stock_id)){
+            if (!is_null($kartuStock->stock_id)) {
                 $kartuStock->jumlah_stock = $jumlah;
                 $kartuStock->save(1);
                 echo "save!";
