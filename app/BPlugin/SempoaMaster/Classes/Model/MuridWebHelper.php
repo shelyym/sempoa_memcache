@@ -5446,7 +5446,7 @@ class MuridWebHelper extends WebService
                                 <td style="text-align:right;"><?= idr($SPP); ?></td>
                             </tr>
                             <tr>
-                                <td><?=Generic:: getNoBukuByIuranBulananID($pay->bln_no_invoice);?></td>
+                                <td><?=Generic:: getNoBukuByIuranBulananIDWithTC($pay->bln_no_invoice,$pay->murid_tc_id);?></td>
                                 <td>Uang Buku <?= Generic::getLevelNameByID($murid->id_level_masuk); ?></td>
                                 <td style="text-align:right;"><?=idr($ibuku); ?></td>
                             </tr>

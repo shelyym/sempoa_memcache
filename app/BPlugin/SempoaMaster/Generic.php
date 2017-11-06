@@ -2077,6 +2077,16 @@ class Generic
         return $stockBuku->stock_buku_no;
     }
 
+    public static function getNoBukuByIuranBulananIDWithTC($id_invoice, $tc_id)
+    {
+        $ib = new IuranBuku();
+        $ib->getWhereOne("bln_no_invoice='$id_invoice' AND bln_tc_id = $tc_id");
+        $id_ib = $ib->bln_id;
+        $stockBuku = new StockBuku();
+        $stockBuku->getWhereOne("stock_invoice_murid=$id_ib");
+        return $stockBuku->stock_buku_no;
+    }
+
     public static function getSisaKuponTC($tc_id){
         $kuponSatuan = new KuponSatuan();
         $jumlah = $kuponSatuan->getJumlah("kupon_owner_id='$tc_id' AND kupon_status=0 ORDER by kupon_id ASC");
