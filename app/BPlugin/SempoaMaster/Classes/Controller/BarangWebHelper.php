@@ -802,7 +802,7 @@ class BarangWebHelper extends WebService
 
         $stockBuku = new StockBuku();
         if ($org_type == KEY::$KPO) {
-            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo = $org_id_pemilik ORDER BY stock_buku_no ASC LIMIT $qty");
             foreach ($arrStockBuku as $val) {
                 $val->stock_buku_status_kpo = 0;
                 $val->stock_status_ibo = 1;
@@ -814,7 +814,7 @@ class BarangWebHelper extends WebService
             }
         } elseif ($org_type == KEY::$IBO) {
 
-            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_ibo=1 AND stock_buku_ibo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_ibo=1 AND stock_buku_ibo = $org_id_pemilik ORDER BY stock_buku_no ASC LIMIT $qty");
             foreach ($arrStockBuku as $val) {
                 $val->stock_status_ibo = 0;
                 $val->stock_status_tc = 1;
@@ -827,10 +827,10 @@ class BarangWebHelper extends WebService
 
 
         } elseif ($org_type == KEY::$TC) {
-            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_tc=1 AND stock_buku_kpo = $org_id_pemilik ORDER BY stock_buku_id ASC LIMIT $qty");
+            $arrStockBuku = $stockBuku->getWhere("stock_id_buku=$id_barang AND stock_status_tc=1 AND stock_buku_kpo = $org_id_pemilik ORDER BY stock_buku_no ASC LIMIT $qty");
             foreach ($arrStockBuku as $val) {
                 $val->stock_buku_status_kpo = 0;
-                $val->stock_buku_status_ibo = 1;
+                $val->stock_buku_status_ibo = 0;
                 $val->stock_buku_tgl_keluar_kpo = leap_mysqldate();
                 $val->stock_buku_tgl_masuk_ibo = leap_mysqldate();
                 $val->stock_buku_ibo = $org_id_peminta;
@@ -1534,15 +1534,17 @@ class BarangWebHelper extends WebService
                             "<option value='1'>Paid</option>" +
                             "<option value='99'>Cancel</option>" +
                             "</select>";
-                    } else if (current == 'Paid') {
-                        var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                            "<option value='1' selected>Paid</option>" +
-                            "</select>";
-                    } else if (current == 'Cancel') {
-                        var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                            "<option value='99' selected>Cancel</option>" +
-                            "</select>";
                     }
+
+//                    else if (current == 'Paid') {
+//                        var html = "<select id='select_status_<?//= $po->po_id; ?>//'>" +
+//                            "<option value='1' selected>Paid</option>" +
+//                            "</select>";
+//                    } else if (current == 'Cancel') {
+//                        var html = "<select id='select_status_<?//= $po->po_id; ?>//'>" +
+//                            "<option value='99' selected>Cancel</option>" +
+//                            "</select>";
+//                    }
 
                     $("#status_po_<?= $po->po_id; ?>").html(html);
                     $('#select_status_<?= $po->po_id; ?>').change(function () {
@@ -2137,15 +2139,17 @@ class BarangWebHelper extends WebService
                                         "<option value='1'>Paid</option>" +
                                         "<option value='99'>Cancel</option>" +
                                         "</select>";
-                                } else if (current == 'Paid') {
-                                    var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                        "<option value='1' selected>Paid</option>" +
-                                        "</select>";
-                                } else if (current == 'Cancel') {
-                                    var html = "<select id='select_status_<?= $po->po_id; ?>'>" +
-                                        "<option value='99' selected>Cancel</option>" +
-                                        "</select>";
                                 }
+//                                else if (current == 'Paid') {
+//                                    var html = "<select id='select_status_<?//= $po->po_id; ?>//'>" +
+//                                        "<option value='1' selected>Paid</option>" +
+//                                        "</select>";
+//                                }
+//                                else if (current == 'Cancel') {
+//                                    var html = "<select id='select_status_<?//= $po->po_id; ?>//'>" +
+//                                        "<option value='99' selected>Cancel</option>" +
+//                                        "</select>";
+//                                }
                                 $("#status_po_<?= $po->po_id; ?>").html(html);
                                 $('#select_status_<?= $po->po_id; ?>').change(function () {
                                     var id_status = $('#select_status_<?= $po->po_id; ?>').val();
