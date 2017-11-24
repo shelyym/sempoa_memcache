@@ -657,12 +657,12 @@ class MuridWebHelper extends WebService
 
 
         $iuranBuku = new IuranBuku();
-        $iuranBuku->getWhereOne("bln_no_invoice='$noInvoice'");
+        $iuranBuku->getWhereOne("bln_no_invoice='$noInvoice' AND bln_murid_id=$murid_id");
         $iuranBuku->bln_status = 0;
         $iuranBuku->delete($iuranBuku->bln_id);
         $id_invoice = $iuranBuku->bln_id;
         $stockBuku = new StockBuku();
-        $arrStockBuku = $stockBuku->getWhere("stock_invoice_murid='$id_invoice'");
+        $arrStockBuku = $stockBuku->getWhere("stock_invoice_murid='$id_invoice' AND stock_murid_id=$murid_id");
         foreach ($arrStockBuku as $buku) {
             $stockBuku = new StockBuku();
             $stockBuku->retourBukuMurid($id_invoice);
@@ -2360,7 +2360,7 @@ class MuridWebHelper extends WebService
                     <!--// Tab ke 2-->
                     <?
                     $iuranBuku = new IuranBuku();
-                    $arrIuranBuku = $iuranBuku->getWhere("bln_murid_id='$id' ORDER by bln_date_pembayaran DESC LIMIT $begin,$limit");
+                    $arrIuranBuku = $iuranBuku->getWhere("bln_murid_id='$id' ORDER by bln_id DESC LIMIT $begin,$limit");
                     //                    pr($arrIuranBuku);
                     $jumlahTotal = $iuranBuku->getJumlah("bln_murid_id='$id'");
                     $jumlahHalamanTotalBuku = ceil($jumlahTotal / $limit);
@@ -2558,7 +2558,6 @@ class MuridWebHelper extends WebService
                                         $('#pay_now_bulanan_<?= $val->bln_id . $t; ?>').click(function () {
 //                                            alert("asas");
                                             var jpb = $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').val();
-                                            var bln_id = <?= $val->bln_id; ?>;
                                             var bln_id = <?= $val->bln_id; ?>;
                                             $.post("<?= _SPPATH; ?>LaporanWebHelper/pay_iuran_buku_roy", {
                                                     bln_id: bln_id,
@@ -6005,7 +6004,7 @@ class MuridWebHelper extends WebService
         $begin = ($page - 1) * $limit;
         $id = addslashes($_GET['id']);
         $iuranBuku = new IuranBuku();
-        $arrIuranBuku = $iuranBuku->getWhere("bln_murid_id='$id' ORDER by bln_date_pembayaran DESC LIMIT $begin,$limit");
+        $arrIuranBuku = $iuranBuku->getWhere("bln_murid_id='$id' ORDER by bln_id DESC LIMIT $begin,$limit");
         $jumlahTotal = $iuranBuku->getJumlah("bln_murid_id='$id'");
 //        pr($arrIuranBuku);
         $jumlahHalamanTotal = ceil($jumlahTotal / $limit);

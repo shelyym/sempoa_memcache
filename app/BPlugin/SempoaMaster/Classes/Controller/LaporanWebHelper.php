@@ -201,12 +201,14 @@ class LaporanWebHelper extends WebService
             echo json_encode($json);
             die();
         }
+        $murid_id = $iuranBuku->bln_murid_id;
         $iuranBuku->bln_status = 0;
         $iuranBuku->bln_date_pembayaran = KEY::$TGL_KOSONG;
         $iuranBuku->save(1);
 
         $stockBukuNo = new StockBuku();
-        $arrStockBuku = $stockBukuNo->getWhere("stock_invoice_murid='$bln_id'");
+
+        $arrStockBuku = $stockBukuNo->getWhere("stock_invoice_murid='$bln_id' AND stock_murid_id=$murid_id");
         foreach ($arrStockBuku as $buku) {
             $stockBuku = new StockBuku();
             $stockBuku->retourBukuMurid($bln_id);
@@ -477,12 +479,17 @@ class LaporanWebHelper extends WebService
             $json['ganti'] = "ganti kuri: " . $level_baru;
         } else {
             $level_baru = $iuranBuku->bln_buku_level;
+            $json['bln_kur'] = $iuranBuku->bln_kur;
         }
 
         if (($iuranBuku->bln_kur == KEY::$KURIKULUM_LAMA) && ($iuranBuku->bln_ganti_kur == 1)) {
             $iuranBuku->bln_kur = 0;
         }
-
+        $json['level_baru'] = $level_baru;
+        $json['myOrg'] = $myOrg;
+        $json['bln_murid_id'] = $iuranBuku->bln_murid_id;
+        $json['bln_kur'] = $iuranBuku->bln_kur;
+        $json['KEY::$JENIS_BUKU'] = KEY::$JENIS_BUKU;
         $resBuku = $setNoBuku->getBukuYgdReservMurid($level_baru, $myOrg, $iuranBuku->bln_murid_id, $iuranBuku->bln_kur,KEY::$JENIS_BUKU);
 
         $weiter = true;
