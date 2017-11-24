@@ -1381,7 +1381,7 @@ class CoretCoret extends WebService
 
                         foreach ($res as $val) {
                             $anzahlBuku = self::getNoBuku($val['barang'], $val['qty'], $val['pemilik'], AccessRight::getMyOrgType());
-                            pr($anzahlBuku . " - " . $val['barang'] . " - " .$val['qty']);
+                            pr($anzahlBuku . " - " . $val['barang'] . " - " . $val['qty']);
 //                            if ($anzahlBuku >= $val['qty']) {
 //                                self::setNoBuku($val['barang'], $val['qty'], $val['pemilik'], $val['peminta'], AccessRight::getMyOrgType(), $val['po_id']);
 //                            } else {
@@ -1389,7 +1389,7 @@ class CoretCoret extends WebService
 //                            }
 
                         }
-die();
+                        die();
 
                         //update stock KPO
                         foreach ($arrPOItems as $val) {
@@ -1543,13 +1543,67 @@ die();
         die();
     }
 
-    public function cekbuku(){
+    public function cekbuku()
+    {
         $setNoBuku = new StockBuku();
 //        getBukuYgdReservMurid($level, $org_id_pemilik, $id_murid, $kurikulum, $jenis_biaya)
-        $resBuku = $setNoBuku->getBukuYgdReservMurid(7, 28, 4525, 1,KEY::$JENIS_BUKU);
+        $resBuku = $setNoBuku->getBukuYgdReservMurid(7, 28, 4525, 1, KEY::$JENIS_BUKU);
 //        $resBuku = $setNoBuku->getBukuYgdReservMurid($level_baru, $myOrg, $iuranBuku->bln_murid_id, $iuranBuku->bln_kur,KEY::$JENIS_BUKU);
 
         pr($resBuku);
 
+    }
+
+    public function hitungUlangStockKPO()
+    {
+        $bweiter = true;
+        $kartuStock = new StockModel();
+        $arrKaruStock = $kartuStock->getAll();
+        foreach ($arrKaruStock as $val) {
+            $kartuStockHelp = new StockBuku();
+
+            if ($val->org_id == 2) {
+                $kartuStockHelp->getWhereOne("stock_id_buku=$val->id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo=$val->org_id");
+                if (!is_null($kartuStockHelp->stock_buku_id)) {
+                    $jumlah = $kartuStockHelp->getJumlah("stock_id_buku=$val->id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo=$val->org_id");
+                    $bweiter = true;
+                    pr("KPO");
+                } else {
+                    $bweiter = false;
+                }
+
+                $kartuStock = new StockModel();
+                $kartuStock->getWhereOne("org_id=$val->org_id AND id_barang=$val->id_barang");
+                if ($bweiter) {
+
+                    if (!is_null($kartuStock->stock_id)) {
+                        $kartuStock->jumlah_stock = $jumlah;
+                        $kartuStock->save(1);
+                        echo "save!";
+                    }
+                    pr($val->org_id . " - " . $val->id_barang);
+                }
+                else{
+                    if (!is_null($kartuStock->stock_id)) {
+                        $kartuStock->jumlah_stock = 0;
+                        $kartuStock->save(1);
+                    }
+                }
+            }
+
+
+        }
+    }
+
+    public function syncStokKPO(){
+        $kartuStock = new StockModel();
+        $arrKaruStock = $kartuStock->getWhere("org_id=2");
+        foreach ($arrKaruStock as $val) {
+            $kartuStockHelp = new StockBuku();
+            $kartuStockHelp->getWhereOne("stock_id_buku=$val->id_barang AND stock_buku_status_kpo=1 AND stock_buku_kpo=$val->org_id");
+
+
+        }
+        //SELECT * FROM `sempoa__stock_buku` where `stock_buku_status_kpo` = 1 Group by `stock_id_buku`
     }
 }
