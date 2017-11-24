@@ -1309,7 +1309,7 @@ class CoretCoret extends WebService
 
 
         $kartuStock = new StockModel();
-        $arrKaruStock = $kartuStock->getWhere();
+        $arrKaruStock = $kartuStock->getAll();
         foreach ($arrKaruStock as $val) {
             $kartuStock = new StockBuku();
 
@@ -1335,5 +1335,221 @@ class CoretCoret extends WebService
             pr($jumlah);
         }
 //        pr($arrKaruStock);
+    }
+
+    function setStatusPO_tmp()
+    {
+
+        $id_status = 1;
+        $po_id = 1262;
+
+        if ($id_status != "") {
+            $objPO = new POModel();
+            $objPO->getByID($po_id);
+            $status_sebelum = $objPO->po_status;
+            $objPO->po_status = $id_status;
+            $update = $objPO->save(1);
+            $json['update'] = $update;
+            if ($update) {
+                $objStock = new StockModel();
+                $myOrg_id = AccessRight::getMyOrgID();
+                $objPOItem = new POItemModel();
+                $arrPOItems = $objPOItem->getWhere("po_id='$po_id'");
+//                $json['po'] = $arrPOItems;
+
+                if (count($arrPOItems > 0)) {
+                    if ($id_status == 1) {
+
+                        // Check Jumlah no Buku
+
+                        $objPO_buku = new POModel();
+                        global $db;
+                        $q = "SELECT * FROM {$objPO->table_name} po  WHERE   po.po_id= $po_id";
+                        $arrPO_buku = $db->query($q, 2);
+                        $peminta = $arrPO_buku[0]->po_pengirim;
+                        $objPOItem_buku = new POItemModel();
+                        $arrPOItems_buku = $objPOItem_buku->getWhere("po_id='$po_id'");
+
+                        $json['po_buku'] = $arrPOItems_buku;
+                        foreach ($arrPOItems as $val) {
+                            $res[$val->id_barang]['barang'] = $val->id_barang;
+                            $res[$val->id_barang]['qty'] = $val->qty;
+                            $res[$val->id_barang]['peminta'] = $peminta;
+                            $res[$val->id_barang]['pemilik'] = $val->org_id;
+                            $res[$val->id_barang]['po_id'] = $val->po_id;
+                        }
+
+                        foreach ($res as $val) {
+                            $anzahlBuku = self::getNoBuku($val['barang'], $val['qty'], $val['pemilik'], AccessRight::getMyOrgType());
+                            pr($anzahlBuku . " - " . $val['barang'] . " - " .$val['qty']);
+//                            if ($anzahlBuku >= $val['qty']) {
+//                                self::setNoBuku($val['barang'], $val['qty'], $val['pemilik'], $val['peminta'], AccessRight::getMyOrgType(), $val['po_id']);
+//                            } else {
+//
+//                            }
+
+                        }
+die();
+
+                        //update stock KPO
+                        foreach ($arrPOItems as $val) {
+                            $arrStock = $objStock->getWhere("org_id='$myOrg_id' AND id_barang='$val->id_barang' ");
+                            $json['stock'] = $arrStock;
+                            $json['count'] = count($arrStock);
+                            if (count($arrStock) > 0) {
+                                $json['count'] = count($arrStock);
+                                if ($arrStock[0]->jumlah_stock_hold - $val->qty < 0) {
+                                    $arrStock[0]->jumlah_stock_hold = 0;
+                                } else {
+                                    $arrStock[0]->jumlah_stock_hold = $arrStock[0]->jumlah_stock_hold - $val->qty;
+                                }
+
+                                $arrStock[0]->jumlah_stock = $arrStock[0]->jumlah_stock - $val->qty;
+                                $arrStock[0]->save(1);
+                            }
+                        }
+
+                        $objStockPengirim = new StockModel();
+                        foreach ($arrPOItems as $val) {
+                            $arrStockPengirim = $objStockPengirim->getWhere("org_id='$objPO->po_pengirim' AND id_barang='$val->id_barang' ");
+                            if (count($arrStockPengirim) == 0) {
+                                $objStockPengirim->org_id = $objPO->po_pengirim;
+                                $objStockPengirim->jumlah_stock = $val->qty;
+                                $objStockPengirim->id_barang = $val->id_barang;
+                                $objStockPengirim->save();
+                                $json['stock'] = ($objStockPengirim);
+                            } else {
+                                $arrStockPengirim[0]->jumlah_stock = $arrStockPengirim[0]->jumlah_stock + $val->qty;
+                                $arrStockPengirim[0]->save(1);
+                            }
+                        }
+
+                        // KartuStock KPO
+                        $arrKartuStock = $objStock->getWhere("id_barang='$key' AND id_pemilik_barang = '$myOrg_id'");
+                        if (count($arrKartuStock) == 0) {
+                            // Error
+                        } else {
+//                            $arrKartuStock[0]->stock_keluar = $arrKartuStock[0]->stock_keluar + $val->qty;
+                            $arrKartuStock[0]->tanggal_input = leap_mysqldate();
+                            $arrKartuStock[0]->nama_pengeluar_barang = Account::getMyName();
+                            $arrKartuStock[0]->id_pemilik_barang = Account::getMyID();
+                            $arrKartuStock[0]->save(1);
+                        }
+                        // KartuStock IBO
+                        $arrKartuStock = $objStock->getWhere("id_barang='$key' AND id_pemilik_barang = '$key->po_pengirim'");
+                        if (count($arrKartuStock) == 0) {
+                            $objStock->stock_masuk = $val->qty;
+                            $objStock->tanggal_input = leap_mysqldate();
+                            $objStock->nama_pengeluar_barang = Account::getMyName();
+                            $objStock->id_pemilik_barang = Account::getMyID();
+                            $objStock->save();
+                        } else {
+                            $objAccount = new Account();
+                            $arrAccount = $objAccount->getByID("admin_org_id='$key->po_pengirim'");
+                            $arrKartuStock[0]->stock_masuk = $arrKartuStock[0]->stock_masuk + $val->qty;
+                            $arrKartuStock[0]->tanggal_input = leap_mysqldate();
+                            $arrKartuStock[0]->nama_pengeluar_barang = Account::getMyName();
+                            $arrKartuStock[0]->id_pemilik_barang = Account::getMyID();
+                            $arrKartuStock[0]->save(1);
+                        }
+
+
+                        $arrJenisBarangHlp = Generic::getJenisBarangType();
+                        $PO_Object = new POModel();
+                        $PO_Object->getByID($po_id);
+                        $peminta = "";
+                        $pemilik = "";
+
+                        foreach ($arrPOItems as $key => $val) {
+                            $po_penerima = $PO_Object->po_penerima;
+                            $po_pengirim = $PO_Object->po_pengirim;
+                            $peminta = Generic::getTCNamebyID($PO_Object->po_pengirim);
+                            $peminta = $peminta . " request " . Generic::getNamaBarangByIDBarang($val->id_barang) . " sebanyak: " . $val->qty;
+                            $pemilik = Generic::getTCNamebyID($PO_Object->po_penerima);
+                            $pemilik = $pemilik . " mengirimkan barang " . Generic::getNamaBarangByIDBarang($val->id_barang) . " sebanyak: " . $val->qty . " ke " . Generic::getTCNamebyID($PO_Object->po_pengirim);
+
+                            $jenis_object = $arrJenisBarangHlp[$val->id_barang];
+                            if (AccessRight::getMyOrgType() == KEY::$TC) {
+
+
+                            } elseif (AccessRight::getMyOrgType() == KEY::$IBO) {
+                                if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BARANG_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BARANG_TC, $val->id_barang, $peminta, $val->qty, 0, "");
+                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BUKU_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BUKU_TC, $val->id_barang, $peminta, $val->qty, 0, "");
+                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_PERLENGKAPAN_IBO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_PERLENGKAPAN_TC, $val->id_barang, $peminta, $val->qty, 0, "");
+                                }
+                            } elseif (AccessRight::getMyOrgType() == KEY::$KPO) {
+                                if ($jenis_object == KEY::$JENIS_BIAYA_BARANG) {
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BARANG_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BARANG_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+//                                    Generic::createLaporanDebet($po_penerima, $po_penerima, KEY::$DEBET_BARANG_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+//                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim,  KEY::$KREDIT_BARANG_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+
+                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_BUKU) {
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_BUKU_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_BUKU_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+//                                    Generic::createLaporanDebet($po_penerima, $po_penerima,KEY::$DEBET_BUKU_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+//                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim, KEY::$KREDIT_BUKU_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+
+                                } elseif ($jenis_object == KEY::$JENIS_BIAYA_PERLENGKAPAN) {
+                                    Generic::createLaporanDebet($po_penerima, $po_pengirim, KEY::$DEBET_PERLENGKAPAN_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+                                    Generic::createLaporanKredit($po_pengirim, $po_pengirim, KEY::$KREDIT_PERLENGKAPAN_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+//                                    Generic::createLaporanDebet($po_penerima, $po_penerima,KEY::$DEBET_BUKU_KPO, $val->id_barang, $pemilik, $val->qty, 0, "");
+//                                    Generic::createLaporanKredit($po_pengirim,$po_pengirim, KEY::$KREDIT_BUKU_IBO, $val->id_barang, $peminta, $val->qty, 0, "");
+
+                                }
+                            }
+                        }
+
+                        // update stock IBO
+                    } elseif ($id_status == 99) {
+// update stock KPO
+                        foreach ($arrPOItems as $val) {
+                            $arrStock = $objStock->getWhere("org_id='$myOrg_id' AND id_barang='$val->id_barang' ");
+                            if (count($arrStock) > 0) {
+                                $arrStock[0]->jumlah_stock_hold = $arrStock[0]->jumlah_stock_hold - $val->qty;
+                                $arrStock[0]->save(1);
+                                SempoaInboxModel::sendMsg($val->org_id, AccessRight::getMyOrgID(), "Cancel pemesanan barang", "Pemesanan " . Generic::getNamaBarangByIDBarang($val->id_barang) . "barang anda di cancel!");
+                            }
+                        }
+                    }
+                    $arrPOItems[0]->status = $id_status;
+                    $arrPOItems[0]->save(1);
+                } else {
+
+                    $objPO->po_status = $status_sebelum;
+                    $update = $objPO->save(1);
+                    $json['status_code'] = 0;
+                    $json['status_message'] = "Status gagal di Update";
+                    echo json_encode($json);
+                    die();
+                }
+            }
+        } else {
+            $json['status_code'] = 0;
+            $json['status_message'] = "Status gagal di Update";
+            echo json_encode($json);
+            die();
+        }
+        $json['id_status'] = $id_status;
+        $json['status_code'] = 1;
+        $json['status_message'] = "Status di Update";
+        echo json_encode($json);
+        die();
+    }
+
+    public function cekbuku(){
+        $setNoBuku = new StockBuku();
+//        getBukuYgdReservMurid($level, $org_id_pemilik, $id_murid, $kurikulum, $jenis_biaya)
+        $resBuku = $setNoBuku->getBukuYgdReservMurid(7, 28, 4525, 1,KEY::$JENIS_BUKU);
+//        $resBuku = $setNoBuku->getBukuYgdReservMurid($level_baru, $myOrg, $iuranBuku->bln_murid_id, $iuranBuku->bln_kur,KEY::$JENIS_BUKU);
+
+        pr($resBuku);
+
     }
 }
