@@ -1993,7 +1993,7 @@ class Generic
 
     }
 
-    public static function convertLevelBaruKeLama($levelBaru)
+    public static function  convertLevelBaruKeLama($levelBaru)
     {
         if ($levelBaru == 1) {
             return 1;

@@ -1606,4 +1606,17 @@ class CoretCoret extends WebService
         }
         //SELECT * FROM `sempoa__stock_buku` where `stock_buku_status_kpo` = 1 Group by `stock_id_buku`
     }
+
+    public function coret()
+    {
+        $iuranBuku = new IuranBulanan();
+        $iuranBuku->getWhereOne("bln_id='10000_10_2017'");
+//        pr($iuranBuku);
+        $obj = array();
+        foreach($iuranBuku as $key=>$val){
+            $obj[$key] = $val;
+        }
+        pr(serialize($obj));
+
+    }
 }

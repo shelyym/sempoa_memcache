@@ -411,4 +411,13 @@ class GuruWeb extends WebService
         <?
     }
 
+    public function export_all_guru(){
+        $myOrgID = (AccessRight::getMyOrgID());
+        $obj = new SempoaGuruModel();
+        $crud = new CrudCustomSempoa();
+        $crud->ar_add = AccessRight::hasRight("create_guru_ibo");
+        $crud->ar_delete = AccessRight::hasRight("delete_guru_ibo");
+        $crud->ar_edit = AccessRight::hasRight("update_guru_ibo");
+        $crud->run_custom($obj, "GuruWeb", "export_all_guru", "  guru_ibo_id = '$myOrgID'");
+    }
 }

@@ -93,8 +93,256 @@ class LaporanWeb extends WebService
         $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
         $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
+
+
+
+        // cek iuran bulanan dr bulan dan tahun yg dipilih sdh ada belum
+        $iuranBulanan = new IuranBulanan();
+        $arrIuranBulanan = $iuranBulanan->getWhere("bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id' ORDER BY bln_murid_id ASC");
+
+        if( count($arrIuranBulanan) == 0){
+            $murid = new MuridModel();
+            // Status cuti dikeluarkan
+            $lastday = date('t',strtotime($bln . "/1/" . $thn));
+            $dateTerakhir = new DateTime($thn . "-".$bln."-".$lastday);
+            $dateTerakhir_tmp = $dateTerakhir->format("Y-m-d");
+            $arrMurid = $murid->getWhere("(status = 1) AND murid_tc_id = '$tc_id' AND tanggal_masuk <='$dateTerakhir_tmp' ORDER BY nama_siswa ASC");
+            $invoiceCreated = false;
+        }
+        else{
+//            pr(count($arrIuranBulanan));
+            $invoiceCreated = true;
+        }
+
+        $status = new MuridWeb2Model();
+        $arrs = $status->getAll();
+
+        $arrSTatus = array();
+        foreach ($arrs as $st) {
+            $arrSTatus[$st->id_status_murid] = $st->status;
+
+        }
+//        echo "2<br>";
+        $arrBulan = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+
+        // Kupon
+//        $kupon = new KuponSatuan();
+//        $arrkupon = $kupon->getWhere("kupon_owner_id = '$tc_id' AND kupon_status = 0 ORDER BY kupon_id ASC");
+//        $checkKupon = count($arrkupon);
+//        $checkKupon = 0;
+        $arrSTatus = array("<b>Unpaid</b>", "Paid");
+        $t = time();;
+        ?>
+
+        <section class="content-header">
+            <h1>
+                <div class="pull-right" style="font-size: 13px;">
+                    Bulan :<select id="bulan_<?= $t; ?>">
+                        <?
+                        foreach ($arrBulan as $bln2) {
+                            $sel = "";
+                            if ($bln2 == $bln) {
+                                $sel = "selected";
+                            }
+                            ?>
+                            <option value="<?= $bln2; ?>" <?= $sel; ?>><?= $bln2; ?></option>
+                            <?
+                        }
+                        ?>
+                    </select>
+                    Tahun :<select id="tahun_<?= $t; ?>">
+                        <?
+                        for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
+                            $sel = "";
+                            if ($x == $thn) {
+                                $sel = "selected";
+                            }
+                            ?>
+                            <option value="<?= $x; ?>" <?= $sel; ?>><?= $x; ?></option>
+
+                            <?
+                        }
+                        ?>
+                        }
+                        ?>
+                    </select>
+
+                    <button id="submit_bln_<?= $t; ?>">submit</button>
+                </div>
+                Iuran Bulanan
+            </h1>
+            <script>
+                $('#submit_bln_<?= $t; ?>').click(function () {
+                    var bln = $('#bulan_<?= $t; ?>').val();
+                    var thn = $('#tahun_<?= $t; ?>').val();
+                    var tc_id = '<?= $tc_id ?>';
+                    openLw('create_operasional_pembayaran_iuran_bulanan_tc', '<?=_SPPATH;?>LaporanWeb/create_operasional_pembayaran_iuran_bulanan_tc' + '?now=' + $.now() + '&bln=' + bln + "&thn=" + thn + "&tc_id=" + tc_id, 'fade');
+                });
+            </script>
+        </section>
+
+
+        <section class="content">
+            <div id="summary_holder" style="text-align: left; font-size: 16px;"></div>
+            <div class="table-responsive" style="background-color: #FFFFFF; margin-top: 20px;">
+                <table class="table table-striped ">
+                    <thead>
+                    <tr>
+                        <th>
+                            Nama Murid
+                        </th>
+                        <th>
+                            Level
+                        </th>
+                        <th>
+                            Tanggal
+                        </th>
+                        <th>
+                            Kupon
+                        </th>
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+                    </thead>
+
+                    <tbody id="container_iuran_<?= $t; ?>">
+                    <?
+                    $sudahbayar = 0;
+                    $belumbayar = 0;
+
+                    if($invoiceCreated){
+                        foreach($arrIuranBulanan as $iuran){
+                            ?>
+                        <tr id='payment_<?= $iuran->bln_id; ?>'
+                            class="<? if ($iuran->bln_status) { ?>sudahbayar <?
+                            } else { ?> belumbayar<?
+                            } ?>">
+                            <td><a style="cursor: pointer;"
+                                   onclick="back_to_profile_murid('<?= $iuran->bln_murid_id; ?>');"><?= Generic::getMuridNamebyID($iuran->bln_murid_id); ?></a>
+                            </td>
+                            <td><?= Generic::getLevelNameByID(1); ?></td>
+                            <td><?
+                                $kuponSatuan = new KuponSatuan();
+                                $kuponSatuan->getWhereOne("kupon_id=$iuran->bln_kupon_id");
+                                //                            echo $kuponSatuan->kupon_pemakaian_date;
+                                if ($iuran->bln_status) {
+                                    echo $iuran->bln_date_pembayaran;
+                                }
+
+                                ?></td>
+
+                            <td class='kupon'>
+                                <?
+                                if ($iuran->bln_status) {
+                                    echo $iuran->bln_kupon_id;
+                                    $sudahbayar++;
+                                } else {
+//                                echo $iuranBulanan->bln_id . " saas";
+                                    $belumbayar++;
+                                    ?>
+                                    <button id='pay_now_<?= $iuran->bln_murid_id; ?>' class="btn btn-default">Pay Now
+                                    </button>
+                                    <?
+                                }
+                                ?>
+                            </td>
+                            <td><?= $arrSTatus[$iuran->bln_status]; ?></td>
+                        </tr>
+                            <?
+                        }
+                    }
+
+                    else{
+                        foreach ($arrMurid as $mk) {
+
+                            $iuranBulanan = new IuranBulanan();
+                            $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
+//                        pr($iuranBulanan);
+                            if($mk->id_murid == '3202'){
+                                pr($mk->id_murid . " - " . $bln);
+                            }
+                            ?>
+
+                            <tr id='payment_<?= $iuranBulanan->bln_id; ?>'
+                                class="<? if ($iuranBulanan->bln_status) { ?>sudahbayar <?
+                                } else { ?> belumbayar<?
+                                } ?>">
+                                <td><a style="cursor: pointer;"
+                                       onclick="back_to_profile_murid('<?= $mk->id_murid; ?>');"><?= $mk->nama_siswa; ?></a>
+                                </td>
+                                <td><?= Generic::getLevelNameByID($mk->id_level_sekarang); ?></td>
+                                <td><?
+                                    $kuponSatuan = new KuponSatuan();
+                                    $kuponSatuan->getWhereOne("kupon_id=$iuranBulanan->bln_kupon_id");
+                                    //                            echo $kuponSatuan->kupon_pemakaian_date;
+                                    if ($iuranBulanan->bln_status) {
+                                        echo $iuranBulanan->bln_date_pembayaran;
+                                    }
+
+                                    ?></td>
+
+                                <td class='kupon'>
+                                    <?
+                                    if ($iuranBulanan->bln_status) {
+                                        echo $iuranBulanan->bln_kupon_id;
+                                        $sudahbayar++;
+                                    } else {
+//                                echo $iuranBulanan->bln_id . " saas";
+                                        $belumbayar++;
+                                        ?>
+                                        <button id='pay_now_<?= $mk->id_murid; ?>' class="btn btn-default">Pay Now
+                                        </button>
+                                        <?
+                                    }
+                                    ?>
+                                </td>
+                                <td><?= $arrSTatus[$iuranBulanan->bln_status]; ?></td>
+                            </tr>
+                            <script>
+                                $('#pay_now_<?= $mk->id_murid; ?>').click(function () {
+                                    openLw('murid_Invoices_<?= $mk->id_murid; ?>', '<?= _SPPATH; ?>MuridWebHelper/murid_invoices?id=<?= $mk->id_murid; ?>', 'fade');
+                                })
+                            </script>
+                            <?
+                        }
+                    }
+
+
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <div id="summary_bayar" style="display: none;">
+                <span style="cursor: pointer;"
+                      onclick="$('.sudahbayar').show();$('.belumbayar').hide();">Sudah Bayar</span> :
+                <b><? echo $sudahbayar; ?></b>
+                <br>
+                <span style="cursor: pointer;"
+                      onclick="$('.sudahbayar').hide();$('.belumbayar').show();">Belum Bayar</span> : <b
+                    style="color: red;"><?= $belumbayar; ?></b>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $('#summary_holder').html($('#summary_bayar').html());
+                });
+            </script>
+        </section>
+
+        <?
+        die();
+    }
+    public function create_operasional_pembayaran_iuran_bulanan_tc_1()
+    {
+        $myorg = AccessRight::getMyOrgID();
+        $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
+        $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
+        $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
         $murid = new MuridModel();
         // Status cuti dikeluarkan
+        $bln_sekarang = "" . $bln . $thn;
+//        $tanggal_masuk
         $arrMurid = $murid->getWhere("(status = 1) AND murid_tc_id = '$tc_id' ORDER BY nama_siswa ASC");
         $status = new MuridWeb2Model();
         $arrs = $status->getAll();

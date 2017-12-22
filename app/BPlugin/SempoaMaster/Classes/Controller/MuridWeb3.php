@@ -96,4 +96,14 @@ class MuridWeb3 extends WebService {
         
     }
 
+
+    public function export_all_murid(){
+        $crud = new CrudCustomSempoa();
+        $myOrgID = (AccessRight::getMyOrgID());
+        $obj = new MuridModel();
+        $crud->ar_delete = AccessRight::hasRight("delete_murid_ibo");
+        $crud->ar_edit = AccessRight::hasRight("update_murid_ibo");
+//        $crud->run_custom($obj, "MuridWeb3", "export_all_murid", " 1 ");
+        $crud->run_custom($obj, "MuridWeb3", "export_all_murid", "  murid_ibo_id = '$myOrgID'");
+    }
 }

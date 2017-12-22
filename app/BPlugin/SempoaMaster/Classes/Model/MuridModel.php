@@ -208,6 +208,11 @@ class MuridModel extends SempoaModel
         $arrLevel = Generic::getAllLevel();
         foreach ($objs as $obj) {
 
+            if (isset($obj->murid_tc_id)) {
+                $obj->murid_tc_id = Generic::getTCNamebyID($obj->murid_tc_id);
+            }
+
+
             if (isset($obj->id_level_sekarang) && $obj->id_level_sekarang > 0) {
                 $obj->id_level_sekarang = $arrLevel[$obj->id_level_sekarang];
             }

@@ -976,6 +976,73 @@ class LaporanWebHelper extends WebService
     }
 
 
+    function hapusIuranBuku(){
+        $bln_id = $_POST['bln_id'];
+        $iuranBuku = new IuranBuku();
+        $iuranBuku->getWhereOne("bln_id='$bln_id'");
+        if(is_null($iuranBuku->bln_id)){
+            $json['status_code'] = 0;
+            $json['status_message'] =  "Iuran Buku gagal dihapus!";
+            echo json_encode($json);
+            die();
+        }
+        else{
+            $logDelete = new SempoaLogDelete();
+            $logDelete->delete_table = $iuranBuku->table_name;
+            $logDelete->delete_tgl = leap_mysqldate();
+            $logDelete->delete_siapa = Account::getMyName();
+
+            $obj = array();
+            foreach($iuranBuku as $key=>$val){
+                $obj[$key] = $val;
+            }
+            $logDelete->delete_data = serialize($obj);
+            $arrSerial[] = $obj;
+            $hasil = $iuranBuku->delete($iuranBuku->bln_id);
+            if($hasil){
+                $json['status_code'] = 1;
+                $json['status_message'] = "Iuran Buku berhasil dihapus!";
+                $logDelete->save();
+                echo json_encode($json);
+                die();
+            }
+        }
+    }
+
+    function hapusIuranBulanan(){
+        $bln_id = $_POST['bln_id'];
+        $iuranBulanan = new IuranBulanan();
+        $iuranBulanan->getWhereOne("bln_id='$bln_id'");
+        if(is_null($iuranBulanan->bln_id)){
+            $json['status_code'] = 0;
+            $json['status_message'] =  "Iuran bulanan gagal dihapus!";
+            echo json_encode($json);
+            die();
+        }
+        else{
+            $logDelete = new SempoaLogDelete();
+            $logDelete->delete_table = $iuranBulanan->table_name;
+            $logDelete->delete_tgl = leap_mysqldate();
+            $logDelete->delete_siapa = Account::getMyName();
+
+            $obj = array();
+            foreach($iuranBulanan as $key=>$val){
+                $obj[$key] = $val;
+            }
+            $logDelete->delete_data = serialize($obj);
+            $arrSerial[] = $obj;
+            $hasil = $iuranBulanan->delete($iuranBulanan->bln_id);
+            if($hasil){
+                $json['status_code'] = 1;
+                $json['status_message'] = "Iuran bulanan berhasil dihapus!";
+                $logDelete->save();
+                echo json_encode($json);
+                die();
+            }
+        }
+    }
+
+
     function testCodeGuru()
     {
         $o = new BiayaTrainingModel();
