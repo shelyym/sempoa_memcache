@@ -2048,8 +2048,13 @@ class MuridWebHelper extends WebService
                 Invoices <?= Generic::getMuridNamebyID($id); ?>
             </h1>
             <script>
-                $('#create_invoice_bulanan_ibo_<?= $t; ?>').click(function () {
 
+                $('#create_invoice_bulanan_ibo_<?= $t; ?>').click(function () {
+                    var id_murid = <?= $id; ?>;
+                    $('#modal_ibo .modal-body').load("<?= _SPPATH; ?>KelasWebHelper/create_invoice_ibo?id_murid=" + id_murid);
+                    $('#modal_ibo').modal('show');
+
+//                    $('#modal_bundle_kupon_selector').modal("show");
                 });
 
 
@@ -6320,6 +6325,48 @@ class MuridWebHelper extends WebService
         $crud->run_custom($obj, "MuridWebHelper", "read_murid_tc_ibo");
     }
 
+    public function create_invoice_ibo()
+    {
+
+        $id_murid = addslashes($_POST['id_murid']);
+        $bln = addslashes($_POST['bln']);
+        $thn = addslashes($_POST['thn']);
+
+        $weiter = true;
+        $id_hlp = $id_murid . "_" . $bln . "_" . $thn;
+        $iuranbulanan = new IuranBulanan();
+        $iuranbulanan->getWhereOne("bln_murid_id=$id_murid  AND bln_mon=$bln AND  bln_tahun=$thn  AND bln_id='$id_hlp'");
+        if (is_null($iuranbulanan->bln_id)) {
+            $murid = new MuridModel();
+            $murid->getByID($id_murid);
+            $iuranbulanan = new IuranBulanan();
+            $pilih_kapan = $bln . "-" . $thn;
+            $idInvoice = $iuranbulanan->createIuranBulananManual($id_murid, $pilih_kapan, $bln, $thn, $murid->murid_ak_id, $murid->murid_kpo_id, $murid->murid_ibo_id, $murid->murid_tc_id);
+            if ($idInvoice > 0) {
+                $json['status_code'] = 1;
+                $json['status_message'] = "Invoice sudah tercetak";
+
+            } else {
+                $json['status_code'] = 0;
+                $json['status_message'] = "Invoice gagal tercetak";
+
+            }
+        }
+        else{
+            $json['status_code'] = 0;
+            $json['status_message'] = "Invoice sudah ada";
+        }
+
+
+
+
+
+        echo json_encode($json);
+        die();
+
+    }
+
+
     public function create_invoice()
     {
 
@@ -6373,7 +6420,6 @@ class MuridWebHelper extends WebService
         die();
 
     }
-
     // tgl 26.04 krn tc harapan indah ibrahim
     public function create_invoice_backup()
     {

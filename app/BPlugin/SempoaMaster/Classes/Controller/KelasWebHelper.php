@@ -1244,4 +1244,62 @@ class KelasWebHelper extends WebService
             <?
         }
     }
+
+    public function create_invoice_ibo()
+    {
+
+        $id_murid = addslashes($_GET['id_murid']);
+        $bln = isset($_GET['bln']) ? addslashes($_GET['bln']) : date("n");
+        $thn = isset($_GET['thn']) ? addslashes($_GET['thn']) : date("Y");
+        $t = time();
+        $arrBulan = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+
+        ?>
+        <div class="pull-middle" style="font-size: 13px;">
+            Bulan :<select id="bulan_<?= $t; ?>">
+                <?
+                foreach ($arrBulan as $bln2) {
+                    $sel = "";
+                    if ($bln2 == date("n")) {
+                        $sel = "selected";
+                    }
+                    ?>
+                    <option value="<?= $bln2; ?>" <?= $sel; ?>><?= $bln2; ?></option>
+                    <?
+                }
+                ?>
+            </select>
+            Tahun :<select id="tahun_<?= $t; ?>">
+                <?
+                for ($x = date("Y") - 2; $x < date("Y") + 2; $x++) {
+                    $sel = "";
+                    if ($x == date("Y")) {
+                        $sel = "selected";
+                    }
+                    ?>
+                    <option value="<?= $x; ?>" <?= $sel; ?>><?= $x; ?></option>
+
+                    <?
+                }
+                ?>
+                }
+                ?>
+            </select>
+            <script>
+                id_murid = '<?=$id_murid;?>';
+                bln = $('#bulan_<?= $t; ?>').val();
+                thn = $('#tahun_<?= $t; ?>').val();
+                $('#bulan_<?= $t; ?>').change(function(){
+                    bln = $('#bulan_<?= $t; ?>').val();
+                    thn = $('#tahun_<?= $t; ?>').val();
+                });
+                $('#tahun_<?= $t; ?>').change(function(){
+                    bln = $('#bulan_<?= $t; ?>').val();
+                    thn = $('#tahun_<?= $t; ?>').val();
+                });
+            </script>
+        </div>
+
+        <?
+    }
 }
