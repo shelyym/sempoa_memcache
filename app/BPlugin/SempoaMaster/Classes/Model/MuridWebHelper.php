@@ -2299,7 +2299,7 @@ class MuridWebHelper extends WebService
                                     </tr>
                                     <script>
 
-                                        $('#delete_iuran_bulanan_<?= $mk->bln_id . "_" . $t; ?>').click(function(){
+                                        $('#delete_iuran_bulanan_<?= $mk->bln_id . "_" . $t; ?>').click(function () {
                                             var bln_id = '<?= $mk->bln_id; ?>';
                                             if (confirm("Apakah Anda Yakin akan menghapus transaksi Iuran Bulanan?")) {
                                                 $.post("<?= _SPPATH; ?>LaporanWebHelper/hapusIuranBulanan", {
@@ -6336,29 +6336,32 @@ class MuridWebHelper extends WebService
         $id_hlp = $id_murid . "_" . $bln . "_" . $thn;
         $iuranbulanan = new IuranBulanan();
         $iuranbulanan->getWhereOne("bln_murid_id=$id_murid  AND bln_mon=$bln AND  bln_tahun=$thn  AND bln_id='$id_hlp'");
-        if (is_null($iuranbulanan->bln_id)) {
-            $murid = new MuridModel();
-            $murid->getByID($id_murid);
-            $iuranbulanan = new IuranBulanan();
-            $pilih_kapan = $bln . "-" . $thn;
-            $idInvoice = $iuranbulanan->createIuranBulananManual($id_murid, $pilih_kapan, $bln, $thn, $murid->murid_ak_id, $murid->murid_kpo_id, $murid->murid_ibo_id, $murid->murid_tc_id);
+
+        $murid = new MuridModel();
+        $murid->getByID($id_murid);
+        $iuranbulanan = new IuranBulanan();
+        $pilih_kapan = $bln . "-" . $thn;
+        $idInvoice = $iuranbulanan->createIuranBulananManual($id_murid, $pilih_kapan, $bln, $thn, $murid->murid_ak_id, $murid->murid_kpo_id, $murid->murid_ibo_id, $murid->murid_tc_id);
+        if ($idInvoice > 0) {
+            $json['status_code'] = 1;
+            $json['status_message'] = "Invoice sudah tercetak";
+
+        } else {
+
+            $jumlah = $iuranbulanan->getJumlah("bln_mon=$bln AND bln_tahun=$thn AND bln_murid_id=$id_murid");
+            $idInvoice = $iuranbulanan->createIuranBulananManualSecond($id_murid, $pilih_kapan, $bln, $thn, $jumlah+1, $murid->murid_ak_id, $murid->murid_kpo_id, $murid->murid_ibo_id, $murid->murid_tc_id);
+
             if ($idInvoice > 0) {
                 $json['status_code'] = 1;
                 $json['status_message'] = "Invoice sudah tercetak";
 
             } else {
                 $json['status_code'] = 0;
-                $json['status_message'] = "Invoice gagal tercetak";
-
+                $json['status_message'] = "jumllah : " .  $jumlah . "Invoice gagal tercetak";
             }
+
+
         }
-        else{
-            $json['status_code'] = 0;
-            $json['status_message'] = "Invoice sudah ada";
-        }
-
-
-
 
 
         echo json_encode($json);
@@ -6420,6 +6423,7 @@ class MuridWebHelper extends WebService
         die();
 
     }
+
     // tgl 26.04 krn tc harapan indah ibrahim
     public function create_invoice_backup()
     {

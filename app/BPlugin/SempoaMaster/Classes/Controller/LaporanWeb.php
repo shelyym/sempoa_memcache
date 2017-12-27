@@ -239,17 +239,22 @@ class LaporanWeb extends WebService
                                     echo $iuran->bln_kupon_id;
                                     $sudahbayar++;
                                 } else {
-//                                echo $iuranBulanan->bln_id . " saas";
                                     $belumbayar++;
                                     ?>
-                                    <button id='pay_now_<?= $iuran->bln_murid_id; ?>' class="btn btn-default">Pay Now
+                                    <button id='pay_now_<?= $iuran->bln_id; ?>' class="btn btn-default">Pay Now
                                     </button>
+                                    <script>
+                                        $('#pay_now_<?= $iuran->bln_id; ?>').click(function () {
+                                            openLw('murid_Invoices_<?= $iuran->bln_murid_id; ?>', '<?= _SPPATH; ?>MuridWebHelper/murid_invoices?id=<?= $iuran->bln_murid_id; ?>', 'fade');
+                                        })
+                                    </script>
                                     <?
                                 }
                                 ?>
                             </td>
                             <td><?= $arrSTatus[$iuran->bln_status]; ?></td>
                         </tr>
+
                             <?
                         }
                     }
@@ -301,6 +306,7 @@ class LaporanWeb extends WebService
                                 <td><?= $arrSTatus[$iuranBulanan->bln_status]; ?></td>
                             </tr>
                             <script>
+
                                 $('#pay_now_<?= $mk->id_murid; ?>').click(function () {
                                     openLw('murid_Invoices_<?= $mk->id_murid; ?>', '<?= _SPPATH; ?>MuridWebHelper/murid_invoices?id=<?= $mk->id_murid; ?>', 'fade');
                                 })

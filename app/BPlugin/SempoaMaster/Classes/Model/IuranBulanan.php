@@ -70,6 +70,23 @@ class IuranBulanan extends Model{
     }
 
 
+    // utk create invoice secara Manual
+    public function createIuranBulananManualSecond($murid_id,$pilih_kapan,$bln,$thn,$jmlhInvoice,$ak_id,$kpo_id,$ibo_id,$tc_id){
+        $this->bln_id = $murid_id . "_" . $bln . "_" . $thn ."_" .$jmlhInvoice ;
+        $this->bln_tc_id = $tc_id;
+        $this->bln_murid_id = $murid_id;
+        $this->bln_date = $pilih_kapan;
+        $this->bln_mon = $bln;
+        $this->bln_tahun = $thn;
+        $this->bln_status = 0;
+        $this->bln_ibo_id = $ibo_id;
+        $this->bln_kpo_id = $kpo_id;
+        $this->bln_ak_id = $ak_id;
+        $this->bln_create_date = leap_mysqldate();
+        $idInvoice = $this->save();
+        return $idInvoice;
+    }
+
     // Untuk Create Invoice di FirstPayment
     public function createIuranBulananFirstPayment($murid_id,$pilih_kapan,$pilih_kupon, $ibo_id, $kpo_id, $ak_id, $tc_id, $jenis_pmbr){
 
