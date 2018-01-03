@@ -214,6 +214,8 @@ class LaporanWeb extends WebService
 
                     if($invoiceCreated){
                         foreach($arrIuranBulanan as $iuran){
+                            $muridTmp = new MuridModel();
+                             $muridTmp->getByID($iuran->bln_murid_id);
                             ?>
                         <tr id='payment_<?= $iuran->bln_id; ?>'
                             class="<? if ($iuran->bln_status) { ?>sudahbayar <?
@@ -222,7 +224,7 @@ class LaporanWeb extends WebService
                             <td><a style="cursor: pointer;"
                                    onclick="back_to_profile_murid('<?= $iuran->bln_murid_id; ?>');"><?= Generic::getMuridNamebyID($iuran->bln_murid_id); ?></a>
                             </td>
-                            <td><?= Generic::getLevelNameByID(1); ?></td>
+                            <td><?= Generic::getLevelNameByID($muridTmp->id_level_sekarang); ?></td>
                             <td><?
                                 $kuponSatuan = new KuponSatuan();
                                 $kuponSatuan->getWhereOne("kupon_id=$iuran->bln_kupon_id");
