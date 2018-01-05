@@ -2102,4 +2102,10 @@ class Generic
         }
         return $jumlah;
     }
+
+    public static function getJumlahMuridAktivByTC($tc_id){
+        $murid = new MuridModel();
+        $jumlah = $murid->getJumlah("murid_tc_id=$tc_id AND status =1");
+        return $jumlah;
+    }
 }

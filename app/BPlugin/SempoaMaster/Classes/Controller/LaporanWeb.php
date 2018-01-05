@@ -95,22 +95,21 @@ class LaporanWeb extends WebService
         $tc_id = isset($_GET['tc_id']) ? addslashes($_GET['tc_id']) : AccessRight::getMyOrgID();
 
 
-
         // cek iuran bulanan dr bulan dan tahun yg dipilih sdh ada belum
         $iuranBulanan = new IuranBulanan();
         $arrIuranBulanan = $iuranBulanan->getWhere("bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id' ORDER BY bln_murid_id ASC");
 
-        if( count($arrIuranBulanan) == 0){
+        $jumlahMuridAktiv = Generic::getJumlahMuridAktivByTC($tc_id);
+        if ((count($arrIuranBulanan) == 0) or count($arrIuranBulanan) < $jumlahMuridAktiv) {
             $murid = new MuridModel();
             // Status cuti dikeluarkan
-            $lastday = date('t',strtotime($bln . "/1/" . $thn));
-            $dateTerakhir = new DateTime($thn . "-".$bln."-".$lastday);
+            $lastday = date('t', strtotime($bln . "/1/" . $thn));
+            $dateTerakhir = new DateTime($thn . "-" . $bln . "-" . $lastday);
             $dateTerakhir_tmp = $dateTerakhir->format("Y-m-d");
             $arrMurid = $murid->getWhere("(status = 1) AND murid_tc_id = '$tc_id' AND tanggal_masuk <='$dateTerakhir_tmp' ORDER BY nama_siswa ASC");
             $invoiceCreated = false;
-        }
-        else{
-//            pr(count($arrIuranBulanan));
+        } else {
+
             $invoiceCreated = true;
         }
 
@@ -212,11 +211,11 @@ class LaporanWeb extends WebService
                     $sudahbayar = 0;
                     $belumbayar = 0;
 
-                    if($invoiceCreated){
-                        foreach($arrIuranBulanan as $iuran){
-                            $muridTmp = new MuridModel();
-                             $muridTmp->getByID($iuran->bln_murid_id);
-                            ?>
+                    if ($invoiceCreated) {
+                    foreach ($arrIuranBulanan as $iuran) {
+                        $muridTmp = new MuridModel();
+                        $muridTmp->getByID($iuran->bln_murid_id);
+                        ?>
                         <tr id='payment_<?= $iuran->bln_id; ?>'
                             class="<? if ($iuran->bln_status) { ?>sudahbayar <?
                             } else { ?> belumbayar<?
@@ -257,64 +256,64 @@ class LaporanWeb extends WebService
                             <td><?= $arrSTatus[$iuran->bln_status]; ?></td>
                         </tr>
 
-                            <?
-                        }
+                    <?
+                    }
                     }
 
                     else{
-                        foreach ($arrMurid as $mk) {
+                    foreach ($arrMurid as $mk) {
 
-                            $iuranBulanan = new IuranBulanan();
-                            $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
-//                        pr($iuranBulanan);
-                            if($mk->id_murid == '3202'){
-                                pr($mk->id_murid . " - " . $bln);
-                            }
-                            ?>
+                    $iuranBulanan = new IuranBulanan();
+                    $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
+                    //                        pr($iuranBulanan);
+                    if ($mk->id_murid == '3202') {
+                        pr($mk->id_murid . " - " . $bln);
+                    }
+                    ?>
 
-                            <tr id='payment_<?= $iuranBulanan->bln_id; ?>'
-                                class="<? if ($iuranBulanan->bln_status) { ?>sudahbayar <?
-                                } else { ?> belumbayar<?
-                                } ?>">
-                                <td><a style="cursor: pointer;"
-                                       onclick="back_to_profile_murid('<?= $mk->id_murid; ?>');"><?= $mk->nama_siswa; ?></a>
-                                </td>
-                                <td><?= Generic::getLevelNameByID($mk->id_level_sekarang); ?></td>
-                                <td><?
-                                    $kuponSatuan = new KuponSatuan();
-                                    $kuponSatuan->getWhereOne("kupon_id=$iuranBulanan->bln_kupon_id");
-                                    //                            echo $kuponSatuan->kupon_pemakaian_date;
-                                    if ($iuranBulanan->bln_status) {
-                                        echo $iuranBulanan->bln_date_pembayaran;
-                                    }
+                        <tr id='payment_<?= $iuranBulanan->bln_id; ?>'
+                            class="<? if ($iuranBulanan->bln_status) { ?>sudahbayar <?
+                            } else { ?> belumbayar<?
+                            } ?>">
+                            <td><a style="cursor: pointer;"
+                                   onclick="back_to_profile_murid('<?= $mk->id_murid; ?>');"><?= $mk->nama_siswa; ?></a>
+                            </td>
+                            <td><?= Generic::getLevelNameByID($mk->id_level_sekarang); ?></td>
+                            <td><?
+                                $kuponSatuan = new KuponSatuan();
+                                $kuponSatuan->getWhereOne("kupon_id=$iuranBulanan->bln_kupon_id");
+                                //                            echo $kuponSatuan->kupon_pemakaian_date;
+                                if ($iuranBulanan->bln_status) {
+                                    echo $iuranBulanan->bln_date_pembayaran;
+                                }
 
-                                    ?></td>
+                                ?></td>
 
-                                <td class='kupon'>
-                                    <?
-                                    if ($iuranBulanan->bln_status) {
-                                        echo $iuranBulanan->bln_kupon_id;
-                                        $sudahbayar++;
-                                    } else {
+                            <td class='kupon'>
+                                <?
+                                if ($iuranBulanan->bln_status) {
+                                    echo $iuranBulanan->bln_kupon_id;
+                                    $sudahbayar++;
+                                } else {
 //                                echo $iuranBulanan->bln_id . " saas";
-                                        $belumbayar++;
-                                        ?>
-                                        <button id='pay_now_<?= $mk->id_murid; ?>' class="btn btn-default">Pay Now
-                                        </button>
-                                        <?
-                                    }
+                                    $belumbayar++;
                                     ?>
-                                </td>
-                                <td><?= $arrSTatus[$iuranBulanan->bln_status]; ?></td>
-                            </tr>
-                            <script>
+                                    <button id='pay_now_<?= $mk->id_murid; ?>' class="btn btn-default">Pay Now
+                                    </button>
+                                    <?
+                                }
+                                ?>
+                            </td>
+                            <td><?= $arrSTatus[$iuranBulanan->bln_status]; ?></td>
+                        </tr>
+                        <script>
 
-                                $('#pay_now_<?= $mk->id_murid; ?>').click(function () {
-                                    openLw('murid_Invoices_<?= $mk->id_murid; ?>', '<?= _SPPATH; ?>MuridWebHelper/murid_invoices?id=<?= $mk->id_murid; ?>', 'fade');
-                                })
-                            </script>
-                            <?
-                        }
+                            $('#pay_now_<?= $mk->id_murid; ?>').click(function () {
+                                openLw('murid_Invoices_<?= $mk->id_murid; ?>', '<?= _SPPATH; ?>MuridWebHelper/murid_invoices?id=<?= $mk->id_murid; ?>', 'fade');
+                            })
+                        </script>
+                        <?
+                    }
                     }
 
 
@@ -341,6 +340,7 @@ class LaporanWeb extends WebService
         <?
         die();
     }
+
     public function create_operasional_pembayaran_iuran_bulanan_tc_1()
     {
         $myorg = AccessRight::getMyOrgID();
@@ -454,7 +454,7 @@ class LaporanWeb extends WebService
                         $iuranBulanan = new IuranBulanan();
                         $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
 //                        pr($iuranBulanan);
-                        if($mk->id_murid == '3202'){
+                        if ($mk->id_murid == '3202') {
                             pr($mk->id_murid . " - " . $bln);
                         }
                         ?>
@@ -636,7 +636,7 @@ class LaporanWeb extends WebService
                         $iuranBulanan = new IuranBulanan();
                         $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
 //                        pr($iuranBulanan);
-                        if($mk->id_murid == '3202'){
+                        if ($mk->id_murid == '3202') {
                             pr($mk->id_murid . " - " . $bln);
                         }
                         ?>
@@ -706,6 +706,7 @@ class LaporanWeb extends WebService
         <?
         die();
     }
+
     public function create_operasional_pembayaran_iuran_bulanan_tc_tmp()
     {
 
