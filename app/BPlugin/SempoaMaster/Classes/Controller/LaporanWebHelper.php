@@ -470,7 +470,7 @@ class LaporanWebHelper extends WebService
         // Check Buku ada ngak;
 //bln_ganti_kur
 
-
+// Kurikulum lama = 1
         $setNoBuku = new StockBuku();
         if (($iuranBuku->bln_kur == KEY::$KURIKULUM_LAMA) && ($iuranBuku->bln_ganti_kur != 1)) {
 

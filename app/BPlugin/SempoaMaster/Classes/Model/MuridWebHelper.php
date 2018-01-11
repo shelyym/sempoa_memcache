@@ -1245,7 +1245,7 @@ class MuridWebHelper extends WebService
 
                     else {
 
-                        // kur = 1
+                        // kur = 1 lama
                         // Kurikulum lama dan buku lama
                         if (confirm("Sekarang Murid ini masih memakai Kurikulum <?=$arrKur[$murid->murid_kurikulum];?>.\n\nApakah Anda akan membeli buku kurikulum lama? \n(Jika Anda memilih Cancel, berarti Anda memilih buku Kurikulum baru dan kurikulum akan disesuaikan)")) {
 
@@ -2487,7 +2487,7 @@ class MuridWebHelper extends WebService
                                             if (AccessRight::getMyOrgType() == "tc") {
                                                 ?>
                                                 <button class="btn btn-default belumbayar_<?= $val->bln_id; ?>"
-                                                        id='pay_now_bulanan_<?= $val->bln_id . $t; ?>'>Pay Now
+                                                        id='pay_now_bulanan_<?= $val->bln_id . $t; ?>'>Pay Now 1
                                                 </button>
 
                                                 <?
@@ -2598,7 +2598,7 @@ class MuridWebHelper extends WebService
                                         var bln_id = '<?= $val->bln_id; ?>';
                                         $('#delete_invoice_buku_<?= $val->bln_id . "_" . $t; ?>').click(function () {
                                             if (confirm("Apakah Anda Yakin akan menghapus transaksi Iuran Bulanan?")) {
-                                                alert(bln_id);
+//                                                alert(bln_id);
                                                 $.post("<?= _SPPATH; ?>LaporanWebHelper/hapusIuranBuku", {
                                                     bln_id: bln_id
                                                 }, function (data) {
@@ -2643,7 +2643,6 @@ class MuridWebHelper extends WebService
                                         }
                                         ?>
                                         $('#pay_now_bulanan_<?= $val->bln_id . $t; ?>').click(function () {
-//                                            alert("asas");
                                             var jpb = $('#jenis_pmbr_invoice_<?= $val->bln_id ?>').val();
                                             var bln_id = <?= $val->bln_id; ?>;
                                             $.post("<?= _SPPATH; ?>LaporanWebHelper/pay_iuran_buku_roy", {
@@ -6218,7 +6217,7 @@ class MuridWebHelper extends WebService
                     var bln_id = '<?= $val->bln_id; ?>';
                     $('#delete_invoice_buku_<?= $val->bln_id . "_" . $t; ?>').click(function () {
                         if (confirm("Apakah Anda Yakin akan menghapus transaksi Iuran Bulanan?")) {
-                            alert(bln_id);
+//                            alert(bln_id);
                             $.post("<?= _SPPATH; ?>LaporanWebHelper/hapusIuranBuku", {
                                 bln_id: bln_id
                             }, function (data) {
