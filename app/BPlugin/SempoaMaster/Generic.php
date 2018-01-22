@@ -1130,7 +1130,7 @@ class Generic
             }
             $help = $arrAll[$key];
 
-        }  elseif ($myLevel >=1 && $myLevel < 7) {
+        } elseif ($myLevel >= 1 && $myLevel < 7) {
             echo "masuk 3";
             foreach ($arrAll as $key => $level) {
                 if ($level->id_level == $myLevel) {
@@ -1140,8 +1140,7 @@ class Generic
             }
             $help = $arrAll[$key + 1];
 
-        }
-        else{
+        } else {
             return "";
         }
         return $help;
@@ -1993,7 +1992,7 @@ class Generic
 
     }
 
-    public static function  convertLevelBaruKeLama($levelBaru)
+    public static function convertLevelBaruKeLama($levelBaru)
     {
         if ($levelBaru == 1) {
             return 1;
@@ -2087,25 +2086,37 @@ class Generic
         return $stockBuku->stock_buku_no;
     }
 
-    public static function getSisaKuponTC($tc_id){
+    public static function getSisaKuponTC($tc_id)
+    {
         $kuponSatuan = new KuponSatuan();
         $jumlah = $kuponSatuan->getJumlah("kupon_owner_id='$tc_id' AND kupon_status=0 ORDER by kupon_id ASC");
         return $jumlah;
     }
 
-    public static function getJumlahKuponYangDibeliByBulanTahun($tc_id, $bln, $thn){
+    public static function getJumlahKuponYangDibeliByBulanTahun($tc_id, $bln, $thn)
+    {
         $kuponRequest = new RequestModel();
         $arrKuponRequest = $kuponRequest->getWhere("req_pengirim_org_id='$tc_id' AND req_status = 1 AND MONTH(req_date)=$bln AND YEAR(req_date) =$thn ");
-        $jumlah =0;
-        foreach($arrKuponRequest as $val){
+        $jumlah = 0;
+        foreach ($arrKuponRequest as $val) {
             $jumlah += $val->req_jumlah;
         }
         return $jumlah;
     }
 
-    public static function getJumlahMuridAktivByTC($tc_id){
+    public static function getJumlahMuridAktivByTC($tc_id)
+    {
         $murid = new MuridModel();
         $jumlah = $murid->getJumlah("murid_tc_id=$tc_id AND status =1");
         return $jumlah;
+    }
+
+    public static function isEmailValid($email)
+    {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

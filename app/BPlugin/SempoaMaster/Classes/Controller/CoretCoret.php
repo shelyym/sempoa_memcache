@@ -1582,8 +1582,7 @@ class CoretCoret extends WebService
                         echo "save!";
                     }
                     pr($val->org_id . " - " . $val->id_barang);
-                }
-                else{
+                } else {
                     if (!is_null($kartuStock->stock_id)) {
                         $kartuStock->jumlah_stock = 0;
                         $kartuStock->save(1);
@@ -1595,7 +1594,8 @@ class CoretCoret extends WebService
         }
     }
 
-    public function syncStokKPO(){
+    public function syncStokKPO()
+    {
         $kartuStock = new StockModel();
         $arrKaruStock = $kartuStock->getWhere("org_id=2");
         foreach ($arrKaruStock as $val) {
@@ -1613,10 +1613,27 @@ class CoretCoret extends WebService
         $iuranBuku->getWhereOne("bln_id='10000_10_2017'");
 //        pr($iuranBuku);
         $obj = array();
-        foreach($iuranBuku as $key=>$val){
+        foreach ($iuranBuku as $key => $val) {
             $obj[$key] = $val;
         }
         pr(serialize($obj));
 
+    }
+
+    public function printObj()
+    {
+
+        $a = '^(^\+62\s?|^0)(\d{3,4}-?){2}\d{3,4}$';
+
+        pr($a);
+        $nr = "+6287880748880";
+        if(preg_match($a,$nr)){
+            echo "true";
+        }
+        else{
+            echo "false";
+        }
+//        pr($_SERVER);
+//        pr($_SERVER['HTTP_CLIENT_IP']);
     }
 }

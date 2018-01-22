@@ -2487,7 +2487,7 @@ class MuridWebHelper extends WebService
                                             if (AccessRight::getMyOrgType() == "tc") {
                                                 ?>
                                                 <button class="btn btn-default belumbayar_<?= $val->bln_id; ?>"
-                                                        id='pay_now_bulanan_<?= $val->bln_id . $t; ?>'>Pay Now 1
+                                                        id='pay_now_bulanan_<?= $val->bln_id . $t; ?>'>Pay Now
                                                 </button>
 
                                                 <?

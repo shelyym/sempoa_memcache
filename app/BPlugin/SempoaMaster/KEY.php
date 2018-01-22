@@ -227,7 +227,8 @@ class KEY
     public static $GROUP_FOUNDATION = "Foundation";
     public static $GROUP_INTERMEDIATE = "Intermediate";
     public static $GROUP_ADVANCE = "Advance";
-    public static $GROUP_GRAND_MODULE = "Grand Module";
+//    public static $GROUP_GRAND_MODULE = "Grand Module";
+    public static $GROUP_GRAND_MODULE = "Graduate";
 
     /*
      * Jenis Ujian
