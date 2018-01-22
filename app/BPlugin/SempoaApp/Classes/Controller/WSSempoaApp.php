@@ -89,11 +89,19 @@ class WSSempoaApp extends WebService
         $json = array();
         $objParent = new ParentSempoa();
         $objParent->getWhereOne("parent_email='$parent_email' AND parent_pwd='$parent_pwd'");
-
         if (is_null($objParent->parent_id)) {
             Generic::errorMsg("Email salah atau password salah");
         }
+
+        $arrWS = explode(",",$objParent->crud_webservice_allowed);
+
+        $arrHlp = array();
+        foreach($arrWS as $val){
+            $arrHlp[$val] = $objParent->$val;
+        }
+
         $json['status_code'] = 1;
+        $json['result'] = $arrHlp;
         $json['status_message'] = "Berhasil!";
         echo json_encode($json);
         die();
@@ -120,10 +128,29 @@ class WSSempoaApp extends WebService
 
         // create email ganti password
         // send email ke parent
+        // content
+        // password
+        $mail = new Leapmail2();
+        $subject = KEYAPP::$subjectForgotPasswordParent;
+        $content = "Content";
+
+//        $email, $judul, $isi,$isiHTML
+        $erg = $mail->sendHTMLEmail($parent_email, $subject, "", $content);
+        if ($erg) {
+            $json['status_code'] = 1;
+            $json['status_message'] = "Email berhasil dikirim!";
+            echo json_encode($json);
+            die();
+        } else {
+            Generic::errorMsg("Email gagal dikirim!");
+        }
     }
 
-    public function sendEmailParent(){
+
+// Account Setting
+
+    public function getParentProfil(){
+        $parent_fullname = addslashes($_POST['parent_fullname']);
 
     }
-
 }

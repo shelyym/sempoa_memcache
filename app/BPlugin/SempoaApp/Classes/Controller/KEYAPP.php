@@ -9,4 +9,5 @@
 class KEYAPP
 {
 
+    public static $subjectForgotPasswordParent = "Subject";
 }

@@ -16,6 +16,7 @@ class ParentSempoa extends Model
 
 //allowed colom in CRUD filter
     public $coloumlist = "parent_id,parent_fullname,parent_email,parent_hp_nr,parent_kode_anak,parent_pwd,parent_created_date,parent_updated_date,parent_active,parent_last_login,parent_last_ip";
+    public $crud_webservice_allowed = "parent_id,parent_fullname,parent_email,parent_hp_nr,parent_kode_anak,parent_pwd,parent_created_date,parent_updated_date,parent_active,parent_last_login,parent_last_ip";
     public $parent_id;
     public $parent_fullname;
     public $parent_email;
@@ -29,17 +30,18 @@ class ParentSempoa extends Model
     public $parent_last_ip;
 
 
-    public function isEmailUsed($email){
+    public function isEmailUsed($email)
+    {
         $this->getWhereOne("parent_email='$email'");
-        if(is_null($this->parent_id)){
+        if (is_null($this->parent_id)) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    function setLastLogin($datetime){
+    function setLastLogin($datetime)
+    {
         $this->parent_last_login = $datetime;
     }
 }
