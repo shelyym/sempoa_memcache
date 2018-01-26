@@ -437,6 +437,36 @@ class WSSempoaApp extends WebService
 
     }
 
+    public function readNotificationByID()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        $notif_id = addslashes($_POST['notif_id']);
+        Generic::checkFieldKosong($notif_id, "Notif ID kosong");
+
+        $objNotif = new SempoaNotification();
+
+        $objNotif->getWhereOne("notification_belongs_id='$parent_id' AND notif_id='$notif_id'");
+        $json = array();
+
+        $arrWS = explode(",", $objNotif->crud_webservice_allowed);
+
+        $arrNotifHlp = array();
+        foreach ($arrWS as $val) {
+            $arrNotifHlp[$val] = $objNotif->$val;
+        }
+        $arrNotifAll[] = $arrNotifHlp;
+
+
+        $json['status_code'] = 1;
+        $json['result'] = $arrNotifAll;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
+    }
+
     // Setting
     public function changeParentName()
     {
@@ -570,17 +600,17 @@ class WSSempoaApp extends WebService
 
         $objParent = new ParentSempoa();
         $objParent->getByID($parent_id);
-        if($objParent->parent_kode_anak != ""){
+        if ($objParent->parent_kode_anak != "") {
             $arrKode_siswa = explode(",", $objParent->parent_kode_anak);
             $arrDataTC = array();
-            foreach($arrKode_siswa as $kode_siswa){
+            foreach ($arrKode_siswa as $kode_siswa) {
                 $objMurid = new MuridModel();
                 $objMurid->getWhereOne("kode_siswa='$kode_siswa'");
                 $objTC = new SempoaOrg();
                 $objTC->getByID($objMurid->murid_tc_id);
-                $arrTCData = explode(",",$objTC->ContactTCAPP);
+                $arrTCData = explode(",", $objTC->ContactTCAPP);
                 unset($arrDataTC);
-                foreach($arrTCData as $fieldTC){
+                foreach ($arrTCData as $fieldTC) {
                     $arrDataTC[$fieldTC] = $objTC->$fieldTC;
                 }
                 $jsonHelp[] = $arrDataTC;
@@ -598,7 +628,8 @@ class WSSempoaApp extends WebService
         die();
     }
 
-    public function getMyChildIBOInfo(){
+    public function getMyChildIBOInfo()
+    {
         if (Efiwebsetting::getData('checkOAuth') == 'yes')
             IMBAuth::checkOAuth();
         $parent_id = addslashes($_POST['parent_id']);
@@ -606,17 +637,17 @@ class WSSempoaApp extends WebService
 
         $objParent = new ParentSempoa();
         $objParent->getByID($parent_id);
-        if($objParent->parent_kode_anak != ""){
+        if ($objParent->parent_kode_anak != "") {
             $arrKode_siswa = explode(",", $objParent->parent_kode_anak);
             $arrDataTC = array();
-            foreach($arrKode_siswa as $kode_siswa){
+            foreach ($arrKode_siswa as $kode_siswa) {
                 $objMurid = new MuridModel();
                 $objMurid->getWhereOne("kode_siswa='$kode_siswa'");
                 $objTC = new SempoaOrg();
                 $objTC->getByID($objMurid->murid_ibo_id);
-                $arrTCData = explode(",",$objTC->ContactTCAPP);
+                $arrTCData = explode(",", $objTC->ContactTCAPP);
                 unset($arrDataTC);
-                foreach($arrTCData as $fieldTC){
+                foreach ($arrTCData as $fieldTC) {
                     $arrDataTC[$fieldTC] = $objTC->$fieldTC;
                 }
                 $jsonHelp[] = $arrDataTC;
@@ -643,15 +674,14 @@ class WSSempoaApp extends WebService
 
         $objParent = new ParentSempoa();
         $objParent->getWhereOne("parent_id='$parent_id'");
-        $arrKodeMurid = explode(",",$objParent->parent_kode_anak);
+        $arrKodeMurid = explode(",", $objParent->parent_kode_anak);
         $arrNamaAnak = array();
-        foreach($arrKodeMurid as $kode_siswa){
+        foreach ($arrKodeMurid as $kode_siswa) {
             $objMurid = new MuridModel();
             $objMurid->getWhereOne("kode_siswa='$kode_siswa'");
-            if(is_null($objMurid->id_murid)){
+            if (is_null($objMurid->id_murid)) {
                 $arrNamaAnak[] = "";
-            }
-            else{
+            } else {
                 $arrNamaAnak[] = $objMurid->nama_siswa;
             }
 
