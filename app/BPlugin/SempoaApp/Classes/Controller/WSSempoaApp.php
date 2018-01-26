@@ -367,15 +367,12 @@ class WSSempoaApp extends WebService
         $objParent = new ParentSempoa();
         $objParent->getByID($parent_id);
         $topUp->topup_changed_status_by = $objParent->parent_fullname;
-        echo "sukses";
-        if ($topUp->save()) {
-            echo "masuk";
-            $json = array();
-            $json['status_code'] = 1;
-            $json['status_message'] = KEYAPP::$TOP_UP_MSG;
-            echo json_encode($json);
-            die();
-        }
+        $topUp->save();
+        $json = array();
+        $json['status_code'] = 1;
+        $json['status_message'] = KEYAPP::$TOP_UP_MSG;
+        echo json_encode($json);
+        die();
 
     }
 
@@ -453,7 +450,7 @@ class WSSempoaApp extends WebService
         $objNotif = new SempoaNotification();
 
         $objNotif->getWhereOne("notification_belongs_id='$parent_id' AND notification_id='$notif_id'");
-        if(is_null($objNotif->notification_id)){
+        if (is_null($objNotif->notification_id)) {
             Generic::errorMsg("Silahkan pilih Notif sekali lagi");
         }
         $json = array();
