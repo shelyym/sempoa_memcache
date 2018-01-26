@@ -364,7 +364,7 @@ class WSSempoaApp extends WebService
         $topUp->topup_jumlah = $jumlah_yg_dibeli;
         $topUp->topup_status = KEYAPP::$STATUS_TOP_UP_PENDING;
         $topUp->topup_pending_date = leap_mysqldate();
-        $topUp->topup_changed_status_by = Account::getMyName();
+//        $topUp->topup_changed_status_by = Account::getMyName();
         if ($topUp->save()) {
             $json = array();
             $json['status_code'] = 1;
