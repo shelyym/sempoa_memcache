@@ -448,7 +448,10 @@ class WSSempoaApp extends WebService
 
         $objNotif = new SempoaNotification();
 
-        $objNotif->getWhereOne("notification_belongs_id='$parent_id' AND notif_id='$notif_id'");
+        $objNotif->getWhereOne("notification_belongs_id='$parent_id' AND notification_id='$notif_id'");
+        if(is_null($objNotif->notification_id)){
+            Generic::errorMsg("Silahkan pilih Notif sekali lagi");
+        }
         $json = array();
 
         $arrWS = explode(",", $objNotif->crud_webservice_allowed);
