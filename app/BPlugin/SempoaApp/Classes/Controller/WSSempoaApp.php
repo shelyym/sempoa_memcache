@@ -508,8 +508,14 @@ class WSSempoaApp extends WebService
         $parent_email = addslashes($_POST['parent_email']);
         Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
         Generic::checkFieldKosong($parent_email, KEYAPP::$PARENT_ID_KOSONG);
+        if (!Generic::isEmailValid($parent_email)) {
+            Generic::errorMsg("Email tidak valid");
+        }
         // cek username
         $parent_new_email = addslashes($_POST['parent_new_email']);
+        if (!Generic::isEmailValid($parent_new_email)) {
+            Generic::errorMsg("Email tidak valid");
+        }
         $parent_pwd = addslashes($_POST['parent_pwd']);
         Generic::checkFieldKosong($parent_new_email, KEYAPP::$MASUKAN_EMAIL_PARENT);
         Generic::checkFieldKosong($parent_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
