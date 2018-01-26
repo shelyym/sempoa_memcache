@@ -51,5 +51,5 @@ class SempoaOrg extends Model {
     public $tc_acc_bank;
     public $tgl_kontrak;
     public $tc_migrasi;
-
+    public $ContactTCAPP = "nama,nomor_telp";
 }

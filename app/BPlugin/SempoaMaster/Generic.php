@@ -2119,4 +2119,10 @@ class Generic
             return false;
         }
     }
+
+    public static function checkFieldKosong($strField, $strErrMsg){
+        if($strField == ""){
+            self::errorMsg($strErrMsg);
+        }
+    }
 }

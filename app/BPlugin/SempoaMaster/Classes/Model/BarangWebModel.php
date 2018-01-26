@@ -18,9 +18,9 @@ class BarangWebModel extends SempoaModel
     var $table_name = "sempoa__barang_harga";
     var $main_id = "id_barang_harga";
 //Default Coloms for read
-    public $default_read_coloms = "id_barang_harga,kode_barang,nama_barang,jenis_biaya,jenis_kurikulum,level,no_buku,foto_barang,barang_desc,ak_id,kpo_id,ak_rule,kpo_rule,ibo_rule,tc_rule";
+    public $default_read_coloms = "id_barang_harga,kode_barang,nama_barang,jenis_biaya,jenis_kurikulum,level,no_buku,halaman_buku,foto_barang,barang_desc,ak_id,kpo_id,ak_rule,kpo_rule,ibo_rule,tc_rule";
 //allowed colom in CRUD filter
-    public $coloumlist = "id_barang_harga,kode_barang,nama_barang,jenis_biaya,jenis_kurikulum,level,no_buku,foto_barang,barang_desc,ak_id,kpo_id,ak_rule,kpo_rule,ibo_rule,tc_rule";
+    public $coloumlist = "id_barang_harga,kode_barang,nama_barang,jenis_biaya,jenis_kurikulum,level,no_buku,halaman_buku,foto_barang,barang_desc,ak_id,kpo_id,ak_rule,kpo_rule,ibo_rule,tc_rule";
     public $id_barang_harga;
     public $kode_barang;
     public $nama_barang;
@@ -28,6 +28,7 @@ class BarangWebModel extends SempoaModel
     public $jenis_kurikulum;
     public $level;
     public $no_buku;
+    public $halaman_buku;
     public $foto_barang;
     public $barang_desc;
     public $ak_id;

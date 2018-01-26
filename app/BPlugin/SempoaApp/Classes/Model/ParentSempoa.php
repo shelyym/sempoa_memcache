@@ -40,8 +40,33 @@ class ParentSempoa extends Model
         }
     }
 
-    function setLastLogin($datetime)
+    function setFullName($parent_id,$parent_fullname){
+        $this->getWhereOne("parent_id=$parent_id");
+        $this->parent_fullname = $parent_fullname;
+        $this->save(1);
+    }
+
+    function setFieldParent($parent_id,$parent_field,$parent_value){
+        $this->getWhereOne("parent_id=$parent_id");
+        $this->$parent_field = $parent_value;
+        $this->save(1);
+    }
+
+    function setLastLogin($parent_id)
     {
-        $this->parent_last_login = $datetime;
+        $this->getWhereOne("parent_id=$parent_id");
+        $this->parent_last_login = leap_mysqldate();
+        $this->save(1);
+    }
+
+    function setLastUpdate($parent_id)
+    {
+        $this->getWhereOne("parent_id=$parent_id");
+        $this->parent_updated_date = leap_mysqldate();
+        $this->save(1);
+    }
+
+    function getMyChildName($parent_id){
+
     }
 }

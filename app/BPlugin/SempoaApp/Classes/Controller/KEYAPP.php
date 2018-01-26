@@ -9,5 +9,57 @@
 class KEYAPP
 {
 
+    public static $SUCCESS = "Success";
     public static $subjectForgotPasswordParent = "Subject";
+    public static $PARENT_ID_KOSONG = "Silahkan logout dan login lagi!";
+    public static $GURU_ID_KOSONG = "Username salah!";
+    public static $GURU_ID_KOSONG_LOGOUT = "Guru ID salah, silahkan logout dan login lagi!";
+
+
+    public static $PASSWORD_SALAH = "Password yang Anda masukan salah!";
+    public static $TEACHER_TDK_BS_LOGIN = "ID atau Password salah!";
+    public static $LOGIN_BERHASIL = "Login berhasil";
+    public static $MASUKAN_NAMA_PARENT = "Masukan Nama Baru Anda!";
+    public static $MASUKAN_NR_HP_PARENT = "Masukan No HP Baru Anda!";
+    public static $MASUKAN_EMAIL_PARENT = "Masukan Email Baru Anda!";
+    public static $MASUKAN_NEW_PASSWORD_PARENT = "Masukan Password Baru Anda!";
+    public static $MASUKAN_PASSWORD_PARENT = "Masukan Password Anda!";
+
+    public static $PARENT_GANTI_NAMA_SUKSES = "Name berhasil diganti!";
+    public static $PARENT_GANTI_EMAIL_SUKSES = "Email berhasil diganti!";
+    public static $PARENT_GANTI_HP_SUKSES = "No HP berhasil diganti!";
+    public static $PARENT_GANTI_PASSWORD_SUKSES = "Password berhasil diganti!";
+
+
+    public static $MASUKAN_KODE_SISWA = "Masukan kode Siswa";
+    public static $KODE_SISWA_NOT_FOUND = "kode Siswa tidak ditemukan, hubungi Admin TC Anda!";
+
+    public static $NAMA_MURID_KOSONG = "Nama Murid kosong";
+    public static $BIRTHDAY_MURID_KOSONG = "Tanggal lahir Murid kosong";
+
+
+    // Add Anak
+    public static $MURID_SDH_PUNYA_PARENT = "Murid sudah mempunyai parent";
+    public static $DATA_ANAK_BERHASIL_DISIMPAN = "Data anak berhasil disimpan";
+    public static $DATA_ANAK_GAGALL_DISIMPAN = "Data anak gagal disimpan";
+
+
+    // TOP UP
+
+    // status
+    public static $STATUS_TOP_UP_PENDING = 2;
+    public static $STATUS_TOP_UP_APPROVED = 1;
+    public static $STATUS_TOP_UP_CANCELED = 99;
+    public static $KODE_SISWA_KOSONG = "Kode Siswa kosong";
+    public static $JUMLAH_DIBELI_KOSONG = "Jumlah yang dibeli kosong!";
+    public static $CARA_PEMBAYARAN_KOSONG = "Cara pembayaran kosong!";
+    public static $TOP_UP_MSG = "We will process your payment";
+
+
+    //Add Murid by Guru
+
+    public static $GURU_TDK_NGAJAR_DIKELAS_INI = "Guru ini tidak mengajar di kelas ini";
+    public static $ADD_MURID_ID_KOSONG = "Silahkan pilih murid sekali lagi!";
+    public static $MURID_GAGAL_DIMASUKAN_KELAS = "Murid gagal dimasukan kedalam kelas";
+    public static $MURID_SUDAH_DI_ADD_DALAM_KELAS = "Murid sudah dimasukan kedalam kelas, hubungi ADMIN TC Anda";
 }

@@ -34,6 +34,7 @@ class KelasWebModel extends Model {
     public $ibo_id;
     public $tc_id;
     public $hideColoums = array("ak_id", "kpo_id", "ibo_id", "tc_id");
+    public $APPWS = "id_kelas,jam_mulai_kelas,jam_akhir_kelas,id_room";
     public function overwriteForm($return, $returnfull) {
 //        echo $day_of_week = date('N', now()));
         parent::overwriteForm($return, $returnfull);
@@ -125,4 +126,9 @@ class KelasWebModel extends Model {
         return $err;
     }
 
+
+    public function getGuruKelasByDay($guru_id, $day){
+        $arrKelas = $this->getWhere("guru_id='$guru_id' AND hari_kelas='$day' ORDER BY jam_mulai_kelas ASC");
+        return $arrKelas;
+    }
 }

@@ -45,17 +45,28 @@ class MuridModel extends SempoaModel
     public $murid_ibo_id;
     public $murid_tc_id;
     public $pay_firsttime;
+    public $murid_parent_id;
     public $removeAutoCrudClick = array("pay_firsttime", "profile");
     public $statushelp;
-    public $hideColoums = array("murid_ak_id", "murid_kpo_id", "murid_ibo_id","murid_kurikulum");
+    public $hideColoums = array("murid_ak_id", "murid_kpo_id", "murid_ibo_id", "murid_kurikulum", "murid_parent_id");
+
+    public $APPWS = "id_murid,kode_siswa,nama_siswa,jenis_kelamin,alamat,agama,tempat_lahir,id_level_sekarang,tanggal_lahir,murid_ak_id,murid_kpo_id,murid_ibo_id,murid_tc_id";
 
 
     // Webservice
     public $crud_setting = array("add" => 1, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
     public $crud_webservice_allowed = "id_murid,kode_siswa,nama_siswa,jenis_kelamin,alamat,agama,tempat_lahir,id_level_sekarang,tanggal_lahir,telepon,nama_sekolah,nama_ortu,gambar,email_ortu";
     public $crud_add_photourl = array("gambar");
+
 //    public $crud_read_gabungan="id_murid,kode_siswa,nama_siswa,jenis_kelamin,alamat,agama,tempat_lahir,tanggal_lahir,telepon,nama_sekolah,nama_ortu,gambar,tanggal_masuk,email_ortu,id_level_masuk,id_level_sekarang,nomor_pendaftaran,kode_guru,status,murid_ak_id,murid_kpo_id,murid_ibo_id,murid_tc_id,pay_firsttime";
 
+
+    function setFieldMurid($id_murid, $murid_field, $murid_value)
+    {
+        $this->getWhereOne("id_murid='$id_murid''");
+        $this->$murid_field = $murid_value;
+        $this->save(1);
+    }
 
     public function overwriteForm($return, $returnfull)
     {
@@ -139,6 +150,7 @@ class MuridModel extends SempoaModel
 
         }
 
+        $return['parent_id'] = new Leap\View\InputText("hidden", "parent_id", "parent_id", $this->parent_id);
 
         return $return;
     }

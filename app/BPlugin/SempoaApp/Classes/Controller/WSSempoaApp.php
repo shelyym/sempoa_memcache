@@ -93,10 +93,11 @@ class WSSempoaApp extends WebService
             Generic::errorMsg("Email salah atau password salah");
         }
 
-        $arrWS = explode(",",$objParent->crud_webservice_allowed);
+        $objParent->setLastLogin($objParent->parent_id);
+        $arrWS = explode(",", $objParent->crud_webservice_allowed);
 
         $arrHlp = array();
-        foreach($arrWS as $val){
+        foreach ($arrWS as $val) {
             $arrHlp[$val] = $objParent->$val;
         }
 
@@ -147,10 +148,519 @@ class WSSempoaApp extends WebService
     }
 
 
+    // Home
+
+    public function loadHomeParent()
+    {
+
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+
+        $objParent = new ParentSempoa();
+        $objParent->getByID($parent_id);
+
+        if (is_null($objParent->parent_id)) {
+            Generic::errorMsg(KEYAPP::$PARENT_ID_KOSONG);
+        }
+
+        if ($objParent->parent_kode_anak != '') {
+            $arrKodeanak = explode(",", $objParent->parent_kode_anak);
+            $json = array();
+            $jsonHlp = array();
+            foreach ($arrKodeanak as $val) {
+                // cari progress bar
+                // wallet
+                $objMurid = new MuridModel();
+                $objMurid->getWhereOne("kode_siswa='$val'");
+                $arrWS = explode(",", $objMurid->crud_webservice_allowed);
+                $arrHlp = array();
+                foreach ($arrWS as $field) {
+                    $arrHlp[$field] = $objMurid->$field;
+                }
+                $objWallet = new WalletModel();
+                $arrHlp['Wallet'][] = $objWallet->getMyCoin($val);
+                $arrHlp['Progress'][] = "Halam 10";
+                $arrHlp['Rank Challange'][] = "1";
+                $jsonHlp['list murid'][] = $arrHlp;
+                // Wallet
+
+                // Progress
+
+
+                // Challange
+
+            }
+            $json['result'] = $jsonHlp;
+            $json['status_message'] = KEYAPP::$SUCCESS;
+            echo json_encode($json);
+            die();
+        }
+    }
+
+    // Add Child
+
+    public function loadChildDataByParent()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        $kode_siswa = addslashes($_POST['kode_siswa']);
+        Generic::checkFieldKosong($kode_siswa, KEYAPP::$MASUKAN_KODE_SISWA);
+        $sempoaMurid = new MuridModel();
+        $sempoaMurid->getWhereOne("kode_siswa = '$kode_siswa'");
+
+        if (is_null($sempoaMurid->id_murid)) {
+            Generic::errorMsg(KEYAPP::$KODE_SISWA_NOT_FOUND);
+        }
+
+        if ($sempoaMurid->murid_parent_id != 0) {
+            Generic::errorMsg(KEYAPP::$MURID_SDH_PUNYA_PARENT);
+        }
+
+        $arrWS = explode(",", "nama_siswa,tanggal_lahir");
+
+        $arrHlp = array();
+        foreach ($arrWS as $val) {
+            $arrHlp[$val] = $sempoaMurid->$val;
+        }
+
+        $json['status_code'] = 1;
+        $json['result'] = $arrHlp;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
+    }
+
+
+    // Pas tekan save!
+    public function addChildByParent()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        $kode_siswa = addslashes($_POST['kode_siswa']);
+        Generic::checkFieldKosong($kode_siswa, KEYAPP::$MASUKAN_KODE_SISWA);
+
+        $nama_siswa = addslashes($_POST['nama_siswa']);
+        Generic::checkFieldKosong($nama_siswa, KEYAPP::$NAMA_MURID_KOSONG);
+
+        $tgl_lahir_siswa = addslashes($_POST['tgl_lahir_siswa']);
+        Generic::checkFieldKosong($tgl_lahir_siswa, KEYAPP::$BIRTHDAY_MURID_KOSONG);
+
+        $objParent = new ParentSempoa();
+        $objParent->getByID($parent_id);
+
+        if (is_null($objParent->parent_id)) {
+            Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        }
+
+        $sempoaMurid = new MuridModel();
+        $sempoaMurid->getWhereOne("kode_siswa = '$kode_siswa'");
+
+        if (is_null($sempoaMurid->id_murid)) {
+            Generic::errorMsg(KEYAPP::$KODE_SISWA_NOT_FOUND);
+        }
+        if ($sempoaMurid->murid_parent_id != 0) {
+            Generic::errorMsg(KEYAPP::$MURID_SDH_PUNYA_PARENT);
+        }
+
+        // mulai isi data ortu
+        if ($objParent->parent_kode_anak == "") {
+            $objParent->parent_kode_anak = $kode_siswa;
+        } else {
+            $objParent->parent_kode_anak = $objParent->parent_kode_anak . "," . $kode_siswa;
+        }
+        $objParent->save(1);
+        $updated = false;
+
+        if ($nama_siswa != $sempoaMurid->nama_siswa) {
+            $updated = true;
+        }
+
+        if ($tgl_lahir_siswa != $sempoaMurid->tanggal_lahir) {
+            $updated = true;
+        }
+
+        if ($updated) {
+            $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "nama_siswa", $nama_siswa);
+            $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "tanggal_lahir", $tgl_lahir_siswa);
+        }
+
+        $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "murid_parent_id", $parent_id);
+        $json['status_code'] = 1;
+        $json['status_message'] = KEYAPP::$DATA_ANAK_BERHASIL_DISIMPAN;
+        echo json_encode($json);
+        die();
+
+    }
+
+
 // Account Setting
 
-    public function getParentProfil(){
+    public function getParentProfil()
+    {
         $parent_fullname = addslashes($_POST['parent_fullname']);
 
+    }
+
+
+    // Topup
+
+    public function getSettingCoin()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+        $objSettingCoin = new SettingCoinModel();
+        $arrCoins = $objSettingCoin->getAll();
+
+        $arrWs = explode(",", $objSettingCoin->crud_webservice_allowed);
+        $arrHlp[] = array();
+        foreach ($arrCoins as $coins) {
+            unset($arrHlp);
+            foreach ($arrWs as $val) {
+                $arrHlp[$val] = $coins->$val;
+            }
+            $arrJsonHlp[] = $arrHlp;
+        }
+
+        $json['status_code'] = 1;
+        $json['result'] = $arrJsonHlp;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
+
+    }
+
+
+    public function topUpParent()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        $kode_siswa = addslashes($_POST['kode_siswa']);
+        Generic::checkFieldKosong($kode_siswa, KEYAPP::$KODE_SISWA_KOSONG);
+
+
+        // cek apakah parent ini, ortu dr anak
+        $jumlah_yg_dibeli = addslashes($_POST['jumlah_yg_di_beli']);
+        Generic::checkFieldKosong($jumlah_yg_dibeli, KEYAPP::$JUMLAH_DIBELI_KOSONG);
+
+        $cara_pembayaran = addslashes($_POST['cara_pembayaran']);
+        Generic::checkFieldKosong($cara_pembayaran, KEYAPP::$CARA_PEMBAYARAN_KOSONG);
+
+        $topUp = new SempoaTopup();
+        $topUp->topup_created_date = leap_mysqldate();
+        $topUp->topup_kodesiswa = $kode_siswa;
+        $topUp->topup_parent_id = $parent_id;
+        $topUp->topup_carapembayaran = $cara_pembayaran;
+        $topUp->topup_jumlah = $jumlah_yg_dibeli;
+        $topUp->topup_status = KEYAPP::$STATUS_TOP_UP_PENDING;
+        $topUp->topup_pending_date = leap_mysqldate();
+        $topUp->topup_changed_status_by = Account::getMyName();
+        if ($topUp->save()) {
+            $json = array();
+            $json['status_code'] = 1;
+            $json['status_message'] = KEYAPP::$TOP_UP_MSG;
+            echo json_encode($json);
+            die();
+        }
+
+    }
+
+    public function topUpHistory()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+
+        $topUp = new SempoaTopup();
+        $arrMyTopUP = $topUp->getParentTopUp($parent_id);
+
+        $arrWS = explode(",", $topUp->crud_webservice_allowed);
+        $arrHlp = array();
+        $arrJsonHlp = array();
+        foreach ($arrMyTopUP as $historyTopup) {
+            unset($arrHlp);
+            foreach ($arrWS as $val) {
+                $arrHlp[$val] = $historyTopup->$val;
+            }
+            $arrJsonHlp[] = $arrHlp;
+        }
+        $json = array();
+        $json['status_code'] = 1;
+        $json['result'] = $arrJsonHlp;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
+    }
+
+    // Notification
+
+    public function getNotificationByID()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+
+        $objNotif = new SempoaNotification();
+
+        $arrNotif = $objNotif->getMyNotif($parent_id);
+        $json = array();
+
+        $arrWS = explode(",", $objNotif->crud_webservice_allowed);
+        $arrNotifAll = array();
+        foreach ($arrNotif as $notif) {
+            $arrNotifHlp = array();
+            foreach ($arrWS as $val) {
+                $arrNotifHlp[$val] = $notif->$val;
+            }
+            $arrNotifAll[] = $arrNotifHlp;
+        }
+
+        $json['status_code'] = 1;
+        $json['result'] = $arrNotifAll;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
+
+    }
+
+    // Setting
+    public function changeParentName()
+    {
+        $parent_id = addslashes($_POST['parent_id']);
+        $parent_fullname = addslashes($_POST['parent_fullname']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        Generic::checkFieldKosong($parent_fullname, KEYAPP::$PARENT_ID_KOSONG);
+        // cek username
+        $parent_newname = addslashes($_POST['parent_newname']);
+        $parent_pwd = addslashes($_POST['parent_pwd']);
+        Generic::checkFieldKosong($parent_newname, KEYAPP::$MASUKAN_NAMA_PARENT);
+        Generic::checkFieldKosong($parent_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        // Cek nama lama dan pwd
+        $objParent = new ParentSempoa();
+        $objParent->getWhereOne("parent_id='$parent_id' AND parent_fullname='$parent_fullname' AND parent_pwd='$parent_pwd'");
+        if (is_null($objParent->parent_id)) {
+            Generic::errorMsg(KEYAPP::$PASSWORD_SALAH);
+        } else {
+            $objParent->setFieldParent($objParent->parent_id, "$parent_fullname", $parent_newname);
+            $objParent->setLastUpdate($objParent->parent_id);
+            if ($objParent->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$PARENT_GANTI_NAMA_SUKSES;
+                echo json_encode($json);
+                die();
+            }
+        }
+
+    }
+
+    public function changeParentEmail()
+    {
+        $parent_id = addslashes($_POST['parent_id']);
+        $parent_email = addslashes($_POST['parent_email']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        Generic::checkFieldKosong($parent_email, KEYAPP::$PARENT_ID_KOSONG);
+        // cek username
+        $parent_new_email = addslashes($_POST['parent_new_email']);
+        $parent_pwd = addslashes($_POST['parent_pwd']);
+        Generic::checkFieldKosong($parent_new_email, KEYAPP::$MASUKAN_EMAIL_PARENT);
+        Generic::checkFieldKosong($parent_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        // Cek nama lama dan pwd
+        $objParent = new ParentSempoa();
+        $objParent->getWhereOne("parent_id='$parent_id' AND parent_email='$parent_email' AND parent_pwd='$parent_pwd'");
+        if (is_null($objParent->parent_id)) {
+            Generic::errorMsg(KEYAPP::$PASSWORD_SALAH);
+        } else {
+            $objParent->setFieldParent($objParent->parent_id, "parent_email", $parent_new_email);
+            $objParent->setLastUpdate($objParent->parent_id);
+            if ($objParent->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$PARENT_GANTI_EMAIL_SUKSES;
+                echo json_encode($json);
+                die();
+            }
+        }
+
+    }
+
+    public function changeParentPhoneNr()
+    {
+        $parent_id = addslashes($_POST['parent_id']);
+        $parent_hp_nr = addslashes($_POST['parent_hp_nr']);
+//        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        Generic::checkFieldKosong($parent_hp_nr, KEYAPP::$PARENT_ID_KOSONG);
+        // cek username
+        $parent_new_hp_nr = addslashes($_POST['parent_new_hp_nr']);
+        $parent_pwd = addslashes($_POST['parent_pwd']);
+        Generic::checkFieldKosong($parent_new_hp_nr, KEYAPP::$MASUKAN_NR_HP_PARENT);
+        Generic::checkFieldKosong($parent_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        // Cek nama lama dan pwd
+        $objParent = new ParentSempoa();
+        $objParent->getWhereOne("parent_id='$parent_id' AND parent_hp_nr='$parent_hp_nr' AND parent_pwd='$parent_pwd'");
+        if (is_null($objParent->parent_id)) {
+            Generic::errorMsg(KEYAPP::$PASSWORD_SALAH);
+        } else {
+            $objParent->setFieldParent($objParent->parent_id, "parent_hp_nr", $parent_new_hp_nr);
+            $objParent->setLastUpdate($objParent->parent_id);
+            if ($objParent->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$PARENT_GANTI_HP_SUKSES;
+                echo json_encode($json);
+                die();
+            }
+        }
+
+    }
+
+    public function changeParentPassword()
+    {
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+        // cek username
+        $parent_new_pwd = addslashes($_POST['parent_new_pwd']);
+        $parent_pwd = addslashes($_POST['parent_pwd']);
+        Generic::checkFieldKosong($parent_new_pwd, KEYAPP::$MASUKAN_NEW_PASSWORD_PARENT);
+        Generic::checkFieldKosong($parent_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        // Cek nama lama dan pwd
+        $objParent = new ParentSempoa();
+        $objParent->getWhereOne("parent_id='$parent_id' AND parent_pwd='$parent_pwd'");
+        if (is_null($objParent->parent_id)) {
+            Generic::errorMsg(KEYAPP::$PASSWORD_SALAH);
+        } else {
+            $objParent->setFieldParent($objParent->parent_id, "parent_pwd", $parent_new_pwd);
+            $objParent->setLastUpdate($objParent->parent_id);
+            if ($objParent->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$PARENT_GANTI_PASSWORD_SUKSES;
+                echo json_encode($json);
+                die();
+            }
+        }
+
+    }
+
+
+    public function getMyChildTCInfo()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+
+        $objParent = new ParentSempoa();
+        $objParent->getByID($parent_id);
+        if($objParent->parent_kode_anak != ""){
+            $arrKode_siswa = explode(",", $objParent->parent_kode_anak);
+            $arrDataTC = array();
+            foreach($arrKode_siswa as $kode_siswa){
+                $objMurid = new MuridModel();
+                $objMurid->getWhereOne("kode_siswa='$kode_siswa'");
+                $objTC = new SempoaOrg();
+                $objTC->getByID($objMurid->murid_tc_id);
+                $arrTCData = explode(",",$objTC->ContactTCAPP);
+                unset($arrDataTC);
+                foreach($arrTCData as $fieldTC){
+                    $arrDataTC[$fieldTC] = $objTC->$fieldTC;
+                }
+                $jsonHelp[] = $arrDataTC;
+            }
+
+            $json['status_code'] = 1;
+            $json['result'] = $jsonHelp;
+            $json['status_message'] = "";
+            echo json_encode($json);
+            die();
+        }
+        $json['status_code'] = 0;
+        $json['status_message'] = "Belum mempunyai anak!";
+        echo json_encode($json);
+        die();
+    }
+
+    public function getMyChildIBOInfo(){
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+
+        $objParent = new ParentSempoa();
+        $objParent->getByID($parent_id);
+        if($objParent->parent_kode_anak != ""){
+            $arrKode_siswa = explode(",", $objParent->parent_kode_anak);
+            $arrDataTC = array();
+            foreach($arrKode_siswa as $kode_siswa){
+                $objMurid = new MuridModel();
+                $objMurid->getWhereOne("kode_siswa='$kode_siswa'");
+                $objTC = new SempoaOrg();
+                $objTC->getByID($objMurid->murid_ibo_id);
+                $arrTCData = explode(",",$objTC->ContactTCAPP);
+                unset($arrDataTC);
+                foreach($arrTCData as $fieldTC){
+                    $arrDataTC[$fieldTC] = $objTC->$fieldTC;
+                }
+                $jsonHelp[] = $arrDataTC;
+            }
+
+            $json['status_code'] = 1;
+            $json['result'] = $jsonHelp;
+            $json['status_message'] = "";
+            echo json_encode($json);
+            die();
+        }
+        $json['status_code'] = 0;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
+    }
+
+    public function getMyChildName()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+        $parent_id = addslashes($_POST['parent_id']);
+        Generic::checkFieldKosong($parent_id, KEYAPP::$PARENT_ID_KOSONG);
+
+        $objParent = new ParentSempoa();
+        $objParent->getWhereOne("parent_id='$parent_id'");
+        $arrKodeMurid = explode(",",$objParent->parent_kode_anak);
+        $arrNamaAnak = array();
+        foreach($arrKodeMurid as $kode_siswa){
+            $objMurid = new MuridModel();
+            $objMurid->getWhereOne("kode_siswa='$kode_siswa'");
+            if(is_null($objMurid->id_murid)){
+                $arrNamaAnak[] = "";
+            }
+            else{
+                $arrNamaAnak[] = $objMurid->nama_siswa;
+            }
+
+        }
+        $json = array();
+        $json['status_code'] = 1;
+        $json['result'] = $arrNamaAnak;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
     }
 }

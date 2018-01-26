@@ -1623,17 +1623,38 @@ class CoretCoret extends WebService
     public function printObj()
     {
 
+        $date = new DateTime('today');
+        $todayweek = $date->format("W");
+        $hari = $date->format("w");
+
+        pr($hari);
         $a = '^(^\+62\s?|^0)(\d{3,4}-?){2}\d{3,4}$';
 
         pr($a);
         $nr = "+6287880748880";
-        if(preg_match($a,$nr)){
+        if (preg_match($a, $nr)) {
             echo "true";
-        }
-        else{
+        } else {
             echo "false";
         }
 //        pr($_SERVER);
 //        pr($_SERVER['HTTP_CLIENT_IP']);
+    }
+
+    public function halBuku()
+    {
+        $arrBuku[1]['A'] = 52;
+        $arrBuku[1]['B'] = 42;
+//        $arrBuku[1]['C'] = 58;?
+        pr($arrBuku);
+        $j = json_encode($arrBuku);
+
+        $b = \GuzzleHttp\json_decode($j);
+        pr($j);
+        pr($b);
+//        pr(json_encode($arrBuku));
+        $a = serialize($arrBuku);
+        pr($a);
+        pr(unserialize($a));
     }
 }

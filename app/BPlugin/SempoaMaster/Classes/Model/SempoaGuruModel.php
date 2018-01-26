@@ -31,6 +31,7 @@ class SempoaGuruModel extends SempoaModel
     public $kode_tc;
     public $email_guru;
     public $status;
+    public $guru_app_pwd;
     public $id_level_training_guru;
     public $gambar;
     public $guru_first_register;
@@ -42,7 +43,7 @@ class SempoaGuruModel extends SempoaModel
     public $removeAutoCrudClick = array("guru_first_register", "profile");
     public $hideColoums = array("guru_ak_id", "guru_kpo_id", "guru_ibo_id");
     public $crud_setting = array("add" => 0, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
-
+    public $APPWS = "nama_guru,guru_tc_id,guru_id";
 
     public function overwriteForm($return, $returnfull)
     {
@@ -130,6 +131,7 @@ class SempoaGuruModel extends SempoaModel
         $return['kode_tc'] = new Leap\View\InputText("hidden", "kode_tc", "kode_tc", $this->kode_tc);
         $return['email_guru'] = new Leap\View\InputText("email", "email_guru", "email_guru", $this->email_guru);
 
+        $return['guru_app_pwd']->setReadOnly();
         $return['guru_ak_id']->setReadOnly();
         $return['guru_kpo_id']->setReadOnly();
         $return['guru_ibo_id']->setReadOnly();

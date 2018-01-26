@@ -26,6 +26,7 @@ class MuridKelasMatrix extends Model{
     var $tc_id;
     var $level_murid;
     var $level_kelas;
+    var $crud_webservice_allowed = "murid_id,kelas_id,mk_id,active_status,active_date,nonactive_date,guru_id,nama_guru,tc_id,level_murid,level_kelas";
 
     //TODO tambah guru_id, dan nama
     //TODO tambah tc_id
@@ -33,5 +34,10 @@ class MuridKelasMatrix extends Model{
     public function getJumlahSiswaByGuru($guru_id, $tc_id){
         $count = $this->getJumlah("guru_id=$guru_id AND tc_id=$tc_id AND active_status=1");
         return $count;
+    }
+
+    public function getAllMuridAktivByKelas($kelas_id){
+        $arrMurids = $this->getWhere("kelas_id='$kelas_id' AND active_status=1");
+        return $arrMurids;
     }
 } 
