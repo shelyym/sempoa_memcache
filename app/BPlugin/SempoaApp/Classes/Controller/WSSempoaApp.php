@@ -489,7 +489,7 @@ class WSSempoaApp extends WebService
         if (is_null($objParent->parent_id)) {
             Generic::errorMsg(KEYAPP::$PASSWORD_SALAH);
         } else {
-            $objParent->setFieldParent($objParent->parent_id, "$parent_fullname", $parent_newname);
+            $objParent->setFieldParent($objParent->parent_id, "parent_fullname", $parent_newname);
             $objParent->setLastUpdate($objParent->parent_id);
             if ($objParent->save(1)) {
                 $json = array();
