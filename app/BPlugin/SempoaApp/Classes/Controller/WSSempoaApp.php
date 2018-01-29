@@ -141,7 +141,7 @@ class WSSempoaApp extends WebService
 
             $objParent = new ParentSempoa();
             $objParent->getWhereOne("parent_email='$parent_email'");
-            $objParent->parent_email = $pwd;
+            $objParent->parent_pwd = $pwd;
             $objParent->save(1);
             $json['status_code'] = 1;
             $json['status_message'] = "Email berhasil dikirim!";
