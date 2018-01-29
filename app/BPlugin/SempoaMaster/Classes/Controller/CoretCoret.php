@@ -1643,6 +1643,8 @@ class CoretCoret extends WebService
 
     public function halBuku()
     {
+
+        pr(Generic::generateRandomString(5));
         $arrBuku[1]['A'] = 52;
         $arrBuku[1]['B'] = 42;
 //        $arrBuku[1]['C'] = 58;?

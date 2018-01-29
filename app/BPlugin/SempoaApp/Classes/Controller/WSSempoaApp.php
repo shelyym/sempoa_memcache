@@ -134,9 +134,9 @@ class WSSempoaApp extends WebService
         $mail = new Leapmail2();
         $subject = KEYAPP::$subjectForgotPasswordParent;
         $content = "Content";
-
+        $pwd = Generic::generateRandomString(6);
 //        $email, $judul, $isi,$isiHTML
-        $erg = $mail->sendHTMLEmail($parent_email, $subject, "", $content);
+        $erg = $mail->sendHTMLEmail($parent_email, $subject, "", $content . " Password: " . $pwd);
         if ($erg) {
             $json['status_code'] = 1;
             $json['status_message'] = "Email berhasil dikirim!";
