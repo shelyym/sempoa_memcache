@@ -140,6 +140,9 @@ class WSSempoaApp extends WebService
         if ($erg) {
             $json['status_code'] = 1;
             $json['status_message'] = "Email berhasil dikirim!";
+            $objParent = new ParentSempoa();
+            $objParent->parent_email = $pwd;
+            $objParent->save(1);
             echo json_encode($json);
             die();
         } else {
