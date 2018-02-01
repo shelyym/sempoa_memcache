@@ -404,8 +404,14 @@ class WSTeacher extends WebService
 
     // Setting Guru
 
+    // Change Teacher's name
     public function changeTeacherName()
     {
+
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+
         $kode_guru = addslashes($_POST['kode_guru']);
         $guru_fullname = addslashes($_POST['guru_fullname']);
         Generic::checkFieldKosong($kode_guru, KEYAPP::$PARENT_ID_KOSONG);
@@ -421,10 +427,9 @@ class WSTeacher extends WebService
         $objGuru = new SempoaGuruModel();
         $objGuru->getWhereOne("kode_guru='$kode_guru' AND nama_guru='$guru_fullname' AND guru_app_pwd='$guru_pwd'");
         if (is_null($objGuru->guru_id)) {
-            Generic::errorMsg(KEYAPP::$PASSWORD_SALAH);
+            Generic::errorMsg(KEYAPP::$ID_GURU_TIDAK_DITEMUKAN);
         } else {
             $objGuru->setFieldModel("nama_guru", $guru_newname);
-//            $objParent->setLastUpdate($objParent->parent_id);
             if ($objGuru->save(1)) {
                 $json = array();
                 $json['status_code'] = 1;
@@ -433,7 +438,116 @@ class WSTeacher extends WebService
                 die();
             }
         }
-
     }
 
+    // Change Teacher's Email
+    public function changeTeacherEmail()
+    {
+
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+
+        $kode_guru = addslashes($_POST['kode_guru']);
+        $guru_email = addslashes($_POST['guru_email']);
+        Generic::checkFieldKosong($kode_guru, KEYAPP::$PARENT_ID_KOSONG);
+        Generic::checkFieldKosong($guru_email, KEYAPP::$PARENT_ID_KOSONG);
+
+        // cek username
+        $guru_newemail = addslashes($_POST['guru_newemail']);
+        if(!Generic::isEmailValid($guru_newemail)){
+            Generic::errorMsg("Email tidak valid");
+        }
+        $guru_pwd = addslashes($_POST['guru_pwd']);
+        Generic::checkFieldKosong($guru_newemail, KEYAPP::$MASUKAN_EMAIL_BARU_ANDA);
+        Generic::checkFieldKosong($guru_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        // Cek nama lama dan pwd
+        $objGuru = new SempoaGuruModel();
+        $objGuru->getWhereOne("kode_guru='$kode_guru' AND email_guru='$guru_email' AND guru_app_pwd='$guru_pwd'");
+        if (is_null($objGuru->guru_id)) {
+            Generic::errorMsg(KEYAPP::$ID_GURU_TIDAK_DITEMUKAN);
+        } else {
+            $objGuru->setFieldModel("email_guru", $guru_newemail);
+            if ($objGuru->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$EMAIL_ANDA_SUKSES_DIGANTI;
+                echo json_encode($json);
+                die();
+            }
+        }
+    }
+
+    public function changeTeacherHP()
+    {
+
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+
+        $kode_guru = addslashes($_POST['kode_guru']);
+        $nomor_hp = addslashes($_POST['nomor_hp']);
+        Generic::checkFieldKosong($kode_guru, KEYAPP::$PARENT_ID_KOSONG);
+        Generic::checkFieldKosong($nomor_hp, KEYAPP::$PARENT_ID_KOSONG);
+
+        // cek username
+        $guru_newhp = addslashes($_POST['guru_newhp']);
+        $guru_pwd = addslashes($_POST['guru_pwd']);
+        Generic::checkFieldKosong($guru_newhp, KEYAPP::$NO_HP_BARU_TIDAK_ADA);
+        Generic::checkFieldKosong($guru_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        // Cek nama lama dan pwd
+        $objGuru = new SempoaGuruModel();
+        $objGuru->getWhereOne("kode_guru='$kode_guru' AND nomor_hp='$nomor_hp' AND guru_app_pwd='$guru_pwd'");
+        if (is_null($objGuru->guru_id)) {
+            Generic::errorMsg(KEYAPP::$ID_GURU_TIDAK_DITEMUKAN);
+        } else {
+            $objGuru->setFieldModel("nomor_hp", $guru_newhp);
+            if ($objGuru->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$HP_ANDA_SUKSES_DIGANTI;
+                echo json_encode($json);
+                die();
+            }
+        }
+    }
+
+    public function changeTeacherPassword()
+    {
+
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+
+
+        $kode_guru = addslashes($_POST['kode_guru']);
+        Generic::checkFieldKosong($kode_guru, KEYAPP::$PARENT_ID_KOSONG);
+
+        $guru_pwd = addslashes($_POST['guru_pwd']);
+        Generic::checkFieldKosong($guru_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        $guru_new_pwd = addslashes($_POST['guru_new_pwd']);
+        Generic::checkFieldKosong($guru_new_pwd, KEYAPP::$PWD_BARU_KOSONG);
+
+        if(strlen($guru_new_pwd) != KEYAPP::$PANJANG_PWD){
+            Generic::errorMsg(KEYAPP::$PANJANG_PWD_HRS_6);
+        }
+
+        // Cek nama lama dan pwd
+        $objGuru = new SempoaGuruModel();
+        $objGuru->getWhereOne("kode_guru='$kode_guru'  AND guru_app_pwd='$guru_pwd'");
+        if (is_null($objGuru->guru_id)) {
+            Generic::errorMsg(KEYAPP::$ID_GURU_TIDAK_DITEMUKAN);
+        } else {
+            $objGuru->setFieldModel("guru_app_pwd", $guru_new_pwd);
+            if ($objGuru->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$PARENT_GANTI_PASSWORD_SUKSES;
+                echo json_encode($json);
+                die();
+            }
+        }
+    }
 }

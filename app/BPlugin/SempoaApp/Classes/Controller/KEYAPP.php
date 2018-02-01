@@ -8,7 +8,9 @@
  */
 class KEYAPP
 {
+// Konstanta
 
+    public static $PANJANG_PWD = 6;
     public static $SUCCESS = "Success";
     public static $subjectForgotPasswordParent = "Subject";
     public static $PARENT_ID_KOSONG = "Silahkan logout dan login lagi!";
@@ -65,8 +67,19 @@ class KEYAPP
 
 
     // Absensi Guru
-    public static  $KELAS_ID_KOSONG_ABSENSI = "Pilih kelas!";
+    public static $KELAS_ID_KOSONG_ABSENSI = "Pilih kelas!";
     public static $GURU_TDK_NGAJAR_DI_KELAS_INI = "Guru tidak mengajar di kelas ini!";
     public static $GURU_NGAJAR_TP_WAKTU_BERBEDA = "Hari kelas berbeda";
     public static $GURU_TIDAK_BOLEH_ABSEN = "Guru tidak boleh absen lagi";
+
+
+    // Account Setting Teacher
+
+    public static $ID_GURU_TIDAK_DITEMUKAN = "Silahkan logout dan login lagi. Data Anda tidak ditemukan di System!";
+    public static $MASUKAN_EMAIL_BARU_ANDA = "Masukan Email baru Anda!";
+    public static $EMAIL_ANDA_SUKSES_DIGANTI = "Email Anda berhasil diubah!";
+    public static $HP_ANDA_SUKSES_DIGANTI = "No. HP Anda berhasil diubah!";
+    public static $NO_HP_BARU_TIDAK_ADA = "Masukan No HP baru Anda!";
+    public static $PWD_BARU_KOSONG = "Masukan Password baru!";
+    public static $PANJANG_PWD_HRS_6 = "Panjang password harus 6";
 }
