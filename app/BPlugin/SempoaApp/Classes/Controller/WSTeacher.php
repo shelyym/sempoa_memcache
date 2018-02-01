@@ -144,7 +144,6 @@ class WSTeacher extends WebService
         }
 
 
-
         $kelas = new KelasWebModel();
         $kelas->getByID($kelas_id);
 
@@ -171,12 +170,12 @@ class WSTeacher extends WebService
 
             unset($arrMurid);
             foreach ($arrWS as $val) {
-                $arrMurid[$val]  = $murid->$val;
-                if($val == "id_level_sekarang"){
+                $arrMurid[$val] = $murid->$val;
+                if ($val == "id_level_sekarang") {
                     $arrMurid["Level"] = Generic::getLevelNameByID($murid->$val);
                 }
-                if($val == "nama_siswa"){
-                    $arrMurid["Huruf_pertama"] = strtoupper(substr($murid->$val,0,1));
+                if ($val == "nama_siswa") {
+                    $arrMurid["Huruf_pertama"] = strtoupper(substr($murid->$val, 0, 1));
                 }
             }
             $jsonMurid[] = $arrMurid;
@@ -215,7 +214,7 @@ class WSTeacher extends WebService
         $mk->getWhereOne("murid_id='$id_murid' AND kelas_id='$kelas_id' AND active_status=1");
 
 
-        if(!is_null($mk->mk_id)){
+        if (!is_null($mk->mk_id)) {
             Generic::errorMsg(KEYAPP::$MURID_SUDAH_DI_ADD_DALAM_KELAS);
         }
 
@@ -232,14 +231,14 @@ class WSTeacher extends WebService
         $mk->level_kelas = $kelas->level;
         $mk->level_murid = $objMurid->id_level_sekarang;
 
-        if($mk->save()){
+        if ($mk->save()) {
+
+            // cek progress sdh ada belum
             $json = array();
             $json['status_code'] = 1;
-            $json['result'] = "";
             $json['status_message'] = KEYAPP::$SUCCESS;
             echo json_encode($json);
-        }
-        else{
+        } else {
             Generic::errorMsg(KEYAPP::$MURID_GAGAL_DIMASUKAN_KELAS);
         }
     }
@@ -277,4 +276,164 @@ class WSTeacher extends WebService
         die();
 
     }
+
+
+    public function readNotificationByID()
+    {
+        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+            IMBAuth::checkOAuth();
+        $kode_guru = addslashes($_POST['kode_guru']);
+        Generic::checkFieldKosong($kode_guru, KEYAPP::$PARENT_ID_KOSONG);
+
+        $notif_id = addslashes($_POST['notif_id']);
+        Generic::checkFieldKosong($notif_id, "Notif ID kosong");
+
+        $objNotif = new SempoaNotification();
+
+        $objNotif->getWhereOne("notification_belongs_id='$kode_guru' AND notification_id='$notif_id'");
+        if (is_null($objNotif->notification_id)) {
+            Generic::errorMsg("Silahkan pilih Notif sekali lagi");
+        }
+        $json = array();
+
+        $arrWS = explode(",", $objNotif->crud_webservice_allowed);
+
+        $arrNotifHlp = array();
+        foreach ($arrWS as $val) {
+            $arrNotifHlp[$val] = $objNotif->$val;
+        }
+        $arrNotifAll[] = $arrNotifHlp;
+
+
+        $json['status_code'] = 1;
+        $json['result'] = $arrNotifAll;
+        $json['status_message'] = KEYAPP::$SUCCESS;
+        echo json_encode($json);
+        die();
+    }
+
+
+    public function absensiGuru()
+    {
+
+        $guru_id = addslashes($_POST['guru_id']);
+        Generic::checkFieldKosong($guru_id, KEYAPP::$GURU_ID_KOSONG_LOGOUT);
+
+        $kelas_id = addslashes($_POST['kelas_id']);
+        Generic::checkFieldKosong($guru_id, KEYAPP::$KELAS_ID_KOSONG_ABSENSI);
+
+        $kelas = new KelasWebModel();
+        $kelas->getByID($kelas_id);
+        $hari_ini = new DateTime();
+        $dayweek = date('w', strtotime($hari_ini->format("Y-m-d")));
+        if ($guru_id != $kelas->guru_id) {
+            Generic::errorMsg(KEYAPP::$GURU_TDK_NGAJAR_DI_KELAS_INI);
+        }
+        if ($dayweek != $kelas->hari_kelas) {
+            Generic::errorMsg(KEYAPP::$GURU_NGAJAR_TP_WAKTU_BERBEDA);
+        }
+
+        $jam_mulai = $kelas->jam_mulai_kelas;
+        $jam_akhir = $kelas->jam_akhir_kelas;
+        $jam_mulai_start = substr($jam_mulai, 0, 2);
+        $jam_mulai_akhir = substr($jam_mulai, 3, 2);
+        $jam_akhir_mulai = substr($jam_akhir, 0, 2);
+        $jam_akhir_akhir = substr($jam_akhir, 3, 2);
+
+        $now = time();
+        $timeStart = mktime($jam_mulai_start, $jam_mulai_akhir);
+        $timeStop = mktime($jam_akhir_mulai, $jam_akhir_akhir);
+
+
+        if ($now > $timeStart && $now < $timeStop) {
+
+            $hari_ini = date("Y-m-d");
+            $abs = new AbsenGuruModel();
+            //apa perlu cek apakah hari ini sdh absen ??
+            $cnt = $abs->getJumlah("absen_date = '$hari_ini' AND absen_guru_id = '$guru_id' AND absen_kelas_id = '$kelas_id'");
+            if ($cnt > 0) {
+                $json['status_code'] = 0;
+                $json['status_message'] = "Hari ini sudah absen";
+                echo json_encode($json);
+                die();
+            }
+
+            $abs->absen_date = date("Y-m-d");
+            $abs->absen_pengabsen_id = Account::getMyID();
+            $abs->absen_kelas_id = $kelas_id;
+            $abs->absen_guru_id = $guru_id;
+            $abs->absen_reg_date = leap_mysqldate();
+//        $abs->absen_mk_id = $mk_id;
+
+            $guru = new SempoaGuruModel();
+            $guru->getByID($guru_id);
+            $abs->absen_ak_id = $guru->guru_ak_id;
+            $abs->absen_kpo_id = $guru->guru_kpo_id;
+            $abs->absen_ibo_id = $guru->guru_ibo_id;
+            $abs->absen_tc_id = $guru->guru_tc_id;
+
+            if ($abs->save()) {
+
+                $rekapAbsenGuru = new RekapAbsenCoach();
+                $date = new DateTime('today');
+                $week = $date->format("W");
+                $id_absen_coach = $guru_id . "_" . $week;
+
+                $count = $rekapAbsenGuru->searchMuridSdhAbsen($id_absen_coach, $date);
+                if ($count > 0) {
+                    $rekapAbsenGuru->updateGuruName($id_absen_coach, $guru_id);
+                } else {
+                    $rekapAbsenGuru->addAbsenCouchFromGuru($guru_id, $guru->guru_ak_id, $guru->guru_kpo_id, $guru->guru_ibo_id, $guru->guru_tc_id, $date);
+                }
+
+                $json['status_code'] = 1;
+                $json['status_message'] = "Guru berhasil diabsen!";
+                echo json_encode($json);
+                die();
+            }
+
+            $json['status_code'] = 0;
+            $json['status_message'] = "Save Failed";
+            echo json_encode($json);
+            die();
+
+        } else {
+            Generic::errorMsg(KEYAPP::$GURU_TIDAK_BOLEH_ABSEN);
+        }
+    }
+
+    // Setting Guru
+
+    public function changeTeacherName()
+    {
+        $kode_guru = addslashes($_POST['kode_guru']);
+        $guru_fullname = addslashes($_POST['guru_fullname']);
+        Generic::checkFieldKosong($kode_guru, KEYAPP::$PARENT_ID_KOSONG);
+        Generic::checkFieldKosong($guru_fullname, KEYAPP::$PARENT_ID_KOSONG);
+
+        // cek username
+        $guru_newname = addslashes($_POST['guru_newname']);
+        $guru_pwd = addslashes($_POST['guru_pwd']);
+        Generic::checkFieldKosong($guru_newname, KEYAPP::$MASUKAN_NAMA_PARENT);
+        Generic::checkFieldKosong($guru_pwd, KEYAPP::$MASUKAN_PASSWORD_PARENT);
+
+        // Cek nama lama dan pwd
+        $objGuru = new SempoaGuruModel();
+        $objGuru->getWhereOne("kode_guru='$kode_guru' AND nama_guru='$guru_fullname' AND guru_app_pwd='$guru_pwd'");
+        if (is_null($objGuru->guru_id)) {
+            Generic::errorMsg(KEYAPP::$PASSWORD_SALAH);
+        } else {
+            $objGuru->setFieldModel("nama_guru", $guru_newname);
+//            $objParent->setLastUpdate($objParent->parent_id);
+            if ($objGuru->save(1)) {
+                $json = array();
+                $json['status_code'] = 1;
+                $json['status_message'] = KEYAPP::$PARENT_GANTI_NAMA_SUKSES;
+                echo json_encode($json);
+                die();
+            }
+        }
+
+    }
+
 }

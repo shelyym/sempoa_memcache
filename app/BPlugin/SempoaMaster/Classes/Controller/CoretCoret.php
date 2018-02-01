@@ -1623,6 +1623,8 @@ class CoretCoret extends WebService
     public function printObj()
     {
 
+        $obj = new ProgressModel();
+        $obj->printColumlistAsAttributes();
         $date = new DateTime('today');
         $todayweek = $date->format("W");
         $hari = $date->format("w");

@@ -41,7 +41,7 @@ class SempoaGuruModel extends SempoaModel
     public $guru_ibo_id;
     public $guru_tc_id;
     public $removeAutoCrudClick = array("guru_first_register", "profile");
-    public $hideColoums = array("guru_ak_id", "guru_kpo_id", "guru_ibo_id");
+    public $hideColoums = array("guru_ak_id", "guru_kpo_id", "guru_ibo_id","guru_app_pwd");
     public $crud_setting = array("add" => 0, "search" => 1, "viewall" => 0, "export" => 1, "toggle" => 1, "import" => 0, "webservice" => 0);
     public $APPWS = "nama_guru,guru_tc_id,guru_id";
 
@@ -132,6 +132,8 @@ class SempoaGuruModel extends SempoaModel
         $return['email_guru'] = new Leap\View\InputText("email", "email_guru", "email_guru", $this->email_guru);
 
         $return['guru_app_pwd']->setReadOnly();
+        $return['guru_app_pwd'] = new Leap\View\InputText("hidden", "guru_app_pwd", "guru_app_pwd", $this->guru_app_pwd);
+
         $return['guru_ak_id']->setReadOnly();
         $return['guru_kpo_id']->setReadOnly();
         $return['guru_ibo_id']->setReadOnly();
@@ -279,6 +281,11 @@ class SempoaGuruModel extends SempoaModel
         return $arrTc;
     }
 
+    function setFieldModel($field,$value){
+        $this->getWhereOne("$this->main_id='$field''");
+        $this->$field = $value;
+        $this->save(1);
+    }
 
     public function overwriteReadExcel($return)
     {

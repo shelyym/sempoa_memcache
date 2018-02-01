@@ -62,4 +62,11 @@ class KEYAPP
     public static $ADD_MURID_ID_KOSONG = "Silahkan pilih murid sekali lagi!";
     public static $MURID_GAGAL_DIMASUKAN_KELAS = "Murid gagal dimasukan kedalam kelas";
     public static $MURID_SUDAH_DI_ADD_DALAM_KELAS = "Murid sudah dimasukan kedalam kelas, hubungi ADMIN TC Anda";
+
+
+    // Absensi Guru
+    public static  $KELAS_ID_KOSONG_ABSENSI = "Pilih kelas!";
+    public static $GURU_TDK_NGAJAR_DI_KELAS_INI = "Guru tidak mengajar di kelas ini!";
+    public static $GURU_NGAJAR_TP_WAKTU_BERBEDA = "Hari kelas berbeda";
+    public static $GURU_TIDAK_BOLEH_ABSEN = "Guru tidak boleh absen lagi";
 }
