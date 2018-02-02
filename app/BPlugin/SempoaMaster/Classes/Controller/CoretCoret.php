@@ -1646,6 +1646,10 @@ class CoretCoret extends WebService
     public function halBuku()
     {
 
+        pr(Efiwebsetting::getData("lama_undo"));
+//        pr(SempoaWebSetting::getData("lama_undo"));
+
+
         pr(Generic::generateRandomString(5));
         $arrBuku[1]['A'] = 52;
         $arrBuku[1]['B'] = 42;

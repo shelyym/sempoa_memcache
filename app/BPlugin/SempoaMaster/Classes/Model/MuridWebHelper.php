@@ -2569,7 +2569,7 @@ class MuridWebHelper extends WebService
                                                 $now = time();
                                                 $your_date = strtotime($val->bln_date_pembayaran);
                                                 $datediff = Generic::diffTwoDaysInDay($now, $your_date);
-                                                if ($datediff <= 14) {
+                                                if ($datediff <= KEY::$MAX_UNDO_IURAN_BUKU) {
                                                     ?>
                                                     <span id="undo_iuran_buku_<?= $val->bln_id; ?>" class="fa fa-undo"
                                                           aria-hidden="true"></span>
@@ -6191,7 +6191,7 @@ class MuridWebHelper extends WebService
                             $now = time();
                             $your_date = strtotime($val->bln_date_pembayaran);
                             $datediff = Generic::diffTwoDaysInDay($now, $your_date);
-                            if ($datediff <= 14) {
+                            if ($datediff <= KEY::$MAX_UNDO_IURAN_BUKU) {
                                 ?>
                                 <span id="undo_iuran_buku_<?= $val->bln_id; ?>" class="fa fa-undo"
                                       aria-hidden="true"></span>
