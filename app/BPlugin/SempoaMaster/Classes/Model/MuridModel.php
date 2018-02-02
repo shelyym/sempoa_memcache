@@ -46,6 +46,10 @@ class MuridModel extends SempoaModel
     public $murid_tc_id;
     public $pay_firsttime;
     public $murid_parent_id;
+    public $murid_app_pwd;
+    public $murid_created_date;
+    public $murid_updated;
+    public $murid_active;
     public $removeAutoCrudClick = array("pay_firsttime", "profile");
     public $statushelp;
     public $hideColoums = array("murid_ak_id", "murid_kpo_id", "murid_ibo_id", "murid_kurikulum", "murid_parent_id");
@@ -151,6 +155,10 @@ class MuridModel extends SempoaModel
         }
 
         $return['parent_id'] = new Leap\View\InputText("hidden", "parent_id", "parent_id", $this->parent_id);
+        $return['murid_app_pwd'] = new Leap\View\InputText("hidden", "murid_app_pwd", "murid_app_pwd", $this->murid_app_pwd);
+        $return['murid_created_date'] = new Leap\View\InputText("hidden", "murid_created_date", "murid_created_date", $this->murid_created_date);
+        $return['murid_updated'] = new Leap\View\InputText("hidden", "murid_updated", "murid_updated", $this->murid_updated);
+        $return['murid_active'] = new Leap\View\InputText("hidden", "murid_active", "murid_active", $this->murid_active);
 
         return $return;
     }

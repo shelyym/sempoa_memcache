@@ -66,47 +66,124 @@ class WSSempoaApp extends WebService
         die();
     }
 
-    public function loginParent()
+    public function login()
     {
         if (Efiwebsetting::getData('checkOAuth') == 'yes')
             IMBAuth::checkOAuth();
 
-        $parent_email = addslashes($_POST['parent_email']);
-        $parent_pwd = addslashes($_POST['parent_pwd']);
-        if ($parent_email == "") {
-            Generic::errorMsg("Email harus diisi");
-        } else {
-            // cek email valid;
-            if (!Generic::isEmailValid($parent_email)) {
-                Generic::errorMsg("Email tidak valid");
+        $user_id = addslashes($_POST['user_id']);
+        Generic::checkFieldKosong($user_id, KEYAPP::$PARENT_ID_KOSONG);
+
+        // cek apakah email atau bukan
+        // jika email maka ortu
+        // jika bukan email cek apakah kode_siswa
+        //1606030020
+        // Murid
+        if(is_numeric($user_id)){
+            $pwd = addslashes($_POST['pwd']);
+            Generic::checkFieldKosong($pwd,"Masukan Password");
+            $objSiswa = new MuridModel();
+            $objSiswa->getWhereOne("kode_siswa='$user_id' AND murid_app_pwd='$pwd'");
+
+            if (is_null($objSiswa->id_murid)) {
+                Generic::errorMsg("Kode Siswa atau Password salah!");
             }
+
+            $arrWS = explode(",", $objSiswa->APPWS);
+
+            $arrHlp = array();
+            foreach ($arrWS as $val) {
+                $arrHlp[$val] = $objSiswa->$val;
+            }
+
+            $json['status_code'] = 1;
+            $json['result'] = $arrHlp;
+            $json['status_message'] = "Berhasil!";
+            echo json_encode($json);
+            die();
+        }
+        // ini Parent
+        elseif(Generic::isEmailValid($user_id)){
+            $pwd = addslashes($_POST['pwd']);
+            if ($user_id == "") {
+                Generic::errorMsg("Email harus diisi");
+            } else {
+                // cek email valid;
+                if (!Generic::isEmailValid($user_id)) {
+                    Generic::errorMsg("Email tidak valid");
+                }
+            }
+
+            if ($pwd == "") {
+                Generic::errorMsg("Password harus diisi");
+            }
+
+            $json = array();
+            $objParent = new ParentSempoa();
+            $objParent->getWhereOne("parent_email='$user_id' AND parent_pwd='$pwd'");
+            if (is_null($objParent->parent_id)) {
+                Generic::errorMsg("Email salah atau password salah");
+            }
+
+            $objParent->setLastLogin($objParent->parent_id);
+            $arrWS = explode(",", $objParent->crud_webservice_allowed);
+
+            $arrHlp = array();
+            foreach ($arrWS as $val) {
+                $arrHlp[$val] = $objParent->$val;
+            }
+
+            $json['status_code'] = 1;
+            $json['result'] = $arrHlp;
+            $json['status_message'] = "Berhasil!";
+            echo json_encode($json);
+            die();
         }
 
-        if ($parent_pwd == "") {
-            Generic::errorMsg("Password harus diisi");
+        // Bukan Murid bukan Parent
+        else{
+            Generic::errorMsg("Masukan user id sebagai Siswa atau Email sebagai Orang tua!");
         }
 
-        $json = array();
-        $objParent = new ParentSempoa();
-        $objParent->getWhereOne("parent_email='$parent_email' AND parent_pwd='$parent_pwd'");
-        if (is_null($objParent->parent_id)) {
-            Generic::errorMsg("Email salah atau password salah");
-        }
 
-        $objParent->setLastLogin($objParent->parent_id);
-        $arrWS = explode(",", $objParent->crud_webservice_allowed);
-
-        $arrHlp = array();
-        foreach ($arrWS as $val) {
-            $arrHlp[$val] = $objParent->$val;
-        }
-
-        $json['status_code'] = 1;
-        $json['result'] = $arrHlp;
-        $json['status_message'] = "Berhasil!";
-        echo json_encode($json);
-        die();
     }
+
+// ini tidak dipake lagi
+//    public function loginParent()
+//    {
+//        if (Efiwebsetting::getData('checkOAuth') == 'yes')
+//            IMBAuth::checkOAuth();
+//        $parent_email = addslashes($_POST['parent_email']);
+//        $parent_pwd = addslashes($_POST['parent_pwd']);
+//        if ($parent_email == "") {
+//            Generic::errorMsg("Email harus diisi");
+//        } else {
+//            // cek email valid;
+//            if (!Generic::isEmailValid($parent_email)) {
+//                Generic::errorMsg("Email tidak valid");
+//            }
+//        }
+//        if ($parent_pwd == "") {
+//            Generic::errorMsg("Password harus diisi");
+//        }
+//        $json = array();
+//        $objParent = new ParentSempoa();
+//        $objParent->getWhereOne("parent_email='$parent_email' AND parent_pwd='$parent_pwd'");
+//        if (is_null($objParent->parent_id)) {
+//            Generic::errorMsg("Email salah atau password salah");
+//        }
+//        $objParent->setLastLogin($objParent->parent_id);
+//        $arrWS = explode(",", $objParent->crud_webservice_allowed);
+//        $arrHlp = array();
+//        foreach ($arrWS as $val) {
+//            $arrHlp[$val] = $objParent->$val;
+//        }
+//        $json['status_code'] = 1;
+//        $json['result'] = $arrHlp;
+//        $json['status_message'] = "Berhasil!";
+//        echo json_encode($json);
+//        die();
+//    }
 
     public function resetPwdParent()
     {
@@ -298,6 +375,19 @@ class WSSempoaApp extends WebService
         }
 
         $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "murid_parent_id", $parent_id);
+
+        // Kirim Email ke ortu Password anak
+        $mail = new Leapmail2();
+        $subject = "Password anak Anda: " . $sempoaMurid->nama_siswa;
+        $pwd = Generic::generatePassword(6);
+        $content = "Password anak Anda:" . $sempoaMurid->nama_siswa . " " . $pwd;
+
+        $sendTo = $objParent->parent_email;
+        $mail->sendHTMLEmail($sendTo, $subject,"", $content);
+        $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "murid_app_pwd", $pwd);
+        $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "murid_created_date", leap_mysqldate());
+        $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "murid_updated", leap_mysqldate());
+        $sempoaMurid->setFieldMurid($sempoaMurid->id_murid, "murid_active", 1);
         $json['status_code'] = 1;
         $json['status_message'] = KEYAPP::$DATA_ANAK_BERHASIL_DISIMPAN;
         echo json_encode($json);

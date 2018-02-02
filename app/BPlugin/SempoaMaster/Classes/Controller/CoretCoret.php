@@ -1645,24 +1645,33 @@ class CoretCoret extends WebService
 
     public function halBuku()
     {
+        $a = "19121121k";
+        echo $a;
+        if(is_numeric($a)){
+            echo "ja";
+        }
+        else{
+            echo "nein";
+        }
+//        pr(Generic::checkNumeric($a));
+//
+//        pr(Efiwebsetting::getData("lama_undo"));
+////        pr(SempoaWebSetting::getData("lama_undo"));
 
-        pr(Efiwebsetting::getData("lama_undo"));
-//        pr(SempoaWebSetting::getData("lama_undo"));
 
-
-        pr(Generic::generateRandomString(5));
-        $arrBuku[1]['A'] = 52;
-        $arrBuku[1]['B'] = 42;
-//        $arrBuku[1]['C'] = 58;?
-        pr($arrBuku);
-        $j = json_encode($arrBuku);
-
-        $b = \GuzzleHttp\json_decode($j);
-        pr($j);
-        pr($b);
-//        pr(json_encode($arrBuku));
-        $a = serialize($arrBuku);
-        pr($a);
-        pr(unserialize($a));
+//        pr(Generic::generateRandomString(5));
+//        $arrBuku[1]['A'] = 52;
+//        $arrBuku[1]['B'] = 42;
+////        $arrBuku[1]['C'] = 58;?
+//        pr($arrBuku);
+//        $j = json_encode($arrBuku);
+//
+//        $b = \GuzzleHttp\json_decode($j);
+//        pr($j);
+//        pr($b);
+////        pr(json_encode($arrBuku));
+//        $a = serialize($arrBuku);
+//        pr($a);
+//        pr(unserialize($a));
     }
 }
