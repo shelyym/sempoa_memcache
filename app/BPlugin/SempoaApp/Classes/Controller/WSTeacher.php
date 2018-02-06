@@ -25,9 +25,15 @@ class WSTeacher extends WebService
         if (is_null($objGuru->guru_id)) {
             Generic::errorMsg(KEYAPP::$TEACHER_TDK_BS_LOGIN);
         }
+        $arrWS = explode(",",$objGuru->APPWS);
+        $arrHlp = array();
+        foreach($arrWS as $val){
+            $arrHlp[$val] = $objGuru->$val;
+        }
 
         $json = array();
         $json['status_code'] = 1;
+        $json['results'] = $arrHlp;
         $json['status_message'] = KEYAPP::$LOGIN_BERHASIL;
         echo json_encode($json);
         die();
