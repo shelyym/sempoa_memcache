@@ -29,8 +29,24 @@ class WSTeacher extends WebService
         $arrHlp = array();
         foreach($arrWS as $val){
             $arrHlp[$val] = $objGuru->$val;
+
         }
 
+        $tc = new SempoaOrg();
+        $tc->getByID($objGuru->guru_tc_id);
+        $arrWS = explode(",",$tc->ContactTCAPP);
+        $arrHlpTC = array();
+        foreach($arrWS as $val){
+            $arrHlpTC[$val] = $tc->$val;
+        }
+        $arrHlp['TC'] = $arrHlpTC;
+
+        $ibo = new SempoaOrg();
+        $ibo->getByID($objGuru->guru_ibo_id);
+        foreach($arrWS as $val){
+            $arrHlpTC[$val] = $ibo->$val;
+        }
+        $arrHlp['IBO'] = $arrHlpTC;
         $json = array();
         $json['status_code'] = 1;
         $json['results'] = $arrHlp;
@@ -556,4 +572,7 @@ class WSTeacher extends WebService
             }
         }
     }
+
+
+
 }
