@@ -255,6 +255,7 @@ class WSTeacher extends WebService
 
         if ($mk->save()) {
 
+
             // cek progress sdh ada belum
             $json = array();
             $json['status_code'] = 1;
@@ -574,5 +575,18 @@ class WSTeacher extends WebService
     }
 
 
+    public function getProgress(){
+
+
+        $progress = new ProgressModel();
+        $dateToday = new DateTime('Now');
+        $date = $dateToday->format("Y-m-d");
+        $kode_siswa = "1406030001";
+        $progress_level = 10;
+        $progress_guru_id = 12;
+//        pr($progress->createProgress($kode_siswa, $progress_level, $progress_guru_id, $date));
+
+        pr($progress->listProgressByDate($kode_siswa, $progress_level));
+    }
 
 }

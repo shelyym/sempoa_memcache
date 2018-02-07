@@ -2597,6 +2597,7 @@ class MuridWebHelper extends WebService
                                     <script>
                                         var bln_id = '<?= $val->bln_id; ?>';
                                         $('#delete_invoice_buku_<?= $val->bln_id . "_" . $t; ?>').click(function () {
+                                            var bln_id = '<?= $val->bln_id; ?>';
                                             if (confirm("Apakah Anda Yakin akan menghapus transaksi Iuran Bulanan?")) {
 //                                                alert(bln_id);
                                                 $.post("<?= _SPPATH; ?>LaporanWebHelper/hapusIuranBuku", {
@@ -2612,8 +2613,8 @@ class MuridWebHelper extends WebService
                                             }
                                         });
                                         $("#undo_iuran_buku_<?= $val->bln_id; ?>").click(function () {
-
-                                            if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?")) {
+                                            var bln_id = '<?= $val->bln_id; ?>';
+                                            if (confirm("Apakah Anda Yakin akan membatalkan transaksi Iuran Bulanan?" + bln_id)) {
                                                 $.post("<?= _SPPATH; ?>LaporanWebHelper/undo_iuran_buku_2", {
                                                     bln_id: bln_id
                                                 }, function (data) {

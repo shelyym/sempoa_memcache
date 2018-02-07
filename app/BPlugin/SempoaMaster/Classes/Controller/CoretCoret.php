@@ -1645,12 +1645,53 @@ class CoretCoret extends WebService
 
     public function halBuku()
     {
+
+
+//        $date = new DateTime('now');
+//
+//        pr($date->format("Y-m-d"));
+//        $pro = new ProgressModel();
+//        pr($pro->getProgressByDate("1111",1,$date->format("Y-m-d")));
+//
+//        die();
+        $id_murid = 4364;
+
+        $murid = new MuridModel();
+        $murid->getByID($id_murid);
+        $level_murid = $murid->id_level_sekarang;
+        $kur = $murid->murid_kurikulum;
+
+
+        // ambil jumlah buku
+        $buku = new BarangWebModel();
+        $buku->getWhereOne("level=$level_murid AND jenis_kurikulum=$kur AND jenis_biaya=1");
+        $halBukuTotal = $buku->halaman_buku;
+        $halBuku = \GuzzleHttp\json_decode($halBukuTotal);
+
+        pr($halBuku);
+
+        foreach ($halBuku as $val) {
+            $progress = new ProgressModel();
+            $i = 1;
+            foreach($val as $jenisBuku => $hal){
+                $b = "progress_total_hal_" . $i;
+                $c = "progress_nama_buku_". $i;
+                $progress->$c = $jenisBuku;
+                $progress->$b = $hal;
+                $i++;
+            }
+            $progress->save();
+        }
+//        pr($b);
+//        die();
+        $a = new ProgressModel();
+        $a->printColumlistAsAttributes();
+        die();
         $a = "19121121k";
         echo $a;
-        if(is_numeric($a)){
+        if (is_numeric($a)) {
             echo "ja";
-        }
-        else{
+        } else {
             echo "nein";
         }
 //        pr(Generic::checkNumeric($a));
@@ -1673,5 +1714,31 @@ class CoretCoret extends WebService
 //        $a = serialize($arrBuku);
 //        pr($a);
 //        pr(unserialize($a));
+    }
+
+
+
+
+
+    function crawl_sklh_satuan(){
+
+
+        $urlWeb = "http://akupintar.info/";
+        $url = "http://www.akupintar.info/cari.php?jenjang=KB&mode=sekolah&GoSearch=Search&propinsi=Banten&kota=Tangerang+Selatan&nama=&alamat=";
+
+        $html = file_get_html($url);
+
+        $i = 0;
+        foreach ($html->find(".center .search",0) as $div) {
+            echo  $div->find("a", 1)->href . "<br>";
+        }
+//        foreach ($html->find("a",0) as $div) {
+//
+//            if($div->find("href", $i)->plaintext != ""){
+//                echo  $div->find("href", $i)->plaintext;
+//            }
+//            $i++;
+//        }
+
     }
 }
