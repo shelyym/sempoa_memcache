@@ -159,6 +159,7 @@ class MuridModel extends SempoaModel
         $return['murid_created_date'] = new Leap\View\InputText("hidden", "murid_created_date", "murid_created_date", $this->murid_created_date);
         $return['murid_updated'] = new Leap\View\InputText("hidden", "murid_updated", "murid_updated", $this->murid_updated);
         $return['murid_active'] = new Leap\View\InputText("hidden", "murid_active", "murid_active", $this->murid_active);
+        $return['murid_parent_id'] = new Leap\View\InputText("hidden", "murid_parent_id", "murid_parent_id", $this->murid_parent_id);
 
         return $return;
     }
