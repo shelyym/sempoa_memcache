@@ -258,19 +258,14 @@ class LaporanWeb extends WebService
 
                     <?
                     }
-                    }
-
-                    else{
+                    } else {
                     foreach ($arrMurid as $mk) {
 
                     $iuranBulanan = new IuranBulanan();
                     $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
-                    //                        pr($iuranBulanan);
-                    if ($mk->id_murid == '3202') {
-                        pr($mk->id_murid . " - " . $bln);
-                    }
-                    ?>
 
+                    if (!is_null($iuranBulanan->bln_id)) {
+                    ?>
                         <tr id='payment_<?= $iuranBulanan->bln_id; ?>'
                             class="<? if ($iuranBulanan->bln_status) { ?>sudahbayar <?
                             } else { ?> belumbayar<?
@@ -313,6 +308,8 @@ class LaporanWeb extends WebService
                             })
                         </script>
                         <?
+                    }
+
                     }
                     }
 
