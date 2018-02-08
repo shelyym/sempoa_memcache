@@ -100,6 +100,7 @@ class LaporanWeb extends WebService
         $arrIuranBulanan = $iuranBulanan->getWhere("bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id' ORDER BY bln_murid_id ASC");
 
         $jumlahMuridAktiv = Generic::getJumlahMuridAktivByTC($tc_id);
+
         if ((count($arrIuranBulanan) == 0) or count($arrIuranBulanan) < $jumlahMuridAktiv) {
             $murid = new MuridModel();
             // Status cuti dikeluarkan
@@ -212,7 +213,12 @@ class LaporanWeb extends WebService
                     $belumbayar = 0;
 
                     if ($invoiceCreated) {
+//                        echo "invoiceCreated = " . $invoiceCreated . "<br>";
                     foreach ($arrIuranBulanan as $iuran) {
+
+                    if ($iuran->bln_tc_id == $tc_id) {
+
+
                         $muridTmp = new MuridModel();
                         $muridTmp->getByID($iuran->bln_murid_id);
                         ?>
@@ -258,13 +264,18 @@ class LaporanWeb extends WebService
 
                     <?
                     }
+                    }
                     } else {
+//                    echo "invoiceCreated = " . $invoiceCreated . "<br>";
                     foreach ($arrMurid as $mk) {
 
                     $iuranBulanan = new IuranBulanan();
-                    $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
+                    //                    $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn' AND bln_tc_id='$tc_id'");
+                    $iuranBulanan->getWhereOne("bln_murid_id = '$mk->id_murid' AND bln_mon = '$bln' AND bln_tahun = '$thn'");
 
-                    if (!is_null($iuranBulanan->bln_id)) {
+                    //                    if (!is_null($iuranBulanan->bln_id)) {
+
+                    if ((!is_null($iuranBulanan->bln_id) && ($iuranBulanan->bln_tc_id == $tc_id) || (is_null($iuranBulanan->bln_id)))) {
                     ?>
                         <tr id='payment_<?= $iuranBulanan->bln_id; ?>'
                             class="<? if ($iuranBulanan->bln_status) { ?>sudahbayar <?
@@ -308,9 +319,11 @@ class LaporanWeb extends WebService
                             })
                         </script>
                         <?
+
                     }
 
                     }
+
                     }
 
 
