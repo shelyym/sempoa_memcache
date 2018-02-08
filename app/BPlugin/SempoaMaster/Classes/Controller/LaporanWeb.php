@@ -213,7 +213,7 @@ class LaporanWeb extends WebService
                     $belumbayar = 0;
 
                     if ($invoiceCreated) {
-//                        echo "invoiceCreated = " . $invoiceCreated . "<br>";
+                        echo "invoiceCreated = " . $invoiceCreated . "<br>";
                     foreach ($arrIuranBulanan as $iuran) {
 
                     if ($iuran->bln_tc_id == $tc_id) {
@@ -266,7 +266,7 @@ class LaporanWeb extends WebService
                     }
                     }
                     } else {
-//                    echo "invoiceCreated = " . $invoiceCreated . "<br>";
+                    echo "invoiceCreated = " . $invoiceCreated . "<br>";
                     foreach ($arrMurid as $mk) {
 
                     $iuranBulanan = new IuranBulanan();
